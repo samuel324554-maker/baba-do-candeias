@@ -28,7 +28,8 @@ nav button.ativo,nav button:hover{background:white;color:#0a5c36}
 .btn-roxo{background:#6a1b9a;color:white;width:100%;margin-top:10px}
 .btn-edit{background:#1e88e5;color:white;padding:6px 12px;border-radius:8px;font-size:12px;border:0}
 .btn-del{background:#c62828;color:white;padding:6px 12px;border-radius:8px;font-size:12px;border:0}
-input,select{padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin:4px 0}
+input,select,textarea{padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin:4px 0;font-family:Arial}
+textarea{resize:vertical;min-height:80px}
 .cores{display:flex;gap:12px;margin:10px 0;flex-wrap:wrap}
 .cor-opcao{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid transparent;position:relative}
 .cor-opcao.sel{border-color:black;transform:scale(1.15)}
@@ -78,6 +79,7 @@ td:first-child{text-align:left;font-weight:bold}
 .selecao-card{border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)}
 .selecao-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;margin:6px 0;background:white;border-left:6px solid #0a5c36}
 .selecao-pos{font-weight:900;color:#0a5c36;font-size:12px;min-width:125px}
+.lote-box{background:#f1f8e9;border:2px dashed #6a1b9a;padding:12px;border-radius:12px;margin-top:18px}
 </style>
 </head>
 <body>
@@ -136,10 +138,12 @@ td:first-child{text-align:left;font-weight:bold}
 </div>
 <div id="detalheDia"></div>
 </div>
+
 <div id="criacao" class="secao">
 <div class="card" style="border:2px solid #6a1b9a">
 <h2>🎲 Criação de Times - Sorteio Equilibrado</h2>
 <p style="font-size:13px;color:#555;margin-bottom:15px">Monte times equilibrados! Peso 3 (bons) nunca ficam juntos. Goleiros <strong>1 (Goleiro)</strong> nunca ficam no mesmo time.</p>
+
 <h3 style="color:#0a5c36;margin-top:10px">1️⃣ Selecione a Cor</h3>
 <select id="criacaoCor">
 <option value="aleatorio">🎲 Aleatório (cores diferentes)</option>
@@ -165,9 +169,10 @@ td:first-child{text-align:left;font-weight:bold}
 <option value="4">4 reservas</option>
 <option value="5">5 reservas</option>
 </select>
+
 <div style="background:#f9f9f9;padding:12px;border-radius:10px;margin-top:20px">
-<h3 style="color:#0a5c36">4️⃣ Adicionar Nomes + Peso</h3>
-<p style="font-size:12px;color:#666;margin-bottom:8px">Selecione o peso: <strong>1 (Goleiro)</strong> = Goleiro 🧤 | 2 = Médio | 3 = Bom ⭐</p>
+<h3 style="color:#0a5c36">4️⃣ Adicionar Nome Individual + Peso</h3>
+<p style="font-size:12px;color:#666;margin-bottom:8px">1 (Goleiro) 🧤 | 2 = Médio | 3 = Bom ⭐</p>
 <div class="row">
 <input id="criacaoNome" placeholder="Nome do jogador" style="flex:2">
 <select id="criacaoPeso" style="flex:1;max-width:150px">
@@ -180,6 +185,36 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="criacaoListaNomes" style="margin-top:10px"></div>
 <p id="criacaoTotal" style="font-weight:bold;margin-top:10px;color:#0a5c36"></p>
 </div>
+
+<!-- NOVA ÁREA EM LOTE -->
+<div class="lote-box">
+<h3 style="color:#6a1b9a;margin-bottom:8px">⚡ Adicionar em Lote (rápido) - Para 24, 30 pessoas</h3>
+<p style="font-size:12px;color:#555;margin-bottom:10px">Cole a lista do grupo. Um nome por linha. Pode colar com vírgula também. Todos os de linha terão peso igual (2) e goleiros peso 1 - divisão igual e super rápida!</p>
+
+<span class="label-peq">🧤 Goleiros (um por time - peso 1)</span>
+<textarea id="loteGoleiros" placeholder="Ex:
+Neném
+Rafinha
+Bruno
+- ou cole: Neném, Rafinha, Bruno"></textarea>
+
+<span class="label-peq" style="margin-top:10px">👟 Jogadores de Linha (todos peso 2 - igual)</span>
+<textarea id="loteLinha" style="min-height:140px" placeholder="Ex: cole a lista do grupo:
+Samuel
+Vitor
+Léo
+Gustavo
+Marcos
+... pode colar 20 nomes de uma vez!
+Aceita: um por linha, ou separado por vírgula"></textarea>
+
+<div class="row" style="margin-top:10px">
+<button class="btn btn-roxo" style="flex:1" onclick="criacaoAddLote()">⚡ ADICIONAR LISTA TODA DE UMA VEZ</button>
+<button class="btn btn-cinza" style="flex:0.5" onclick="limparLote()">Limpar</button>
+</div>
+<p id="loteInfo" style="font-size:12px;color:#6a1b9a;margin-top:8px;font-weight:bold"></p>
+</div>
+
 <button class="btn btn-roxo" onclick="criacaoSortear()">🎲 SORTEAR TIMES AGORA</button>
 <button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="criacaoLimpar()">🗑️ Limpar Lista</button>
 </div>
@@ -190,6 +225,7 @@ td:first-child{text-align:left;font-weight:bold}
 <button class="btn btn-verde" onclick="criacaoEnviarParaTimes()">✅ ENVIAR PARA ABA TIMES</button>
 </div>
 </div>
+
 <div id="proximos" class="secao">
 <div class="card">
 <h2>➕ Adicionar Próximo Jogo</h2>
@@ -487,10 +523,7 @@ let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="
 
 divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist;
 
-// ===== SELEÇÃO DO ANO - NOVA REGRA SEM REPETIR =====
 let melhorTime = anualOrd[0];
-
-// 1 - Melhor Goleiro
 let goleiros = criacaoJogadores.filter(j=>j.peso===1);
 let melhorGoleiro = null;
 if(goleiros.length>0){
@@ -520,7 +553,6 @@ if(artilheiro) selecionadosKeys.add(artilheiro.nome.trim().toLowerCase());
 if(viceArtilheiro) selecionadosKeys.add(viceArtilheiro.nome.trim().toLowerCase());
 if(liderAssist) selecionadosKeys.add(liderAssist.nome.trim().toLowerCase());
 
-// 2 mais que ganharam - sem repetir
 let rankingVitorias = Object.entries(playerWins)
   .map(([key,wins])=>{
     let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===key)?.nome || 
@@ -544,49 +576,41 @@ if(melhorTime){
 selecaoHtml = `<div class="card selecao-card">
 <h2 style="color:#b77900">⭐ Seleção do Ano - ${new Date().getFullYear()}</h2>
 <p style="font-size:12px;color:#666;margin-bottom:10px">6 jogadores - sem repetir - atualizado até agora</p>
-
 <div class="selecao-item" style="background:#fff8e1;border-left-color:${melhorTime.hex}">
 <span class="selecao-pos">🏆 Melhor Time</span>
 <span><span class="bolinha" style="background:${melhorTime.hex}"></span><strong>${melhorTime.nome}</strong> - ${melhorTime.V} vitórias, ${melhorTime.P} pontos</span>
 </div>
-
 ${melhorGoleiro ? `<div class="selecao-item" style="border-left-color:#1e88e5">
 <span class="selecao-pos">🧤 Goleiro que mais ganhou</span>
 <span><strong>${melhorGoleiro.nome}</strong> - ${melhorGoleiro.vitorias} vitórias</span>
 </div>` : ''}
-
 ${artilheiro ? `<div class="selecao-item" style="border-left-color:#c62828">
 <span class="selecao-pos">⚽ Artilheiro</span>
 <span><strong>${artilheiro.nome}</strong> - ${artilheiro.gols} gols, ${artilheiro.ast} assist</span>
 </div>` : ''}
-
 ${viceArtilheiro ? `<div class="selecao-item" style="border-left-color:#ff9800">
 <span class="selecao-pos">🥈 Vice-Artilheiro</span>
 <span><strong>${viceArtilheiro.nome}</strong> - ${viceArtilheiro.gols} gols, ${viceArtilheiro.ast} assist</span>
 </div>` : ''}
-
 ${liderAssist ? `<div class="selecao-item" style="border-left-color:#1e88e5">
 <span class="selecao-pos">🎯 Líder Assistência</span>
 <span><strong>${liderAssist.nome}</strong> - ${liderAssist.ast} assist, ${liderAssist.gols} gols</span>
 </div>` : ''}
-
 ${doisMaisVitoriosos[0] ? `<div class="selecao-item" style="border-left-color:#2e7d32">
 <span class="selecao-pos">🏅 Mais venceu (1º)</span>
 <span><strong>${doisMaisVitoriosos[0].nome}</strong> - ${doisMaisVitoriosos[0].vitorias} vitórias, ${doisMaisVitoriosos[0].gols} gols</span>
 </div>` : ''}
-
 ${doisMaisVitoriosos[1] ? `<div class="selecao-item" style="border-left-color:#2e7d32">
 <span class="selecao-pos">🏅 Mais venceu (2º)</span>
 <span><strong>${doisMaisVitoriosos[1].nome}</strong> - ${doisMaisVitoriosos[1].vitorias} vitórias, ${doisMaisVitoriosos[1].gols} gols</span>
 </div>` : ''}
-
 </div>`;
 }
-
 divSelecao.innerHTML=selecaoHtml;
 }
 
 function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum dia salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
+
 window.criacaoAddJogador=function(){
 let nome=document.getElementById('criacaoNome').value.trim();
 let peso=parseInt(document.getElementById('criacaoPeso').value);
@@ -594,6 +618,58 @@ if(!nome) return showAlert('Digite o nome do jogador');
 push(ref(db,'criacaoJogadores'),{nome,peso,criado:Date.now()});
 document.getElementById('criacaoNome').value='';
 }
+
+// ===== NOVA FUNÇÃO LOTE =====
+function parseNomes(texto){
+  if(!texto) return [];
+  // separa por quebra de linha, vírgula, ponto e vírgula
+  return texto.split(/[\n,;]+/)
+    .map(s=>s.trim())
+    .filter(s=>s.length>0)
+    .map(s=>s.replace(/\s+/g,' ').trim())
+    .filter((v,i,arr)=>v.length>=2);
+}
+
+window.criacaoAddLote=function(){
+  let txtGoleiros=document.getElementById('loteGoleiros').value;
+  let txtLinha=document.getElementById('loteLinha').value;
+  let nomesGoleiros=parseNomes(txtGoleiros);
+  let nomesLinha=parseNomes(txtLinha);
+  if(nomesGoleiros.length===0 && nomesLinha.length===0){
+    return showAlert('Cole pelo menos um nome na caixinha de goleiros ou de jogadores de linha');
+  }
+  let existentes = new Set(criacaoJogadores.map(j=>j.nome.trim().toLowerCase()));
+  let addG=0, addL=0, dup=0;
+
+  nomesGoleiros.forEach(nome=>{
+    let key=nome.toLowerCase();
+    if(existentes.has(key)){dup++; return;}
+    push(ref(db,'criacaoJogadores'),{nome,peso:1,criado:Date.now()+Math.random()});
+    existentes.add(key);
+    addG++;
+  });
+  nomesLinha.forEach(nome=>{
+    let key=nome.toLowerCase();
+    if(existentes.has(key)){dup++; return;}
+    push(ref(db,'criacaoJogadores'),{nome,peso:2,criado:Date.now()+Math.random()});
+    existentes.add(key);
+    addL++;
+  });
+
+  document.getElementById('loteInfo').innerText=`✅ Adicionados: ${addG} goleiros + ${addL} jogadores de linha = ${addG+addL} total. ${dup?`(${dup} duplicados ignorados)`:''}`;
+  // limpa só se adicionou
+  if(addG+addL>0){
+    document.getElementById('loteGoleiros').value='';
+    document.getElementById('loteLinha').value='';
+    showAlert(`Lista adicionada! ${addG} goleiros (peso 1, cada um em um time) + ${addL} jogadores (peso 2, divisão igual) = ${addG+addL} jogadores. Agora é só clicar em SORTEAR!`,'Lote Adicionado ✅');
+  }
+}
+window.limparLote=function(){
+  document.getElementById('loteGoleiros').value='';
+  document.getElementById('loteLinha').value='';
+  document.getElementById('loteInfo').innerText='';
+}
+
 function renderCriacaoLista(){
 let div=document.getElementById('criacaoListaNomes');
 let total=document.getElementById('criacaoTotal');
@@ -687,7 +763,7 @@ return `<div class="jogador-item" style="background:#e8f5e9"><span>${j.nome}</sp
 }).join(''):''}
 </div>`;
 }).join('');
-let resumo=`<div class="card" style="border:2px solid #6a1b9a"><h2>✅ Sorteio Realizado!</h2><p>${jogadores.length} jogadores divididos em ${teams.length} times de ${numJog} titulares + ${numRes} reservas (total ${porTime} por time)</p><p style="font-size:12px;color:#666;margin-top:5px">Regras: 1 (Goleiro) nunca 2 no mesmo time, 3 bons em times diferentes</p></div>`;
+let resumo=`<div class="card" style="border:2px solid #6a1b9a"><h2>✅ Sorteio Realizado!</h2><p>${jogadores.length} jogadores divididos em ${teams.length} times de ${numJog} titulares + ${numRes} reservas (total ${porTime} por time)</p><p style="font-size:12px;color:#666;margin-top:5px">Regras: 1 (Goleiro) nunca 2 no mesmo time, 3 bons em times diferentes. Jogadores de peso igual divididos igualmente.</p></div>`;
 document.getElementById('criacaoResultado').innerHTML=resumo+htmlResultado;
 document.getElementById('cardCriacaoSalvar').style.display='block';
 window.scrollTo({top:document.getElementById('criacaoResultado').offsetTop-80,behavior:'smooth'});
