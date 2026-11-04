@@ -10,8 +10,9 @@ html,body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;us
 input, textarea, select, [contenteditable]{-webkit-user-select:text !important;-moz-user-select:text !important;-ms-user-select:text !important;user-select:text !important;-webkit-touch-callout:default !important}
 img{-webkit-user-drag:none;user-drag:none}
 body{background:#0a5c36;font-family:Arial,sans-serif;color:white}
-header{text-align:center;padding:30px 20px 10px}
-header h1{font-size:42px;font-weight:900;text-shadow:2px 4px 0 rgba(0,0,0,.3)}
+header{text-align:center;padding:28px 20px 14px}
+header h1{font-size:42px;font-weight:900;text-shadow:2px 4px 0 rgba(0,0,0,.3);letter-spacing:1px}
+header .frase{font-size:13px;opacity:.95;margin-top:6px;font-style:italic;letter-spacing:.5px}
 nav{background:rgba(0,0,0,.25);display:flex;justify-content:center;gap:8px;padding:12px;position:sticky;top:0;z-index:10;flex-wrap:wrap}
 nav button{background:transparent;border:1px solid #c8ffdf;color:#c8ffdf;padding:7px 14px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px}
 nav button.ativo,nav button:hover{background:white;color:#0a5c36}
@@ -25,6 +26,8 @@ nav button.ativo,nav button:hover{background:white;color:#0a5c36}
 .btn-cinza{background:#eee;color:#333}
 .btn-amarelo{background:#ffcc00;color:#222;width:100%;margin-top:10px;font-weight:900}
 .btn-roxo{background:#6a1b9a;color:white;width:100%;margin-top:10px}
+.btn-edit{background:#1e88e5;color:white;padding:6px 12px;border-radius:8px;font-size:12px}
+.btn-del{background:#c62828;color:white;padding:6px 12px;border-radius:8px;font-size:12px}
 input,select{padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin:4px 0}
 .cores{display:flex;gap:12px;margin:10px 0;flex-wrap:wrap}
 .cor-opcao{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid transparent;position:relative}
@@ -74,7 +77,7 @@ td:first-child{text-align:left;font-weight:bold}
 </style>
 </head>
 <body>
-<header><h1>BABA DO CANDEIAS</h1></header>
+<header><h1>BABA DO CANDEIAS</h1><div class="frase">o baba mais raiz de vitória da conquista</div></header>
 <nav>
 <button class="ativo" onclick="mostrar('inicio',this)">Início</button>
 <button onclick="mostrar('times',this)">Times</button>
@@ -85,7 +88,7 @@ td:first-child{text-align:left;font-weight:bold}
 <button onclick="mostrar('historico',this)">Histórico</button>
 </nav>
 <div id="inicio" class="secao ativa">
-<div class="card"><h2>🎉 Bem-vindo ao Baba do Candeias!</h2><p>Bem-vindo ao Baba! Aqui você organiza os times, vê quem fez gol e salva tudo aqui.</p></div>
+<div class="card"><h2>🎉 Bem-vindo ao Baba do Candeias!</h2><p>Bem-vindo ao Baba! Aqui você organiza os times, vê quem fez gol e salva todo domingo.</p></div>
 <div class="card" style="border:2px solid #0a5c36"><h2>⭐ Destaque</h2><h3 id="destaqueTitulo" style="color:#0a5c36">⏰ Próximo Baba - Domingo às 8 da manhã</h3><div id="inicioInfo" style="margin-top:12px;line-height:1.8;font-size:15px"></div></div>
 </div>
 <div id="times" class="secao">
@@ -183,7 +186,19 @@ td:first-child{text-align:left;font-weight:bold}
 <button class="btn btn-verde" onclick="criacaoEnviarParaTimes()">✅ ENVIAR PARA ABA TIMES</button>
 </div>
 </div>
-<div id="proximos" class="secao"><div class="card"><h2>➕ Adicionar Próximo Jogo</h2><input id="proxData" type="date"><input id="proxHora" type="time" value="08:00"><input id="proxLocal" placeholder="Local"><input id="proxObs" placeholder="Obs ex: levar água"><button class="btn btn-verde" onclick="salvarProximoJogo()">Salvar Próximo Jogo na Nuvem</button></div><div id="listaProximos"></div></div>
+<div id="proximos" class="secao">
+<div class="card">
+<h2>➕ Adicionar Próximo Jogo</h2>
+<input id="proxData" type="date">
+<input id="proxHora" type="time" value="08:00">
+<input id="proxLocal" placeholder="Local">
+<input id="proxObs" placeholder="Obs ex: levar água">
+<button class="btn btn-verde" id="btnProxSalvar" onclick="salvarProximoJogo()">Salvar Próximo Jogo na Nuvem</button>
+<button class="btn btn-cinza" id="btnProxCancelar" style="display:none;margin-top:8px" onclick="cancelarEdicaoProximo()">Cancelar Edição</button>
+<p id="editProxTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px;text-align:center"></p>
+</div>
+<div id="listaProximos"></div>
+</div>
 <div id="ranking" class="secao">
 <div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual - NUVEM</h2></div>
 <div id="rankingAnual"></div>
@@ -196,9 +211,10 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="historico" class="secao"><div class="card"><h2>🕓 Histórico Geral - Nuvem</h2></div><div id="historicoDetalhe"></div></div>
 <div id="modalFoto" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;justify-content:center;align-items:center;padding:20px" onclick="fecharModal()"><span style="position:absolute;top:15px;right:25px;color:white;font-size:45px;cursor:pointer;font-weight:bold">×</span><img id="imgModal" style="max-width:95%;max-height:90%;border-radius:12px"><p id="dataModal" style="position:absolute;bottom:25px;color:white;text-align:center;width:100%;font-size:14px"></p></div>
 <div id="customModal"><div class="customModalBox"><div class="customModalHeader">⚽ <span id="customModalTitle">Baba do Candeias</span></div><div class="customModalBody" id="customModalBody"></div><div class="customModalFooter" id="customModalFooter"></div></div></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, set, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const firebaseConfig = {
   apiKey: "AIzaSyBOAcvw9TvgKhNzi_qmsioXcLheC4Erww",
   authDomain: "baba-do-candeias.firebaseapp.com",
@@ -220,6 +236,7 @@ let fotosData={};
 let editandoData=null;
 let criacaoJogadores=[];
 let criacaoTimesSorteados=[];
+let editandoProxKey=null;
 const coresMap={vermelho:{nome:'VERMELHO',hex:'red'},azul:{nome:'AZUL',hex:'#1e88e5'},preto:{nome:'PRETO',hex:'#111'},amarelo:{nome:'AMARELO',hex:'#ffcc00'},verde:{nome:'VERDE',hex:'#2e7d32'}};
 function showAlert(msg,title='Baba do Candeias'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalOk" onclick="closeModal()">OK</button>';document.getElementById('customModal').classList.add('ativo');}
 function showConfirm(msg,onConfirm,title='Confirmação'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalCancel" onclick="closeModal()">Cancelar</button><button class="btnModalConfirm" id="btnConfirmOk">Confirmar</button>';document.getElementById('customModal').classList.add('ativo');document.getElementById('btnConfirmOk').onclick=function(){closeModal();onConfirm();};}
@@ -279,17 +296,66 @@ return `<div><div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span
 div.innerHTML=`<div class="card" style="border:2px solid #0a5c36"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>${h.times.length} times | ${h.confrontos?.length||0} jogos</p><button class="btn btn-amarelo" onclick="editarDia('${dataStr}')">✏️ EDITAR TODAS AS INFORMAÇÕES DESSE DIA</button></div>`+confHtml+tabelaHtml+timesHtml;
 }
 window.editarDia=function(dataStr){showConfirm('Editar o dia '+dataStr.split('-').reverse().join('/')+'?',function(){let h=historico[dataStr];times=JSON.parse(JSON.stringify(h.times));confrontos=JSON.parse(JSON.stringify(h.confrontos||[]));dataSelecionada=dataStr;editandoData=dataStr;let info=getDiaSemanaInfo(dataStr);document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataStr.split('-').reverse().join('/');document.getElementById('btnSalvar').innerText=`SALVAR EDIÇÃO DO DIA ${dataStr.split('-').reverse().join('/')}`;document.getElementById('editandoTxt').style.display='block';document.getElementById('editandoTxt').innerText=`✏️ MODO EDIÇÃO - Editando ${dataStr.split('-').reverse().join('/')}`;document.getElementById('btnCancelarEdicao').style.display='block';document.getElementById('cardSalvar').style.display='block';renderTimes();atualizarSelects();renderConfrontos();renderTabela();window.scrollTo({top:0,behavior:'smooth'});},'Editar dia?');}
-window.salvarProximoJogo=function(){
-let data=document.getElementById('proxData').value;let hora=document.getElementById('proxHora').value;let local=document.getElementById('proxLocal').value.trim();let obs=document.getElementById('proxObs').value.trim();
-if(!data||!hora||!local) return showAlert('Preencha data, horário e local');
-push(ref(db,'proximos'),{data,hora,local,obs,criado:Date.now()});
-document.getElementById('proxData').value='';document.getElementById('proxLocal').value='';document.getElementById('proxObs').value='';
-showAlert('Próximo jogo salvo na nuvem!','Salvo ✅');
-}
-function renderProximos(){let div=document.getElementById('listaProximos');if(proximosJogos.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo.</p></div>';return;}div.innerHTML=proximosJogos.map(j=>`<div class="card" style="border-left:6px solid #0a5c36"><h2>📅 ${j.data.split('-').reverse().join('/')} às ${j.hora}</h2><p>📍 ${j.local}</p><p>${j.obs||''}</p><button class="btn btn-cinza" style="margin-top:8px" onclick="removerProximo('${j._key}')">Apagar</button></div>`).join('');}
-window.removerProximo=function(key){showConfirm('Apagar próximo jogo?',function(){remove(ref(db,'proximos/'+key));});}
 
-// ===== NOVA FUNÇÃO INÍCIO SEM DUPLICAR =====
+// ===== NOVO: PRÓXIMOS JOGOS COM EDITAR =====
+window.salvarProximoJogo=function(){
+let data=document.getElementById('proxData').value;
+let hora=document.getElementById('proxHora').value;
+let local=document.getElementById('proxLocal').value.trim();
+let obs=document.getElementById('proxObs').value.trim();
+if(!data||!hora||!local) return showAlert('Preencha data, horário e local');
+if(editandoProxKey){
+ update(ref(db,'proximos/'+editandoProxKey),{data,hora,local,obs});
+ showAlert('Atualizado na nuvem!','Atualizado ✅');
+ cancelarEdicaoProximo();
+} else {
+ push(ref(db,'proximos'),{data,hora,local,obs,criado:Date.now()});
+ document.getElementById('proxData').value='';
+ document.getElementById('proxLocal').value='';
+ document.getElementById('proxObs').value='';
+ showAlert('Próximo jogo salvo na nuvem!','Salvo ✅');
+}
+}
+function renderProximos(){
+let div=document.getElementById('listaProximos');
+if(proximosJogos.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo.</p></div>';return;}
+div.innerHTML=proximosJogos.map(j=>`
+<div class="card" style="border-left:6px solid #0a5c36">
+<h2>📅 ${j.data.split('-').reverse().join('/')} às ${j.hora}</h2>
+<p>📍 ${j.local}</p>
+<p>${j.obs?`📝 ${j.obs}`:''}</p>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn-edit" onclick="editarProximo('${j._key}')">✏️ Editar</button>
+<button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button>
+</div>
+</div>`).join('');
+}
+window.editarProximo=function(key){
+ let j=proximosJogos.find(x=>x._key===key);
+ if(!j) return;
+ document.getElementById('proxData').value=j.data;
+ document.getElementById('proxHora').value=j.hora;
+ document.getElementById('proxLocal').value=j.local;
+ document.getElementById('proxObs').value=j.obs||'';
+ editandoProxKey=key;
+ document.getElementById('btnProxSalvar').innerText='💾 SALVAR EDIÇÃO NA NUVEM';
+ document.getElementById('btnProxCancelar').style.display='block';
+ document.getElementById('editProxTxt').style.display='block';
+ document.getElementById('editProxTxt').innerText='✏️ Editando jogo de '+j.data.split('-').reverse().join('/')+' - altere e clique em Salvar Edição';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+window.cancelarEdicaoProximo=function(){
+ editandoProxKey=null;
+ document.getElementById('proxData').value='';
+ document.getElementById('proxHora').value='08:00';
+ document.getElementById('proxLocal').value='';
+ document.getElementById('proxObs').value='';
+ document.getElementById('btnProxSalvar').innerText='Salvar Próximo Jogo na Nuvem';
+ document.getElementById('btnProxCancelar').style.display='none';
+ document.getElementById('editProxTxt').style.display='none';
+}
+window.removerProximo=function(key){showConfirm('Apagar próximo jogo?',function(){remove(ref(db,'proximos/'+key)); if(editandoProxKey===key) cancelarEdicaoProximo();});}
+
 function renderInicio(){
   let info=document.getElementById('inicioInfo');
   let titulo=document.getElementById('destaqueTitulo');
