@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baba do Candeias</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a5c36;font-family:Arial,sans-serif;color:white}
+header{text-align:center;padding:30px 20px 10px}
+header h1{font-size:42px;font-weight:900;text-shadow:2px 4px 0 rgba(0,0,0,.3)}
+nav{background:rgba(0,0,0,.25);display:flex;justify-content:center;gap:8px;padding:12px;position:sticky;top:0;z-index:10;flex-wrap:wrap}
+nav button{background:transparent;border:1px solid #c8ffdf;color:#c8ffdf;padding:7px 14px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px}
+nav button.ativo,nav button:hover{background:white;color:#0a5c36}
+.secao{display:none;max-width:1050px;margin:20px auto;padding:0 15px;animation:subir .35s ease}
+.secao.ativa{display:block}
+@keyframes subir{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{background:white;color:#222;padding:20px;border-radius:16px;margin-bottom:15px;box-shadow:0 10px 20px rgba(0,0,0,.25)}
+.card h2{color:#0a5c36;margin-bottom:10px}
+.btn{padding:10px 18px;border:none;border-radius:10px;font-weight:bold;cursor:pointer}
+.btn-verde{background:#0a5c36;color:white;width:100%;margin-top:10px}
+.btn-cinza{background:#eee;color:#333}
+.btn-amarelo{background:#ffcc00;color:#222;width:100%;margin-top:10px;font-weight:900}
+.btn-roxo{background:#6a1b9a;color:white;width:100%;margin-top:10px}
+input,select{padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin:4px 0}
+.cores{display:flex;gap:12px;margin:10px 0;flex-wrap:wrap}
+.cor-opcao{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid transparent;position:relative}
+.cor-opcao.sel{border-color:black;transform:scale(1.15)}
+.cor-opcao.sel::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-weight:900;text-shadow:0 1px 2px black}
+.row{display:flex;gap:8px}
+.mini-aba{display:none;margin-top:12px;border-top:1px solid #ddd;padding-top:10px}
+.mini-aba.aberta{display:block}
+.jogador-item{background:#f5f5f5;padding:10px;border-radius:10px;margin:5px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.jogador-item:hover{background:#e8f5e9}
+.detalhe{background:#0a5c36;color:white;padding:8px 12px;border-radius:8px;margin-top:5px;font-size:13px;display:none}
+.detalhe.aberto{display:block}
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dia{padding:10px 5px;text-align:center;border-radius:8px;background:#f5f5f5;cursor:pointer;font-size:13px;color:#222}
+.cal-dia.domingo{background:#ffebee;color:#c62828;font-weight:bold}
+.cal-dia.selecionado{background:#0a5c36 !important;color:white !important}
+.cal-dia.tem-jogo{border:2px solid #0a5c36;position:relative}
+.cal-dia.tem-jogo::after{content:'⚽';position:absolute;top:-6px;right:-4px;font-size:10px}
+.cal-dia.tem-foto{border:2px solid #1e88e5;position:relative}
+.cal-dia.tem-foto::after{content:'📸';position:absolute;top:-6px;right:-4px;font-size:10px}
+.cal-nome-dia{font-weight:bold;text-align:center;padding:5px;font-size:12px;color:#555}
+.bolinha{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+th{background:#0a5c36;color:white;padding:8px 4px}
+td{padding:8px 4px;text-align:center;border-bottom:1px solid #eee}
+td:first-child{text-align:left;font-weight:bold}
+.conf-item{background:#f9f9f9;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
+.foto-item{border-radius:12px;overflow:hidden;background:#f5f5f5;position:relative;cursor:pointer}
+.foto-item img{width:100%;height:220px;object-fit:cover;display:block}
+#customModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:10000;align-items:center;justify-content:center;padding:20px}
+#customModal.ativo{display:flex}
+.customModalBox{background:white;border-radius:20px;padding:0;max-width:400px;width:100%;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.5);border:3px solid #0a5c36;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.customModalHeader{background:#0a5c36;color:white;padding:16px 20px;font-weight:900;font-size:16px}
+.customModalBody{padding:20px;font-size:15px;color:#222;line-height:1.5}
+.customModalFooter{padding:12px 20px;display:flex;gap:10px;justify-content:flex-end;background:#f5f5f5}
+.customModalFooter button{border:0;padding:11px 18px;border-radius:10px;font-weight:bold;cursor:pointer;font-size:14px}
+.btnModalOk{background:#0a5c36;color:white}
+.btnModalCancel{background:#eee;color:#333}
+.btnModalConfirm{background:#ffcc00;color:#222;font-weight:900}
+.peso-badge{padding:2px 7px;border-radius:10px;font-size:11px;font-weight:bold;color:white;margin-left:5px}
+.peso-1{background:#1e88e5}
+.peso-2{background:#ff9800}
+.peso-3{background:#c62828}
+.team-criado{border-left:6px solid #0a5c36}
+</style>
+</head>
+<body>
+<header><h1>BABA DO CANDEIAS</h1></header>
+<nav>
+<button class="ativo" onclick="mostrar('inicio',this)">Início</button>
+<button onclick="mostrar('times',this)">Times</button>
+<button onclick="mostrar('criacao',this)">Criação de Times</button>
+<button onclick="mostrar('proximos',this)">Próximos Jogos</button>
+<button onclick="mostrar('ranking',this)">Ranking</button>
+<button onclick="mostrar('fotos',this)">Fotos</button>
+<button onclick="mostrar('historico',this)">Histórico</button>
+</nav>
+<div id="inicio" class="secao ativa">
+<div class="card"><h2>🎉 Bem-vindo ao Baba do Candeias!</h2><p>Bem-vindo ao Baba! Aqui você organiza os times, vê quem fez gol e salva todo domingo.</p></div>
+<div class="card" style="border:2px solid #0a5c36"><h2>⭐ Destaque</h2><h3 id="destaqueTitulo" style="color:#0a5c36">⏰ Próximo Baba - Domingo às 8 da manhã</h3><div id="inicioInfo" style="margin-top:8px;line-height:1.6">Campo do Candeias</div><p id="destaqueTexto" style="margin-top:8px;font-size:13px;color:#666"></p></div>
+<div id="listaProximosInicio"></div>
+</div>
+<div id="times" class="secao">
+<div class="card">
+<h2>Adicionar Times - Nome = Cor</h2>
+<div class="cores">
+<div class="cor-opcao" style="background:red" onclick="selCor('vermelho','red',this)"></div>
+<div class="cor-opcao" style="background:#1e88e5" onclick="selCor('azul','#1e88e5',this)"></div>
+<div class="cor-opcao" style="background:#111" onclick="selCor('preto','#111',this)"></div>
+<div class="cor-opcao" style="background:#ffcc00" onclick="selCor('amarelo','#ffcc00',this)"></div>
+<div class="cor-opcao" style="background:#2e7d32" onclick="selCor('verde','#2e7d32',this)"></div>
+</div>
+<p id="corTxt" style="font-weight:bold;margin-top:5px"></p>
+<div id="areaJogador" style="display:none;margin-top:15px;background:#f9f9f9;padding:12px;border-radius:10px">
+<p style="font-weight:bold;color:#0a5c36">Adicionar Jogador no <span id="timeAtualNome"></span>:</p>
+<div class="row"><input id="jogNome" placeholder="Nome"><input id="jogGols" type="number" placeholder="Gols" style="max-width:75px"><input id="jogAst" type="number" placeholder="Assist" style="max-width:75px"></div>
+<button class="btn btn-verde" onclick="addJogador()">+ Adicionar Jogador</button>
+<div id="listaTemp" style="margin-top:8px"></div>
+<button class="btn" style="background:#222;color:white;width:100%;margin-top:10px" onclick="finalizarTime()">Finalizar Este Time</button>
+</div>
+</div>
+<div id="listaTimes"></div>
+<div class="card" id="cardConfrontos" style="display:none">
+<h2>⚔️ Confrontos do Dia</h2>
+<div class="row" style="margin-top:10px"><select id="selTime1"></select><input id="placar1" type="number" placeholder="Gols" style="max-width:70px"><span style="align-self:center;font-weight:bold"> X </span><input id="placar2" type="number" placeholder="Gols" style="max-width:70px"><select id="selTime2"></select></div>
+<button class="btn btn-verde" onclick="addConfronto()">+ Adicionar Confronto</button>
+<div id="listaConfrontos" style="margin-top:10px"></div>
+</div>
+<div class="card" id="cardTabela" style="display:none"><h2>🏆 Tabela - Estilo Brasileirão</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody id="tbodyTabela"></tbody></table></div></div>
+<div class="card" id="cardSalvar" style="display:none">
+<h2 id="tituloSalvar">💾 Salvar no Domingo</h2>
+<p><span id="labelDiaSelecionado">Dia selecionado</span>: <strong id="dataSelTxt">Selecione no calendário abaixo</strong></p>
+<p id="editandoTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px"></p>
+<button class="btn btn-verde" id="btnSalvar" onclick="salvarNoCalendario()">SALVAR TUDO NESSE DIA</button>
+<button class="btn btn-cinza" id="btnCancelarEdicao" style="display:none;margin-top:8px" onclick="cancelarEdicao()">Cancelar Edição</button>
+</div>
+<div class="card">
+<div class="cal-header"><button class="btn btn-cinza" onclick="mudarMes(-1,'times')">◀</button><h2 id="mesAnoTxt" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'times')">▶</button></div>
+<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'times')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'times')">2027</button></div>
+<div class="cal-grid" id="calDiasSemana"></div><div class="cal-grid" id="calGrid"></div>
+</div>
+<div id="detalheDia"></div>
+</div>
+
+<div id="criacao" class="secao">
+<div class="card" style="border:2px solid #6a1b9a">
+<h2>🎲 Criação de Times - Sorteio Equilibrado</h2>
+<p style="font-size:13px;color:#555;margin-bottom:15px">Monte times equilibrados! Peso 3 (bons) nunca ficam juntos. Goleiros <strong>1 (Goleiro)</strong> nunca ficam no mesmo time.</p>
+
+<h3 style="color:#0a5c36;margin-top:10px">1️⃣ Selecione a Cor</h3>
+<select id="criacaoCor">
+<option value="aleatorio">🎲 Aleatório (cores diferentes)</option>
+<option value="vermelho">🔴 Vermelho</option>
+<option value="azul">🔵 Azul</option>
+<option value="preto">⚫ Preto</option>
+<option value="amarelo">🟡 Amarelo</option>
+<option value="verde">🟢 Verde</option>
+</select>
+
+<h3 style="color:#0a5c36;margin-top:15px">2️⃣ Número de Jogadores por Time (titulares)</h3>
+<select id="criacaoNumJogadores">
+<option value="4">4 jogadores</option>
+<option value="5" selected>5 jogadores</option>
+<option value="6">6 jogadores</option>
+<option value="7">7 jogadores</option>
+</select>
+
+<h3 style="color:#0a5c36;margin-top:15px">3️⃣ Número de Reservas por Time</h3>
+<select id="criacaoNumReservas">
+<option value="0">0 reservas</option>
+<option value="1">1 reserva</option>
+<option value="2" selected>2 reservas</option>
+<option value="3">3 reservas</option>
+<option value="4">4 reservas</option>
+<option value="5">5 reservas</option>
+</select>
+
+<div style="background:#f9f9f9;padding:12px;border-radius:10px;margin-top:20px">
+<h3 style="color:#0a5c36">4️⃣ Adicionar Nomes + Peso</h3>
+<p style="font-size:12px;color:#666;margin-bottom:8px">Selecione o peso: <strong>1 (Goleiro)</strong> = Goleiro 🧤 | 2 = Médio | 3 = Bom ⭐</p>
+<div class="row">
+<input id="criacaoNome" placeholder="Nome do jogador" style="flex:2">
+<select id="criacaoPeso" style="flex:1;max-width:150px">
+<option value="1">1 (Goleiro)</option>
+<option value="2" selected>2</option>
+<option value="3">3</option>
+</select>
+<button class="btn btn-verde" style="max-width:100px;margin-top:0" onclick="criacaoAddJogador()">+ Adicionar</button>
+</div>
+<div id="criacaoListaNomes" style="margin-top:10px"></div>
+<p id="criacaoTotal" style="font-weight:bold;margin-top:10px;color:#0a5c36"></p>
+</div>
+
+<button class="btn btn-roxo" onclick="criacaoSortear()">🎲 SORTEAR TIMES AGORA</button>
+<button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="criacaoLimpar()">🗑️ Limpar Lista</button>
+</div>
+
+<div id="criacaoResultado"></div>
+
+<div class="card" id="cardCriacaoSalvar" style="display:none;border:2px solid #0a5c36">
+<h2>💾 Quer salvar esses times sorteados?</h2>
+<p style="font-size:13px">Os times sorteados vão aparecer na aba Times. Depois é só salvar no calendário.</p>
+<button class="btn btn-verde" onclick="criacaoEnviarParaTimes()">✅ ENVIAR PARA ABA TIMES</button>
+</div>
+</div>
+
+<div id="proximos" class="secao"><div class="card"><h2>➕ Adicionar Próximo Jogo</h2><input id="proxData" type="date"><input id="proxHora" type="time" value="08:00"><input id="proxLocal" placeholder="Local"><input id="proxObs" placeholder="Obs"><button class="btn btn-verde" onclick="salvarProximoJogo()">Salvar Próximo Jogo</button></div><div id="listaProximos"></div></div>
+<div id="ranking" class="secao">
+<div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual</h2><p style="font-size:12px;color:#666">Veja abaixo times, artilheiros e assistências do ano todo.</p></div>
+<div id="rankingAnual"></div>
+</div>
+<div id="fotos" class="secao">
+<div class="card"><h2>📸 Fotos do Baba</h2><div class="cal-header" style="margin-top:15px"><button class="btn btn-cinza" onclick="mudarMes(-1,'fotos')">◀</button><h2 id="mesAnoTxtFotos" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'fotos')">▶</button></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'fotos')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'fotos')">2027</button></div><div class="cal-grid" id="calDiasSemanaFotos"></div><div class="cal-grid" id="calGridFotos"></div></div>
+<div class="card" id="cardAddFoto" style="display:none"><h2>➕ Adicionar Foto no dia <span id="dataFotoTxt"></span></h2><input type="file" id="inputFoto" accept="image/*"><button class="btn btn-verde" onclick="adicionarFoto()">Adicionar Foto</button></div>
+<div id="galeriaFotos"></div>
+</div>
+<div id="historico" class="secao"><div class="card"><h2>🕓 Histórico Geral</h2></div><div id="historicoDetalhe"></div></div>
+<div id="modalFoto" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;justify-content:center;align-items:center;padding:20px" onclick="fecharModal()"><span style="position:absolute;top:15px;right:25px;color:white;font-size:45px;cursor:pointer;font-weight:bold">×</span><img id="imgModal" style="max-width:95%;max-height:90%;border-radius:12px"><p id="dataModal" style="position:absolute;bottom:25px;color:white;text-align:center;width:100%;font-size:14px"></p></div>
+<div id="customModal"><div class="customModalBox"><div class="customModalHeader">⚽ <span id="customModalTitle">Baba do Candeias</span></div><div class="customModalBody" id="customModalBody"></div><div class="customModalFooter" id="customModalFooter"></div></div></div>
+<script>
+let times=[], confrontos=[], corTemp='', corHex='', jogadoresTemp=[], dataSelecionada=null, dataSelecionadaFotos=null, mesAtual=10, mesAtualFotos=10, anoAtual=2026, anoAtualFotos=2026;
+let historico=JSON.parse(localStorage.getItem('baba_historico')||'{}');
+let proximosJogos=JSON.parse(localStorage.getItem('baba_proximos')||'[]');
+let fotosData=JSON.parse(localStorage.getItem('baba_fotos')||'{}');
+let editandoData=null;
+let criacaoJogadores=JSON.parse(localStorage.getItem('baba_criacao')||'[]');
+let criacaoTimesSorteados=[];
+const coresMap={vermelho:{nome:'VERMELHO',hex:'red'},azul:{nome:'AZUL',hex:'#1e88e5'},preto:{nome:'PRETO',hex:'#111'},amarelo:{nome:'AMARELO',hex:'#ffcc00'},verde:{nome:'VERDE',hex:'#2e7d32'}};
+function showAlert(msg,title='Baba do Candeias'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalOk" onclick="closeModal()">OK</button>';document.getElementById('customModal').classList.add('ativo');}
+function showConfirm(msg,onConfirm,title='Confirmação'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalCancel" onclick="closeModal()">Cancelar</button><button class="btnModalConfirm" id="btnConfirmOk">Confirmar</button>';document.getElementById('customModal').classList.add('ativo');document.getElementById('btnConfirmOk').onclick=function(){closeModal();onConfirm();};}
+function closeModal(){document.getElementById('customModal').classList.remove('ativo');}
+document.getElementById('customModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+function mostrar(id,btn){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');if(id==='times')renderCalendario('times');if(id==='criacao')renderCriacaoLista();if(id==='fotos'){renderCalendario('fotos');renderGaleriaFotos();}if(id==='proximos')renderProximos();if(id==='ranking')renderRankings();if(id==='historico')renderHistoricoGeral();if(id==='inicio')renderInicio();}
+function selCor(nome,hex,el){corTemp=nome;corHex=hex;document.querySelectorAll('.cor-opcao').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');document.getElementById('corTxt').innerText='TIME '+nome.toUpperCase();document.getElementById('areaJogador').style.display='block';document.getElementById('timeAtualNome').innerText='TIME '+nome.toUpperCase();jogadoresTemp=[];renderTemp();}
+function addJogador(){let n=document.getElementById('jogNome').value.trim();let g=parseInt(document.getElementById('jogGols').value)||0;let a=parseInt(document.getElementById('jogAst').value)||0;if(!n)return showAlert('Digite o nome do jogador');jogadoresTemp.push({nome:n,gols:g,ast:a,id:Date.now()+Math.random()});document.getElementById('jogNome').value='';document.getElementById('jogGols').value='';document.getElementById('jogAst').value='';renderTemp();}
+function renderTemp(){document.getElementById('listaTemp').innerHTML=jogadoresTemp.map(j=>`<span style="background:#0a5c36;color:white;padding:3px 8px;border-radius:12px;margin:2px;display:inline-block;font-size:12px">${j.nome} ${j.gols}G/${j.ast}A</span>`).join('');}
+function finalizarTime(){if(jogadoresTemp.length===0)return showAlert('Adicione pelo menos um jogador');if(times.find(t=>t.cor===corTemp))return showAlert('TIME '+corTemp.toUpperCase()+' já existe');times.push({id:Date.now(),nome:'TIME '+corTemp.toUpperCase(),cor:corTemp,hex:corHex,jogadores:[...jogadoresTemp]});jogadoresTemp=[];corTemp='';corHex='';document.getElementById('areaJogador').style.display='none';document.getElementById('corTxt').innerText='';document.querySelectorAll('.cor-opcao').forEach(c=>c.classList.remove('sel'));document.getElementById('listaTemp').innerHTML='';renderTimes();atualizarSelects();}
+function toggleDetalhe(id){let el=document.getElementById(id);if(!el) return;el.classList.toggle('aberto');}
+function renderTimes(){
+document.getElementById('listaTimes').innerHTML=times.map(t=>`<div class="card"><div style="display:flex;justify-content:space-between;cursor:pointer" onclick="this.nextElementSibling.classList.toggle('aberta')"><div><span class="bolinha" style="background:${t.hex}"></span><strong>${t.nome}</strong> - ${t.jogadores.length} jogadores</div><div>▼</div></div><div class="mini-aba">${t.jogadores.map(j=>{
+let detId='det_'+t.id+'_'+j.id;
+return `<div>
+<div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span>${j.nome}</span><span style="font-size:11px;color:#666">👁️ ver gols</span></div>
+<div class="detalhe" id="${detId}">⚽ Gols: <strong>${j.gols||0}</strong> | 🎯 Assistências: <strong>${j.ast||0}</strong></div>
+</div>`;
+}).join('')}<button class="btn btn-cinza" style="margin-top:8px" onclick="removerTime(${t.id})">Apagar ${t.nome}</button></div></div>`).join('');
+document.getElementById('cardConfrontos').style.display=times.length>=2?'block':'none';
+document.getElementById('cardTabela').style.display=confrontos.length>0?'block':'none';
+}
+function removerTime(id){showConfirm('Apagar esse time?',function(){times=times.filter(t=>t.id!==id);confrontos=confrontos.filter(c=>c.t1!==id && c.t2!==id);renderTimes();renderConfrontos();renderTabela();});}
+function atualizarSelects(){let opts=times.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');document.getElementById('selTime1').innerHTML=opts;document.getElementById('selTime2').innerHTML=opts;}
+function addConfronto(){let t1=parseInt(document.getElementById('selTime1').value);let t2=parseInt(document.getElementById('selTime2').value);let g1=parseInt(document.getElementById('placar1').value);let g2=parseInt(document.getElementById('placar2').value);if(!t1||!t2)return showAlert('Escolha os 2 times');if(t1===t2)return showAlert('Não pode confronto do mesmo time');if(isNaN(g1)||isNaN(g2))return showAlert('Digite o placar');confrontos.push({id:Date.now(),t1,t2,g1,g2});document.getElementById('placar1').value='';document.getElementById('placar2').value='';renderConfrontos();renderTabela();}
+function renderConfrontos(){document.getElementById('listaConfrontos').innerHTML=confrontos.map(c=>{let t1=times.find(t=>t.id===c.t1);let t2=times.find(t=>t.id===c.t2);return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}</span><button class="btn btn-cinza" style="padding:4px 8px" onclick="removerConfronto(${c.id})">X</button></div>`}).join('');}
+function removerConfronto(id){confrontos=confrontos.filter(c=>c.id!==id);renderConfrontos();renderTabela();}
+function renderTabela(){if(confrontos.length===0){document.getElementById('cardTabela').style.display='none';return;}let stats={};times.forEach(t=>{stats[t.id]={id:t.id,nome:t.nome,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0}});confrontos.forEach(c=>{let s1=stats[c.t1];let s2=stats[c.t2];if(!s1||!s2)return;s1.J++;s2.J++;s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}});let ord=Object.values(stats).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);document.getElementById('tbodyTabela').innerHTML=ord.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('');document.getElementById('cardTabela').style.display='block';}
+function renderCalendario(tipo='times'){if(tipo==='times'){const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];document.getElementById('mesAnoTxt').innerText=`${meses[mesAtual]} ${anoAtual}`;let primeiro=new Date(anoAtual,mesAtual,1).getDay();let dias=new Date(anoAtual,mesAtual+1,0).getDate();let diasSem=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];document.getElementById('calDiasSemana').innerHTML=diasSem.map(d=>`<div class="cal-nome-dia">${d}</div>`).join('');let html='';for(let i=0;i<primeiro;i++)html+=`<div></div>`;for(let d=1;d<=dias;d++){let str=`${anoAtual}-${String(mesAtual+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;let isDom=new Date(anoAtual,mesAtual,d).getDay()===0;let tem=historico[str];let sel=dataSelecionada===str?'selecionado':'';html+=`<div class="cal-dia ${isDom?'domingo':''} ${tem?'tem-jogo':''} ${sel}" onclick="selecionarData('${str}','times')">${d}</div>`;}document.getElementById('calGrid').innerHTML=html;}else{const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];document.getElementById('mesAnoTxtFotos').innerText=`${meses[mesAtualFotos]} ${anoAtualFotos}`;let primeiro=new Date(anoAtualFotos,mesAtualFotos,1).getDay();let dias=new Date(anoAtualFotos,mesAtualFotos+1,0).getDate();let diasSem=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];document.getElementById('calDiasSemanaFotos').innerHTML=diasSem.map(d=>`<div class="cal-nome-dia">${d}</div>`).join('');let html='';for(let i=0;i<primeiro;i++)html+=`<div></div>`;for(let d=1;d<=dias;d++){let str=`${anoAtualFotos}-${String(mesAtualFotos+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;let isDom=new Date(anoAtualFotos,mesAtualFotos,d).getDay()===0;let tem=fotosData[str];let sel=dataSelecionadaFotos===str?'selecionado':'';html+=`<div class="cal-dia ${isDom?'domingo':''} ${tem?'tem-foto':''} ${sel}" onclick="selecionarData('${str}','fotos')">${d}</div>`;}document.getElementById('calGridFotos').innerHTML=html;}}
+function getDiaSemanaInfo(str){let d=new Date(str+'T12:00:00');let dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];let nome=dias[d.getDay()];let prep=(nome==='Domingo'||nome==='Sábado')?'no':'na';return {nome, prep};}
+function selecionarData(str,tipo='times'){if(tipo==='times'){dataSelecionada=str;let info=getDiaSemanaInfo(str);let dataBr=str.split('-').reverse().join('/');document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataBr;document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';document.getElementById('cardSalvar').style.display='block';if(!editandoData)renderCalendario('times');mostrarDetalheNaTimes(str);}else{dataSelecionadaFotos=str;document.getElementById('dataFotoTxt').innerText=str.split('-').reverse().join('/');document.getElementById('cardAddFoto').style.display='block';renderCalendario('fotos');renderGaleriaFotos();}}
+function mudarMes(dir,tipo){if(tipo==='times'){mesAtual+=dir;if(mesAtual>11){mesAtual=0;anoAtual++;}if(mesAtual<0){mesAtual=11;anoAtual--;};renderCalendario('times');}else{mesAtualFotos+=dir;if(mesAtualFotos>11){mesAtualFotos=0;anoAtualFotos++;}if(mesAtualFotos<0){mesAtualFotos=11;anoAtualFotos--;};renderCalendario('fotos');}}
+function irAno(a,tipo){if(tipo==='times'){anoAtual=a;mesAtual=0;renderCalendario('times');}else{anoAtualFotos=a;mesAtualFotos=0;renderCalendario('fotos');}}
+function salvarNoCalendario(){if(!dataSelecionada)return showAlert('Selecione um dia no calendário');if(times.length===0 && !editandoData)return showAlert('Adicione times antes de salvar');if(times.length===0 && editandoData){showConfirm('Apagar o dia '+dataSelecionada.split('-').reverse().join('/')+'?',function(){delete historico[dataSelecionada];localStorage.setItem('baba_historico', JSON.stringify(historico));showAlert('Dia apagado!');editandoData=null;dataSelecionada=null;times=[];confrontos=[];document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';},'Apagar dia?');return;}historico[dataSelecionada]={data:dataSelecionada, times: JSON.parse(JSON.stringify(times)), confrontos: JSON.parse(JSON.stringify(confrontos))};localStorage.setItem('baba_historico', JSON.stringify(historico));showAlert((editandoData?'ATUALIZADO':'Salvo')+' em '+dataSelecionada.split('-').reverse().join('/')+'!','Salvo ✅');editandoData=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';dataSelecionada=null;times=[];confrontos=[];renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';renderRankings();}
+function cancelarEdicao(){editandoData=null;times=[];confrontos=[];dataSelecionada=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';renderTimes();renderConfrontos();renderTabela();}
+function mostrarDetalheNaTimes(dataStr){
+let h=historico[dataStr];let div=document.getElementById('detalheDia');
+if(!h){div.innerHTML=`<div class="card"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>Nenhum baba salvo. Monte os times acima e salve.</p></div>`;return;}
+let stats={};h.times.forEach(t=>{stats[t.id]={id:t.id,nome:t.nome,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0}});
+(h.confrontos||[]).forEach(c=>{let s1=stats[c.t1];let s2=stats[c.t2];if(!s1||!s2)return;s1.J++;s2.J++;s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}});
+let ord=Object.values(stats).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
+let tabelaHtml=`<div class="card"><h2>🏆 Tabela do dia ${dataStr.split('-').reverse().join('/')}</h2><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${ord.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div>`;
+let confHtml=(h.confrontos||[]).length?`<div class="card"><h2>⚔️ Confrontos</h2>${h.confrontos.map(c=>{let t1=h.times.find(t=>t.id===c.t1);let t2=h.times.find(t=>t.id===c.t2);return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}</span></div>`}).join('')}</div>`:'';
+let timesHtml=h.times.map(t=>`<div class="card"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome}</h2>${t.jogadores.map(j=>{
+let detId='hist_'+dataStr+'_'+t.id+'_'+j.id;
+return `<div>
+<div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span>${j.nome}</span><span style="font-size:11px;color:#666">👁️ ${j.gols||0}G/${j.ast||0}A</span></div>
+<div class="detalhe" id="${detId}">⚽ Gols: <strong>${j.gols||0}</strong> | 🎯 Assistências: <strong>${j.ast||0}</strong></div>
+</div>`;
+}).join('')}</div>`).join('');
+div.innerHTML=`<div class="card" style="border:2px solid #0a5c36"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>${h.times.length} times | ${h.confrontos?.length||0} jogos</p><button class="btn btn-amarelo" onclick="editarDia('${dataStr}')">✏️ EDITAR TODAS AS INFORMAÇÕES DESSE DIA</button></div>`+confHtml+tabelaHtml+timesHtml;
+}
+function editarDia(dataStr){showConfirm('Editar o dia '+dataStr.split('-').reverse().join('/')+'?',function(){let h=historico[dataStr];times=JSON.parse(JSON.stringify(h.times));confrontos=JSON.parse(JSON.stringify(h.confrontos||[]));dataSelecionada=dataStr;editandoData=dataStr;let info=getDiaSemanaInfo(dataStr);document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataStr.split('-').reverse().join('/');document.getElementById('btnSalvar').innerText=`SALVAR EDIÇÃO DO DIA ${dataStr.split('-').reverse().join('/')}`;document.getElementById('editandoTxt').style.display='block';document.getElementById('editandoTxt').innerText=`✏️ MODO EDIÇÃO - Editando ${dataStr.split('-').reverse().join('/')}`;document.getElementById('btnCancelarEdicao').style.display='block';document.getElementById('cardSalvar').style.display='block';renderTimes();atualizarSelects();renderConfrontos();renderTabela();window.scrollTo({top:0,behavior:'smooth'});},'Editar dia?');}
+function salvarProximoJogo(){let data=document.getElementById('proxData').value;let hora=document.getElementById('proxHora').value;let local=document.getElementById('proxLocal').value.trim();let obs=document.getElementById('proxObs').value.trim();if(!data||!hora||!local) return showAlert('Preencha data, horário e local');proximosJogos.push({id:Date.now(),data,hora,local,obs});proximosJogos.sort((a,b)=> new Date(a.data+'T'+a.hora) - new Date(b.data+'T'+b.hora));localStorage.setItem('baba_proximos', JSON.stringify(proximosJogos));document.getElementById('proxData').value='';document.getElementById('proxLocal').value='';document.getElementById('proxObs').value='';renderProximos();renderInicio();showAlert('Próximo jogo salvo! Destaque atualizado!','Salvo ✅');}
+function renderProximos(){let div=document.getElementById('listaProximos');if(proximosJogos.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo.</p></div>';return;}div.innerHTML=proximosJogos.map(j=>`<div class="card" style="border-left:6px solid #0a5c36"><h2>📅 ${j.data.split('-').reverse().join('/')} às ${j.hora}</h2><p>📍 ${j.local}</p><p>${j.obs||''}</p><button class="btn btn-cinza" style="margin-top:8px" onclick="removerProximo(${j.id})">Apagar</button></div>`).join('');}
+function removerProximo(id){showConfirm('Apagar próximo jogo?',function(){proximosJogos=proximosJogos.filter(j=>j.id!==id);localStorage.setItem('baba_proximos', JSON.stringify(proximosJogos));renderProximos();renderInicio();});}
+function renderInicio(){
+  let div=document.getElementById('listaProximosInicio');
+  let info=document.getElementById('inicioInfo');
+  let titulo=document.getElementById('destaqueTitulo');
+  if(proximosJogos.length===0){
+    titulo.innerText='⏰ Próximo Baba - Nenhum jogo agendado';
+    info.innerHTML='Salve um próximo jogo na aba Próximos Jogos<br>📍 Campo do Candeias - Vitória da Conquista';
+    div.innerHTML='';
+    document.getElementById('destaqueTexto').innerText='';
+    return;
+  }
+  let prox=proximosJogos[0];
+  let dataBr=prox.data.split('-').reverse().join('/');
+  titulo.innerText=`⏰ Próximo Baba - ${dataBr} às ${prox.hora}`;
+  let obsHtml=prox.obs?`<br>📝 Observação: ${prox.obs}`:'';
+  info.innerHTML=`📍 Local: ${prox.local}<br>⏰ Horário: ${prox.hora}<br>📅 Data: ${dataBr}${obsHtml}`;
+  document.getElementById('destaqueTexto').innerText=`Próximo jogo: ${dataBr} ${prox.hora} - ${prox.local}`;
+  div.innerHTML=`<div class="card" style="border:2px solid #1e88e5;background:#e3f2fd"><h2 style="color:#1e88e5">📅 Próximos Jogos</h2>${proximosJogos.slice(0,3).map(j=>`<div style="padding:8px 0;border-bottom:1px solid #ccc"><strong>${j.data.split('-').reverse().join('/')} ${j.hora}</strong> - ${j.local}${j.obs?' - '+j.obs:''}</div>`).join('')}</div>`;
+}
+function adicionarFoto(){if(!dataSelecionadaFotos) return showAlert('Selecione um dia no calendário de fotos');let input=document.getElementById('inputFoto');if(!input.files[0]) return showAlert('Escolha uma foto');let reader=new FileReader();reader.onload=function(e){let imgData=e.target.result;if(!fotosData[dataSelecionadaFotos]) fotosData[dataSelecionadaFotos]=[];fotosData[dataSelecionadaFotos].push({id:Date.now(),img:imgData,comentarios:[]});localStorage.setItem('baba_fotos', JSON.stringify(fotosData));input.value='';renderCalendario('fotos');renderGaleriaFotos();};reader.readAsDataURL(input.files[0]);}
+function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ainda.</p></div>`;return;}div.innerHTML=`<div class="card"><h2>📸 Fotos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${fotos.length} fotos</h2></div>`+fotos.map(f=>`<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}',${f.id})">Apagar Foto</button></div>`).join('');}
+function apagarFoto(dataStr,fotoId){showConfirm('Apagar essa foto?',function(){fotosData[dataStr]=fotosData[dataStr].filter(f=>f.id!==fotoId);if(fotosData[dataStr].length===0) delete fotosData[dataStr];localStorage.setItem('baba_fotos', JSON.stringify(fotosData));renderCalendario('fotos');renderGaleriaFotos();});}
+function abrirModal(imgSrc, dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
+function fecharModal(){document.getElementById('modalFoto').style.display='none';document.body.style.overflow='auto';}
+function renderRankings(){
+let keys=Object.keys(historico);
+let divAnual=document.getElementById('rankingAnual');
+if(keys.length===0){
+divAnual.innerHTML='<div class="card"><p>Nenhum dado ainda. Salve times e confrontos para ver o ranking.</p></div>';
+return;
+}
+let porCorAnual={};
+let jogadoresGols={};
+let jogadoresAst={};
+keys.forEach(dataStr=>{
+let h=historico[dataStr];
+(h.confrontos||[]).forEach(c=>{
+let t1=h.times.find(t=>t.id===c.t1);
+let t2=h.times.find(t=>t.id===c.t2);
+if(!t1||!t2) return;
+[t1,t2].forEach(t=>{
+if(!porCorAnual[t.cor]) porCorAnual[t.cor]={nome:t.nome,cor:t.cor,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0};
+});
+let s1=porCorAnual[t1.cor];
+let s2=porCorAnual[t2.cor];
+s1.J++;s2.J++;
+s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;
+s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;
+if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}
+else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}
+else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
+});
+h.times.forEach(t=>{
+t.jogadores.forEach(j=>{
+let nome=j.nome.trim();
+if(!nome) return;
+let key=nome.toLowerCase();
+if(!jogadoresGols[key]) jogadoresGols[key]={nome:nome,gols:0,ast:0};
+if(!jogadoresAst[key]) jogadoresAst[key]={nome:nome,gols:0,ast:0};
+jogadoresGols[key].gols+=parseInt(j.gols||0);
+jogadoresGols[key].ast+=parseInt(j.ast||0);
+jogadoresAst[key].gols+=parseInt(j.gols||0);
+jogadoresAst[key].ast+=parseInt(j.ast||0);
+});
+});
+});
+let anualOrd=Object.values(porCorAnual).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
+let artilheiros=Object.values(jogadoresGols).sort((a,b)=>b.gols-a.gols||b.ast-a.ast).slice(0,20);
+let assistencias=Object.values(jogadoresAst).sort((a,b)=>b.ast-a.ast||b.gols-a.gols).slice(0,20);
+let tabelaTimes=`<div class="card"><h2>🏆 Tabela Geral Anual</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${anualOrd.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div></div>`;
+let tabelaArtilheiros=`<div class="card" style="border:2px solid #c62828"><h2 style="color:#c62828">⚽ Artilheiros Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Gols</th><th>Assist</th></tr></thead><tbody>${artilheiros.map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.gols}</strong></td><td>${j.ast}</td></tr>`).join('') || '<tr><td colspan="4">Nenhum gol registrado</td></tr>'}</tbody></table></div></div>`;
+let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('') || '<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div>`;
+divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist;
+}
+function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum domingo salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
+
+// ===== CRIAÇÃO DE TIMES COM PESO E REGRA DE GOLEIRO =====
+function criacaoAddJogador(){
+let nome=document.getElementById('criacaoNome').value.trim();
+let peso=parseInt(document.getElementById('criacaoPeso').value);
+if(!nome) return showAlert('Digite o nome do jogador');
+criacaoJogadores.push({id:Date.now()+Math.random(),nome,peso});
+document.getElementById('criacaoNome').value='';
+localStorage.setItem('baba_criacao', JSON.stringify(criacaoJogadores));
+renderCriacaoLista();
+}
+function renderCriacaoLista(){
+let div=document.getElementById('criacaoListaNomes');
+let total=document.getElementById('criacaoTotal');
+if(criacaoJogadores.length===0){div.innerHTML='<p style="font-size:12px;color:#999">Nenhum jogador adicionado ainda.</p>';total.innerText='';return;}
+div.innerHTML=criacaoJogadores.map(j=>{
+let pesoTxt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 - Bom ⭐':'2 - Médio';
+let classe='peso-'+j.peso;
+return `<div class="jogador-item"><span>${j.nome} <span class="peso-badge ${classe}">${pesoTxt}</span></span><button class="btn btn-cinza" style="padding:3px 8px" onclick="criacaoRemover(${j.id})">X</button></div>`;
+}).join('');
+let g=criacaoJogadores.filter(j=>j.peso===1).length;
+let m=criacaoJogadores.filter(j=>j.peso===2).length;
+let b=criacaoJogadores.filter(j=>j.peso===3).length;
+total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros 1 (Goleiro): ${g} | Médios 2: ${m} | Bons 3: ${b}`;
+}
+function criacaoRemover(id){criacaoJogadores=criacaoJogadores.filter(j=>j.id!==id);localStorage.setItem('baba_criacao', JSON.stringify(criacaoJogadores));renderCriacaoLista();}
+function criacaoLimpar(){showConfirm('Limpar todos os nomes?',function(){criacaoJogadores=[];localStorage.setItem('baba_criacao', JSON.stringify(criacaoJogadores));renderCriacaoLista();document.getElementById('criacaoResultado').innerHTML='';document.getElementById('cardCriacaoSalvar').style.display='none';});}
+function criacaoSortear(){
+if(criacaoJogadores.length<2) return showAlert('Adicione pelo menos 2 jogadores');
+let numJog=parseInt(document.getElementById('criacaoNumJogadores').value);
+let numRes=parseInt(document.getElementById('criacaoNumReservas').value);
+let porTime=numJog+numRes;
+
+let jogadores=[...criacaoJogadores];
+let goleiros=jogadores.filter(j=>j.peso===1);
+let bons=jogadores.filter(j=>j.peso===3);
+let medios=jogadores.filter(j=>j.peso===2);
+
+let numTimes=Math.ceil(jogadores.length/porTime);
+if(numTimes<1) numTimes=1;
+// REGRA IMPORTANTE: nunca pode ter 2 goleiros no mesmo time, então precisa ter pelo menos tantos times quanto goleiros
+if(goleiros.length>numTimes) numTimes=goleiros.length;
+
+let corSel=document.getElementById('criacaoCor').value;
+
+function embaralhar(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} return arr;}
+embaralhar(bons); embaralhar(medios); embaralhar(goleiros);
+
+let teams=[];
+for(let i=0;i<numTimes;i++){teams.push({id:i,nome:'TIME '+(i+1),jogadores:[],pesoTotal:0,cor:corSel,temGoleiro:false});}
+
+// 1. Distribuir goleiros - NUNCA 2 no mesmo time
+goleiros.forEach((g, idx)=>{
+let t=teams[idx % teams.length];
+// garante que esse time ainda não tem goleiro
+if(!t.temGoleiro && t.jogadores.length<porTime){
+t.jogadores.push(g); t.pesoTotal+=g.peso*2; t.temGoleiro=true;
+} else {
+// procura próximo time sem goleiro
+let outro=teams.find(tt=>!tt.temGoleiro && tt.jogadores.length<porTime);
+if(outro){outro.jogadores.push(g); outro.pesoTotal+=g.peso*2; outro.temGoleiro=true;}
+else{
+// se todos já tem goleiro (caso raro), cria time extra - mas pela regra acima isso não acontece
+let extra={id:teams.length,nome:'TIME '+(teams.length+1),jogadores:[g],pesoTotal:g.peso*2,cor:corSel,temGoleiro:true};
+teams.push(extra);
+}
+}
+});
+
+// 2. Distribuir bons - um por time pra equilibrar
+bons.forEach(b=>{
+let candidatos=teams.filter(t=>t.jogadores.length<porTime);
+if(candidatos.length===0) return;
+let t=candidatos.sort((a,b)=>a.pesoTotal-b.pesoTotal)[0];
+t.jogadores.push(b); t.pesoTotal+=b.peso;
+});
+
+// 3. Distribuir medios
+medios.forEach(m=>{
+let candidatos=teams.filter(t=>t.jogadores.length<porTime);
+if(candidatos.length===0) return;
+let t=candidatos.sort((a,b)=>a.pesoTotal-b.pesoTotal)[0];
+t.jogadores.push(m); t.pesoTotal+=m.peso;
+});
+
+// Atribuir cores
+let coresDisponiveis=['vermelho','azul','preto','amarelo','verde'];
+if(corSel==='aleatorio'){
+embaralhar(coresDisponiveis);
+teams.forEach((t,i)=>{
+let corNome=coresDisponiveis[i%coresDisponiveis.length];
+t.cor=corNome;
+t.hex=coresMap[corNome].hex;
+t.nome='TIME '+coresMap[corNome].nome;
+});
+}else{
+teams.forEach((t,i)=>{
+t.cor=corSel;
+t.hex=coresMap[corSel].hex;
+t.nome='TIME '+coresMap[corSel].nome+' '+(t.id+1);
+if(teams.length===1) t.nome='TIME '+coresMap[corSel].nome;
+});
+}
+
+criacaoTimesSorteados=teams;
+
+let htmlResultado=teams.map((t)=>{
+let titulares=t.jogadores.slice(0,numJog);
+let reservas=t.jogadores.slice(numJog);
+let pesoSum=t.jogadores.reduce((s,j)=>s+j.peso,0);
+let temGol=t.temGoleiro?'🧤 1 (Goleiro) ok':'⚠️ sem goleiro';
+return `<div class="card team-criado" style="border-left-color:${t.hex}"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome} - ${t.jogadores.length} jog. | Peso: ${pesoSum} | ${temGol}</h2>
+<p style="font-size:12px;color:#666;margin-bottom:8px">Titulares (${titulares.length}):</p>
+${titulares.map(j=>{
+let txt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 Bom ⭐':'2 Médio';
+return `<div class="jogador-item"><span>${j.nome}</span><span class="peso-badge peso-${j.peso}">${txt}</span></div>`;
+}).join('')}
+${reservas.length?`<p style="font-size:12px;color:#666;margin:10px 0 5px">Reservas (${reservas.length}):</p>`+reservas.map(j=>{
+let txt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 Bom ⭐':'2 Médio';
+return `<div class="jogador-item" style="background:#e8f5e9"><span>${j.nome}</span><span class="peso-badge peso-${j.peso}">${txt}</span></div>`;
+}).join(''):''}
+</div>`;
+}).join('');
+
+let resumo=`<div class="card" style="border:2px solid #6a1b9a"><h2>✅ Sorteio Realizado!</h2><p>${jogadores.length} jogadores divididos em ${teams.length} times de ${numJog} titulares + ${numRes} reservas (total ${porTime} por time)</p><p style="font-size:12px;color:#666;margin-top:5px">Regras aplicadas:<br>• Peso <strong>1 (Goleiro)</strong> = 🧤 nunca 2 goleiros no mesmo time (você tem ${goleiros.length} goleiros, então ${goleiros.length} times diferentes)<br>• Peso 3 = bons distribuídos em times diferentes para equilibrar<br>• Equilíbrio por peso total</p></div>`;
+
+document.getElementById('criacaoResultado').innerHTML=resumo+htmlResultado;
+document.getElementById('cardCriacaoSalvar').style.display='block';
+window.scrollTo({top:document.getElementById('criacaoResultado').offsetTop-80,behavior:'smooth'});
+}
+
+function criacaoEnviarParaTimes(){
+if(criacaoTimesSorteados.length===0) return showAlert('Sorteie os times primeiro');
+showConfirm('Enviar '+criacaoTimesSorteados.length+' times para a aba Times? Isso vai limpar os times atuais da aba Times.',function(){
+times=[];
+criacaoTimesSorteados.forEach(t=>{
+let novoTime={
+id:Date.now()+Math.random(),
+nome:t.nome,
+cor:t.cor,
+hex:t.hex,
+jogadores:t.jogadores.map(j=>({nome:j.nome,gols:0,ast:0,id:Date.now()+Math.random()+j.nome}))
+};
+times.push(novoTime);
+});
+confrontos=[];
+renderTimes();atualizarSelects();
+showAlert('Times enviados para a aba Times! Agora vá em Times e salve no calendário.','Enviado ✅');
+mostrar('times',document.querySelectorAll('nav button')[1]);
+window.scrollTo({top:0,behavior:'smooth'});
+});
+}
+
+renderCalendario('times');renderTimes();renderProximos();renderInicio();renderCalendario('fotos');renderCriacaoLista();
+</script>
+</body>
+</html>
