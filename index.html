@@ -77,7 +77,7 @@ td:first-child{text-align:left;font-weight:bold}
 .label-peq{font-size:12px;font-weight:bold;color:#0a5c36;margin-top:6px;display:block}
 .selecao-card{border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)}
 .selecao-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;margin:6px 0;background:white;border-left:6px solid #0a5c36}
-.selecao-pos{font-weight:900;color:#0a5c36;font-size:13px;min-width:110px}
+.selecao-pos{font-weight:900;color:#0a5c36;font-size:12px;min-width:125px}
 </style>
 </head>
 <body>
@@ -424,6 +424,8 @@ let jogadoresGols={};
 let jogadoresAst={};
 let playerWins={};
 let playerTimes={};
+let playerGolsMap={};
+let playerAstMap={};
 
 keys.forEach(dataStr=>{
 let h=historico[dataStr];
@@ -441,7 +443,6 @@ s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;
 s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;
 if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
 
- // vitórias por jogador
  if(c.g1>c.g2){
    t1.jogadores.forEach(j=>{
      let key=j.nome.trim().toLowerCase();
@@ -469,6 +470,8 @@ jogadoresGols[key].gols+=parseInt(j.gols||0);
 jogadoresGols[key].ast+=parseInt(j.ast||0);
 jogadoresAst[key].gols+=parseInt(j.gols||0);
 jogadoresAst[key].ast+=parseInt(j.ast||0);
+playerGolsMap[key]=(playerGolsMap[key]||0)+parseInt(j.gols||0);
+playerAstMap[key]=(playerAstMap[key]||0)+parseInt(j.ast||0);
 if(playerWins[key]) jogadoresGols[key].vitorias=playerWins[key];
 if(playerWins[key]) jogadoresAst[key].vitorias=playerWins[key];
 });
@@ -484,26 +487,55 @@ let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="
 
 divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist;
 
-// ===== SELEÇÃO DO ANO =====
+// ===== SELEÇÃO DO ANO - NOVA REGRA SEM REPETIR =====
 let melhorTime = anualOrd[0];
+
+// 1 - Melhor Goleiro
 let goleiros = criacaoJogadores.filter(j=>j.peso===1);
 let melhorGoleiro = null;
 if(goleiros.length>0){
   let goleirosComVitoria = goleiros.map(g=>{
     let key=g.nome.trim().toLowerCase();
-    return {nome:g.nome, vitorias: playerWins[key]||0, cor: playerTimes[key]||''};
+    return {nome:g.nome, key:key, vitorias: playerWins[key]||0, cor: playerTimes[key]||''};
   }).sort((a,b)=>b.vitorias-a.vitorias);
   melhorGoleiro = goleirosComVitoria[0];
   if(!melhorGoleiro || melhorGoleiro.vitorias===0){
-    // se não tem goleiro com vitória, pega o goleiro do melhor time ou o primeiro
-    melhorGoleiro = {nome: goleiros[0].nome, vitorias:0, cor: melhorTime?melhorTime.cor:''};
+    melhorGoleiro = {nome: goleiros[0].nome, key: goleiros[0].nome.trim().toLowerCase(), vitorias:0, cor: melhorTime?melhorTime.cor:''};
   }
 } else {
-  // sem goleiro cadastrado na criação, pega o jogador com mais vitórias como goleiro simbólico
   let maisVitorioso = Object.entries(playerWins).sort((a,b)=>b[1]-a[1])[0];
   if(maisVitorioso){
     let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===maisVitorioso[0])?.nome || maisVitorioso[0];
-    melhorGoleiro = {nome: nomeReal, vitorias: maisVitorioso[1], cor: playerTimes[maisVitorioso[0]]||''};
+    melhorGoleiro = {nome: nomeReal, key: maisVitorioso[0], vitorias: maisVitorioso[1], cor: playerTimes[maisVitorioso[0]]||''};
+  }
+}
+
+let artilheiro = artilheiros[0]||null;
+let viceArtilheiro = artilheiros[1]||null;
+let liderAssist = assistencias[0]||null;
+
+let selecionadosKeys = new Set();
+if(melhorGoleiro) selecionadosKeys.add(melhorGoleiro.key);
+if(artilheiro) selecionadosKeys.add(artilheiro.nome.trim().toLowerCase());
+if(viceArtilheiro) selecionadosKeys.add(viceArtilheiro.nome.trim().toLowerCase());
+if(liderAssist) selecionadosKeys.add(liderAssist.nome.trim().toLowerCase());
+
+// 2 mais que ganharam - sem repetir
+let rankingVitorias = Object.entries(playerWins)
+  .map(([key,wins])=>{
+    let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===key)?.nome || 
+                   assistencias.find(a=>a.nome.toLowerCase()===key)?.nome ||
+                   criacaoJogadores.find(c=>c.nome.trim().toLowerCase()===key)?.nome || key;
+    return {key, nome: nomeReal, vitorias:wins, gols: playerGolsMap[key]||0, ast: playerAstMap[key]||0};
+  })
+  .sort((a,b)=>b.vitorias-a.vitorias || b.gols-a.gols);
+
+let doisMaisVitoriosos = [];
+for(let p of rankingVitorias){
+  if(!selecionadosKeys.has(p.key)){
+    doisMaisVitoriosos.push(p);
+    selecionadosKeys.add(p.key);
+    if(doisMaisVitoriosos.length===2) break;
   }
 }
 
@@ -511,7 +543,7 @@ let selecaoHtml = '';
 if(melhorTime){
 selecaoHtml = `<div class="card selecao-card">
 <h2 style="color:#b77900">⭐ Seleção do Ano - ${new Date().getFullYear()}</h2>
-<p style="font-size:12px;color:#666;margin-bottom:10px">Atualizada automaticamente com os melhores do ano até agora</p>
+<p style="font-size:12px;color:#666;margin-bottom:10px">6 jogadores - sem repetir - atualizado até agora</p>
 
 <div class="selecao-item" style="background:#fff8e1;border-left-color:${melhorTime.hex}">
 <span class="selecao-pos">🏆 Melhor Time</span>
@@ -519,33 +551,33 @@ selecaoHtml = `<div class="card selecao-card">
 </div>
 
 ${melhorGoleiro ? `<div class="selecao-item" style="border-left-color:#1e88e5">
-<span class="selecao-pos">🧤 Melhor Goleiro</span>
-<span><strong>${melhorGoleiro.nome}</strong> ${melhorGoleiro.vitorias?`- ${melhorGoleiro.vitorias} vitórias`:''} ${melhorGoleiro.cor?`(${melhorGoleiro.cor})`:''}</span>
+<span class="selecao-pos">🧤 Goleiro que mais ganhou</span>
+<span><strong>${melhorGoleiro.nome}</strong> - ${melhorGoleiro.vitorias} vitórias</span>
 </div>` : ''}
 
-${artilheiros[0] ? `<div class="selecao-item" style="border-left-color:#c62828">
+${artilheiro ? `<div class="selecao-item" style="border-left-color:#c62828">
 <span class="selecao-pos">⚽ Artilheiro</span>
-<span><strong>${artilheiros[0].nome}</strong> - ${artilheiros[0].gols} gols, ${artilheiros[0].ast} assist</span>
+<span><strong>${artilheiro.nome}</strong> - ${artilheiro.gols} gols, ${artilheiro.ast} assist</span>
 </div>` : ''}
 
-${artilheiros[1] ? `<div class="selecao-item" style="border-left-color:#ff9800">
+${viceArtilheiro ? `<div class="selecao-item" style="border-left-color:#ff9800">
 <span class="selecao-pos">🥈 Vice-Artilheiro</span>
-<span><strong>${artilheiros[1].nome}</strong> - ${artilheiros[1].gols} gols, ${artilheiros[1].ast} assist</span>
+<span><strong>${viceArtilheiro.nome}</strong> - ${viceArtilheiro.gols} gols, ${viceArtilheiro.ast} assist</span>
 </div>` : ''}
 
-${artilheiros[2] ? `<div class="selecao-item" style="border-left-color:#ff9800">
-<span class="selecao-pos">🥉 3º Artilheiro</span>
-<span><strong>${artilheiros[2].nome}</strong> - ${artilheiros[2].gols} gols, ${artilheiros[2].ast} assist</span>
+${liderAssist ? `<div class="selecao-item" style="border-left-color:#1e88e5">
+<span class="selecao-pos">🎯 Líder Assistência</span>
+<span><strong>${liderAssist.nome}</strong> - ${liderAssist.ast} assist, ${liderAssist.gols} gols</span>
 </div>` : ''}
 
-${assistencias[0] ? `<div class="selecao-item" style="border-left-color:#1e88e5">
-<span class="selecao-pos">🎯 Líder Assist.</span>
-<span><strong>${assistencias[0].nome}</strong> - ${assistencias[0].ast} assist, ${assistencias[0].gols} gols</span>
+${doisMaisVitoriosos[0] ? `<div class="selecao-item" style="border-left-color:#2e7d32">
+<span class="selecao-pos">🏅 Mais venceu (1º)</span>
+<span><strong>${doisMaisVitoriosos[0].nome}</strong> - ${doisMaisVitoriosos[0].vitorias} vitórias, ${doisMaisVitoriosos[0].gols} gols</span>
 </div>` : ''}
 
-${assistencias[1] ? `<div class="selecao-item" style="border-left-color:#1e88e5">
-<span class="selecao-pos">🎯 Vice Assist.</span>
-<span><strong>${assistencias[1].nome}</strong> - ${assistencias[1].ast} assist, ${assistencias[1].gols} gols</span>
+${doisMaisVitoriosos[1] ? `<div class="selecao-item" style="border-left-color:#2e7d32">
+<span class="selecao-pos">🏅 Mais venceu (2º)</span>
+<span><strong>${doisMaisVitoriosos[1].nome}</strong> - ${doisMaisVitoriosos[1].vitorias} vitórias, ${doisMaisVitoriosos[1].gols} gols</span>
 </div>` : ''}
 
 </div>`;
