@@ -75,6 +75,9 @@ td:first-child{text-align:left;font-weight:bold}
 .peso-3{background:#c62828}
 .team-criado{border-left:6px solid #0a5c36}
 .label-peq{font-size:12px;font-weight:bold;color:#0a5c36;margin-top:6px;display:block}
+.selecao-card{border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)}
+.selecao-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;margin:6px 0;background:white;border-left:6px solid #0a5c36}
+.selecao-pos{font-weight:900;color:#0a5c36;font-size:13px;min-width:110px}
 </style>
 </head>
 <body>
@@ -89,7 +92,7 @@ td:first-child{text-align:left;font-weight:bold}
 <button onclick="mostrar('historico',this)">Histórico</button>
 </nav>
 <div id="inicio" class="secao ativa">
-<div class="card"><h2>🎉 Bem-vindo ao Baba do Candeias!</h2><p>Bem-vindo ao Baba! Aqui você organiza os times, vê quem fez gol e salva todo domingo.</p></div>
+<div class="card"><h2>🎉 Bem-vindo ao Baba do Candeias!</h2><p>Bem-vindo ao Baba! Aqui você organiza os times, vê quem fez gol e salva todo dia.</p></div>
 <div class="card" style="border:2px solid #0a5c36"><h2>⭐ Destaque</h2><h3 id="destaqueTitulo" style="color:#0a5c36">⏰ Próximo Baba - Domingo às 8 da manhã</h3><div id="inicioInfo" style="margin-top:12px;line-height:1.8;font-size:15px"></div></div>
 </div>
 <div id="times" class="secao">
@@ -120,7 +123,7 @@ td:first-child{text-align:left;font-weight:bold}
 </div>
 <div class="card" id="cardTabela" style="display:none"><h2>🏆 Tabela - Estilo Brasileirão</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody id="tbodyTabela"></tbody></table></div></div>
 <div class="card" id="cardSalvar" style="display:none">
-<h2 id="tituloSalvar">💾 Salvar no Domingo</h2>
+<h2 id="tituloSalvar">💾 Salvar no Dia</h2>
 <p><span id="labelDiaSelecionado">Dia selecionado</span>: <strong id="dataSelTxt">Selecione no calendário abaixo</strong></p>
 <p id="editandoTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px"></p>
 <button class="btn btn-verde" id="btnSalvar" onclick="salvarNoCalendario()">SALVAR TUDO NESSE DIA</button>
@@ -209,6 +212,7 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="ranking" class="secao">
 <div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual</h2></div>
 <div id="rankingAnual"></div>
+<div id="selecaoAnual"></div>
 </div>
 <div id="fotos" class="secao">
 <div class="card"><h2>📸 Fotos do Baba</h2><div class="cal-header" style="margin-top:15px"><button class="btn btn-cinza" onclick="mudarMes(-1,'fotos')">◀</button><h2 id="mesAnoTxtFotos" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'fotos')">▶</button></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'fotos')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'fotos')">2027</button></div><div class="cal-grid" id="calDiasSemanaFotos"></div><div class="cal-grid" id="calGridFotos"></div></div>
@@ -290,7 +294,7 @@ editandoData=null;document.getElementById('editandoTxt').style.display='none';do
 window.cancelarEdicao=function(){editandoData=null;times=[];confrontos=[];dataSelecionada=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';renderTimes();renderConfrontos();renderTabela();}
 function mostrarDetalheNaTimes(dataStr){
 let h=historico[dataStr];let div=document.getElementById('detalheDia');
-if(!h){div.innerHTML=`<div class="card"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>Nenhum baba salvo. Monte os times acima e salve.</p></div>`;return;}
+if(!h){div.innerHTML=`<div class="card"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>Nenhum dia salvo. Monte os times acima e salve.</p></div>`;return;}
 let stats={};h.times.forEach(t=>{stats[t.id]={id:t.id,nome:t.nome,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0}});
 (h.confrontos||[]).forEach(c=>{let s1=stats[c.t1];let s2=stats[c.t2];if(!s1||!s2)return;s1.J++;s2.J++;s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}});
 let ord=Object.values(stats).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
@@ -405,16 +409,22 @@ function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if
 window.apagarFoto=function(dataStr,key){showConfirm('Apagar essa foto?',function(){remove(ref(db,'fotos/'+dataStr+'/'+key));});}
 window.abrirModal=function(imgSrc, dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
 window.fecharModal=function(){document.getElementById('modalFoto').style.display='none';document.body.style.overflow='auto';}
+
 function renderRankings(){
 let keys=Object.keys(historico);
 let divAnual=document.getElementById('rankingAnual');
+let divSelecao=document.getElementById('selecaoAnual');
 if(keys.length===0){
-divAnual.innerHTML='<div class="card"><p>Nenhum dado ainda. Salve times e confrontos para ver o ranking.</p></div>';
+divAnual.innerHTML='<div class="card"><p>Nenhum dia salvo. Salve times e confrontos para ver o ranking.</p></div>';
+divSelecao.innerHTML='';
 return;
 }
 let porCorAnual={};
 let jogadoresGols={};
 let jogadoresAst={};
+let playerWins={};
+let playerTimes={};
+
 keys.forEach(dataStr=>{
 let h=historico[dataStr];
 (h.confrontos||[]).forEach(c=>{
@@ -429,33 +439,122 @@ let s2=porCorAnual[t2.cor];
 s1.J++;s2.J++;
 s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;
 s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;
-if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}
-else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}
-else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
+if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
+
+ // vitórias por jogador
+ if(c.g1>c.g2){
+   t1.jogadores.forEach(j=>{
+     let key=j.nome.trim().toLowerCase();
+     if(!playerWins[key]) playerWins[key]=0;
+     playerWins[key]++;
+     playerTimes[key]=t1.cor;
+   });
+ } else if(c.g2>c.g1){
+   t2.jogadores.forEach(j=>{
+     let key=j.nome.trim().toLowerCase();
+     if(!playerWins[key]) playerWins[key]=0;
+     playerWins[key]++;
+     playerTimes[key]=t2.cor;
+   });
+ }
 });
 h.times.forEach(t=>{
 t.jogadores.forEach(j=>{
 let nome=j.nome.trim();
 if(!nome) return;
 let key=nome.toLowerCase();
-if(!jogadoresGols[key]) jogadoresGols[key]={nome:nome,gols:0,ast:0};
-if(!jogadoresAst[key]) jogadoresAst[key]={nome:nome,gols:0,ast:0};
+if(!jogadoresGols[key]) jogadoresGols[key]={nome:nome,gols:0,ast:0,vitorias:0,cor:t.cor};
+if(!jogadoresAst[key]) jogadoresAst[key]={nome:nome,gols:0,ast:0,vitorias:0,cor:t.cor};
 jogadoresGols[key].gols+=parseInt(j.gols||0);
 jogadoresGols[key].ast+=parseInt(j.ast||0);
 jogadoresAst[key].gols+=parseInt(j.gols||0);
 jogadoresAst[key].ast+=parseInt(j.ast||0);
+if(playerWins[key]) jogadoresGols[key].vitorias=playerWins[key];
+if(playerWins[key]) jogadoresAst[key].vitorias=playerWins[key];
 });
 });
 });
 let anualOrd=Object.values(porCorAnual).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
-let artilheiros=Object.values(jogadoresGols).sort((a,b)=>b.gols-a.gols||b.ast-a.ast).slice(0,20);
-let assistencias=Object.values(jogadoresAst).sort((a,b)=>b.ast-a.ast||b.gols-a.gols).slice(0,20);
+let artilheiros=Object.values(jogadoresGols).sort((a,b)=>b.gols-a.gols||b.ast-a.ast);
+let assistencias=Object.values(jogadoresAst).sort((a,b)=>b.ast-a.ast||b.gols-a.gols);
+
 let tabelaTimes=`<div class="card"><h2>🏆 Tabela Geral Anual</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${anualOrd.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div></div>`;
-let tabelaArtilheiros=`<div class="card" style="border:2px solid #c62828"><h2 style="color:#c62828">⚽ Artilheiros Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Gols</th><th>Assist</th></tr></thead><tbody>${artilheiros.map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.gols}</strong></td><td>${j.ast}</td></tr>`).join('') || '<tr><td colspan="4">Nenhum gol registrado</td></tr>'}</tbody></table></div></div>`;
-let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('') || '<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div>`;
+let tabelaArtilheiros=`<div class="card" style="border:2px solid #c62828"><h2 style="color:#c62828">⚽ Artilheiros Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Gols</th><th>Assist</th></tr></thead><tbody>${artilheiros.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.gols}</strong></td><td>${j.ast}</td></tr>`).join('') || '<tr><td colspan="4">Nenhum gol registrado</td></tr>'}</tbody></table></div></div>`;
+let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('') || '<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div>`;
+
 divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist;
+
+// ===== SELEÇÃO DO ANO =====
+let melhorTime = anualOrd[0];
+let goleiros = criacaoJogadores.filter(j=>j.peso===1);
+let melhorGoleiro = null;
+if(goleiros.length>0){
+  let goleirosComVitoria = goleiros.map(g=>{
+    let key=g.nome.trim().toLowerCase();
+    return {nome:g.nome, vitorias: playerWins[key]||0, cor: playerTimes[key]||''};
+  }).sort((a,b)=>b.vitorias-a.vitorias);
+  melhorGoleiro = goleirosComVitoria[0];
+  if(!melhorGoleiro || melhorGoleiro.vitorias===0){
+    // se não tem goleiro com vitória, pega o goleiro do melhor time ou o primeiro
+    melhorGoleiro = {nome: goleiros[0].nome, vitorias:0, cor: melhorTime?melhorTime.cor:''};
+  }
+} else {
+  // sem goleiro cadastrado na criação, pega o jogador com mais vitórias como goleiro simbólico
+  let maisVitorioso = Object.entries(playerWins).sort((a,b)=>b[1]-a[1])[0];
+  if(maisVitorioso){
+    let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===maisVitorioso[0])?.nome || maisVitorioso[0];
+    melhorGoleiro = {nome: nomeReal, vitorias: maisVitorioso[1], cor: playerTimes[maisVitorioso[0]]||''};
+  }
 }
-function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum domingo salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
+
+let selecaoHtml = '';
+if(melhorTime){
+selecaoHtml = `<div class="card selecao-card">
+<h2 style="color:#b77900">⭐ Seleção do Ano - ${new Date().getFullYear()}</h2>
+<p style="font-size:12px;color:#666;margin-bottom:10px">Atualizada automaticamente com os melhores do ano até agora</p>
+
+<div class="selecao-item" style="background:#fff8e1;border-left-color:${melhorTime.hex}">
+<span class="selecao-pos">🏆 Melhor Time</span>
+<span><span class="bolinha" style="background:${melhorTime.hex}"></span><strong>${melhorTime.nome}</strong> - ${melhorTime.V} vitórias, ${melhorTime.P} pontos</span>
+</div>
+
+${melhorGoleiro ? `<div class="selecao-item" style="border-left-color:#1e88e5">
+<span class="selecao-pos">🧤 Melhor Goleiro</span>
+<span><strong>${melhorGoleiro.nome}</strong> ${melhorGoleiro.vitorias?`- ${melhorGoleiro.vitorias} vitórias`:''} ${melhorGoleiro.cor?`(${melhorGoleiro.cor})`:''}</span>
+</div>` : ''}
+
+${artilheiros[0] ? `<div class="selecao-item" style="border-left-color:#c62828">
+<span class="selecao-pos">⚽ Artilheiro</span>
+<span><strong>${artilheiros[0].nome}</strong> - ${artilheiros[0].gols} gols, ${artilheiros[0].ast} assist</span>
+</div>` : ''}
+
+${artilheiros[1] ? `<div class="selecao-item" style="border-left-color:#ff9800">
+<span class="selecao-pos">🥈 Vice-Artilheiro</span>
+<span><strong>${artilheiros[1].nome}</strong> - ${artilheiros[1].gols} gols, ${artilheiros[1].ast} assist</span>
+</div>` : ''}
+
+${artilheiros[2] ? `<div class="selecao-item" style="border-left-color:#ff9800">
+<span class="selecao-pos">🥉 3º Artilheiro</span>
+<span><strong>${artilheiros[2].nome}</strong> - ${artilheiros[2].gols} gols, ${artilheiros[2].ast} assist</span>
+</div>` : ''}
+
+${assistencias[0] ? `<div class="selecao-item" style="border-left-color:#1e88e5">
+<span class="selecao-pos">🎯 Líder Assist.</span>
+<span><strong>${assistencias[0].nome}</strong> - ${assistencias[0].ast} assist, ${assistencias[0].gols} gols</span>
+</div>` : ''}
+
+${assistencias[1] ? `<div class="selecao-item" style="border-left-color:#1e88e5">
+<span class="selecao-pos">🎯 Vice Assist.</span>
+<span><strong>${assistencias[1].nome}</strong> - ${assistencias[1].ast} assist, ${assistencias[1].gols} gols</span>
+</div>` : ''}
+
+</div>`;
+}
+
+divSelecao.innerHTML=selecaoHtml;
+}
+
+function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum dia salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
 window.criacaoAddJogador=function(){
 let nome=document.getElementById('criacaoNome').value.trim();
 let peso=parseInt(document.getElementById('criacaoPeso').value);
