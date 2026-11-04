@@ -26,8 +26,8 @@ nav button.ativo,nav button:hover{background:white;color:#0a5c36}
 .btn-cinza{background:#eee;color:#333}
 .btn-amarelo{background:#ffcc00;color:#222;width:100%;margin-top:10px;font-weight:900}
 .btn-roxo{background:#6a1b9a;color:white;width:100%;margin-top:10px}
-.btn-edit{background:#1e88e5;color:white;padding:6px 12px;border-radius:8px;font-size:12px}
-.btn-del{background:#c62828;color:white;padding:6px 12px;border-radius:8px;font-size:12px}
+.btn-edit{background:#1e88e5;color:white;padding:6px 12px;border-radius:8px;font-size:12px;border:0}
+.btn-del{background:#c62828;color:white;padding:6px 12px;border-radius:8px;font-size:12px;border:0}
 input,select{padding:10px;border-radius:10px;border:1px solid #ccc;width:100%;margin:4px 0}
 .cores{display:flex;gap:12px;margin:10px 0;flex-wrap:wrap}
 .cor-opcao{width:44px;height:44px;border-radius:50%;cursor:pointer;border:3px solid transparent;position:relative}
@@ -74,6 +74,7 @@ td:first-child{text-align:left;font-weight:bold}
 .peso-2{background:#ff9800}
 .peso-3{background:#c62828}
 .team-criado{border-left:6px solid #0a5c36}
+.label-peq{font-size:12px;font-weight:bold;color:#0a5c36;margin-top:6px;display:block}
 </style>
 </head>
 <body>
@@ -122,7 +123,7 @@ td:first-child{text-align:left;font-weight:bold}
 <h2 id="tituloSalvar">💾 Salvar no Domingo</h2>
 <p><span id="labelDiaSelecionado">Dia selecionado</span>: <strong id="dataSelTxt">Selecione no calendário abaixo</strong></p>
 <p id="editandoTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px"></p>
-<button class="btn btn-verde" id="btnSalvar" onclick="salvarNoCalendario()">SALVAR TUDO NESSE DIA NA NUVEM</button>
+<button class="btn btn-verde" id="btnSalvar" onclick="salvarNoCalendario()">SALVAR TUDO NESSE DIA</button>
 <button class="btn btn-cinza" id="btnCancelarEdicao" style="display:none;margin-top:8px" onclick="cancelarEdicao()">Cancelar Edição</button>
 </div>
 <div class="card">
@@ -189,26 +190,32 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="proximos" class="secao">
 <div class="card">
 <h2>➕ Adicionar Próximo Jogo</h2>
+<span class="label-peq">Data</span>
 <input id="proxData" type="date">
-<input id="proxHora" type="time" value="08:00">
-<input id="proxLocal" placeholder="Local">
-<input id="proxObs" placeholder="Obs ex: levar água">
-<button class="btn btn-verde" id="btnProxSalvar" onclick="salvarProximoJogo()">Salvar Próximo Jogo na Nuvem</button>
+<div class="row">
+<div style="flex:1"><span class="label-peq">Início</span><input id="proxHoraInicio" type="time" value="08:00"></div>
+<div style="flex:1"><span class="label-peq">Término</span><input id="proxHoraFim" type="time" value="11:00"></div>
+</div>
+<span class="label-peq">Local</span>
+<input id="proxLocal" placeholder="Campo do Candeias">
+<span class="label-peq">Observação (opcional)</span>
+<input id="proxObs" placeholder="Ex: levar água">
+<button class="btn btn-verde" id="btnProxSalvar" onclick="salvarProximoJogo()">Salvar Próximo Jogo</button>
 <button class="btn btn-cinza" id="btnProxCancelar" style="display:none;margin-top:8px" onclick="cancelarEdicaoProximo()">Cancelar Edição</button>
 <p id="editProxTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px;text-align:center"></p>
 </div>
 <div id="listaProximos"></div>
 </div>
 <div id="ranking" class="secao">
-<div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual - NUVEM</h2></div>
+<div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual</h2></div>
 <div id="rankingAnual"></div>
 </div>
 <div id="fotos" class="secao">
 <div class="card"><h2>📸 Fotos do Baba</h2><div class="cal-header" style="margin-top:15px"><button class="btn btn-cinza" onclick="mudarMes(-1,'fotos')">◀</button><h2 id="mesAnoTxtFotos" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'fotos')">▶</button></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'fotos')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'fotos')">2027</button></div><div class="cal-grid" id="calDiasSemanaFotos"></div><div class="cal-grid" id="calGridFotos"></div></div>
-<div class="card" id="cardAddFoto" style="display:none"><h2>➕ Adicionar Foto no dia <span id="dataFotoTxt"></span></h2><input type="file" id="inputFoto" accept="image/*"><button class="btn btn-verde" onclick="adicionarFoto()">Adicionar Foto na Nuvem</button></div>
+<div class="card" id="cardAddFoto" style="display:none"><h2>➕ Adicionar Foto no dia <span id="dataFotoTxt"></span></h2><input type="file" id="inputFoto" accept="image/*"><button class="btn btn-verde" onclick="adicionarFoto()">Adicionar Foto</button></div>
 <div id="galeriaFotos"></div>
 </div>
-<div id="historico" class="secao"><div class="card"><h2>🕓 Histórico Geral - Nuvem</h2></div><div id="historicoDetalhe"></div></div>
+<div id="historico" class="secao"><div class="card"><h2>🕓 Histórico Geral</h2></div><div id="historicoDetalhe"></div></div>
 <div id="modalFoto" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;justify-content:center;align-items:center;padding:20px" onclick="fecharModal()"><span style="position:absolute;top:15px;right:25px;color:white;font-size:45px;cursor:pointer;font-weight:bold">×</span><img id="imgModal" style="max-width:95%;max-height:90%;border-radius:12px"><p id="dataModal" style="position:absolute;bottom:25px;color:white;text-align:center;width:100%;font-size:14px"></p></div>
 <div id="customModal"><div class="customModalBox"><div class="customModalHeader">⚽ <span id="customModalTitle">Baba do Candeias</span></div><div class="customModalBody" id="customModalBody"></div><div class="customModalFooter" id="customModalFooter"></div></div></div>
 
@@ -272,15 +279,15 @@ if(!dataSelecionada)return showAlert('Selecione um dia no calendário');
 if(times.length===0 && !editandoData){
 showConfirm('Apagar o dia '+dataSelecionada.split('-').reverse().join('/')+'?',function(){
 remove(ref(db,'historico/'+dataSelecionada));
-showAlert('Dia apagado na nuvem!');editandoData=null;dataSelecionada=null;times=[];confrontos=[];document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
+showAlert('Dia apagado!');editandoData=null;dataSelecionada=null;times=[];confrontos=[];document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
 });
 return;
 }
 set(ref(db,'historico/'+dataSelecionada),{data:dataSelecionada, times: JSON.parse(JSON.stringify(times)), confrontos: JSON.parse(JSON.stringify(confrontos)), criado:Date.now()});
-showAlert((editandoData?'ATUALIZADO NA NUVEM':'Salvo na nuvem')+' em '+dataSelecionada.split('-').reverse().join('/')+'!','Salvo ✅');
+showAlert((editandoData?'ATUALIZADO':'Salvo')+' em '+dataSelecionada.split('-').reverse().join('/')+'!','Salvo ✅');
 editandoData=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';dataSelecionada=null;times=[];confrontos=[];renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
 }
-window.cancelarEdicao=function(){editandoData=null;times=[];confrontos=[];dataSelecionada=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA NA NUVEM';renderTimes();renderConfrontos();renderTabela();}
+window.cancelarEdicao=function(){editandoData=null;times=[];confrontos=[];dataSelecionada=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';renderTimes();renderConfrontos();renderTabela();}
 function mostrarDetalheNaTimes(dataStr){
 let h=historico[dataStr];let div=document.getElementById('detalheDia');
 if(!h){div.innerHTML=`<div class="card"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>Nenhum baba salvo. Monte os times acima e salve.</p></div>`;return;}
@@ -297,23 +304,30 @@ div.innerHTML=`<div class="card" style="border:2px solid #0a5c36"><h2>📅 ${dat
 }
 window.editarDia=function(dataStr){showConfirm('Editar o dia '+dataStr.split('-').reverse().join('/')+'?',function(){let h=historico[dataStr];times=JSON.parse(JSON.stringify(h.times));confrontos=JSON.parse(JSON.stringify(h.confrontos||[]));dataSelecionada=dataStr;editandoData=dataStr;let info=getDiaSemanaInfo(dataStr);document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataStr.split('-').reverse().join('/');document.getElementById('btnSalvar').innerText=`SALVAR EDIÇÃO DO DIA ${dataStr.split('-').reverse().join('/')}`;document.getElementById('editandoTxt').style.display='block';document.getElementById('editandoTxt').innerText=`✏️ MODO EDIÇÃO - Editando ${dataStr.split('-').reverse().join('/')}`;document.getElementById('btnCancelarEdicao').style.display='block';document.getElementById('cardSalvar').style.display='block';renderTimes();atualizarSelects();renderConfrontos();renderTabela();window.scrollTo({top:0,behavior:'smooth'});},'Editar dia?');}
 
-// ===== NOVO: PRÓXIMOS JOGOS COM EDITAR =====
+function getHoraStr(j){
+ if(j.horaInicio && j.horaFim) return `${j.horaInicio} às ${j.horaFim}`;
+ if(j.horaInicio) return `${j.horaInicio}`;
+ if(j.hora) return `${j.hora}`;
+ return '';
+}
+
 window.salvarProximoJogo=function(){
 let data=document.getElementById('proxData').value;
-let hora=document.getElementById('proxHora').value;
+let horaInicio=document.getElementById('proxHoraInicio').value;
+let horaFim=document.getElementById('proxHoraFim').value;
 let local=document.getElementById('proxLocal').value.trim();
 let obs=document.getElementById('proxObs').value.trim();
-if(!data||!hora||!local) return showAlert('Preencha data, horário e local');
+if(!data||!horaInicio||!horaFim||!local) return showAlert('Preencha data, horário de início, término e local');
 if(editandoProxKey){
- update(ref(db,'proximos/'+editandoProxKey),{data,hora,local,obs});
- showAlert('Atualizado na nuvem!','Atualizado ✅');
+ update(ref(db,'proximos/'+editandoProxKey),{data,horaInicio,horaFim,local,obs});
+ showAlert('Atualizado!','Atualizado ✅');
  cancelarEdicaoProximo();
 } else {
- push(ref(db,'proximos'),{data,hora,local,obs,criado:Date.now()});
+ push(ref(db,'proximos'),{data,horaInicio,horaFim,local,obs,criado:Date.now()});
  document.getElementById('proxData').value='';
  document.getElementById('proxLocal').value='';
  document.getElementById('proxObs').value='';
- showAlert('Próximo jogo salvo na nuvem!','Salvo ✅');
+ showAlert('Próximo jogo salvo!','Salvo ✅');
 }
 }
 function renderProximos(){
@@ -321,7 +335,7 @@ let div=document.getElementById('listaProximos');
 if(proximosJogos.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo.</p></div>';return;}
 div.innerHTML=proximosJogos.map(j=>`
 <div class="card" style="border-left:6px solid #0a5c36">
-<h2>📅 ${j.data.split('-').reverse().join('/')} às ${j.hora}</h2>
+<h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)}</h2>
 <p>📍 ${j.local}</p>
 <p>${j.obs?`📝 ${j.obs}`:''}</p>
 <div style="display:flex;gap:8px;margin-top:10px">
@@ -334,11 +348,12 @@ window.editarProximo=function(key){
  let j=proximosJogos.find(x=>x._key===key);
  if(!j) return;
  document.getElementById('proxData').value=j.data;
- document.getElementById('proxHora').value=j.hora;
+ document.getElementById('proxHoraInicio').value=j.horaInicio || j.hora || '08:00';
+ document.getElementById('proxHoraFim').value=j.horaFim || '11:00';
  document.getElementById('proxLocal').value=j.local;
  document.getElementById('proxObs').value=j.obs||'';
  editandoProxKey=key;
- document.getElementById('btnProxSalvar').innerText='💾 SALVAR EDIÇÃO NA NUVEM';
+ document.getElementById('btnProxSalvar').innerText='💾 SALVAR EDIÇÃO';
  document.getElementById('btnProxCancelar').style.display='block';
  document.getElementById('editProxTxt').style.display='block';
  document.getElementById('editProxTxt').innerText='✏️ Editando jogo de '+j.data.split('-').reverse().join('/')+' - altere e clique em Salvar Edição';
@@ -347,10 +362,11 @@ window.editarProximo=function(key){
 window.cancelarEdicaoProximo=function(){
  editandoProxKey=null;
  document.getElementById('proxData').value='';
- document.getElementById('proxHora').value='08:00';
+ document.getElementById('proxHoraInicio').value='08:00';
+ document.getElementById('proxHoraFim').value='11:00';
  document.getElementById('proxLocal').value='';
  document.getElementById('proxObs').value='';
- document.getElementById('btnProxSalvar').innerText='Salvar Próximo Jogo na Nuvem';
+ document.getElementById('btnProxSalvar').innerText='Salvar Próximo Jogo';
  document.getElementById('btnProxCancelar').style.display='none';
  document.getElementById('editProxTxt').style.display='none';
 }
@@ -368,10 +384,11 @@ function renderInicio(){
   let dataBr=prox.data.split('-').reverse().join('/');
   let diaSemana=new Date(prox.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long'});
   titulo.innerText=`⏰ Próximo Baba - ${dataBr}`;
+  let horarioTxt=getHoraStr(prox);
   let html=`
     <div style="display:grid;gap:6px">
       <div>📅 <strong>Data:</strong> ${dataBr} - ${diaSemana}</div>
-      <div>⏰ <strong>Horário:</strong> ${prox.hora}</div>
+      <div>⏰ <strong>Horário:</strong> ${horarioTxt}</div>
       <div>📍 <strong>Local:</strong> ${prox.local}</div>
     </div>`;
   if(prox.obs && prox.obs.trim()!==''){
@@ -392,7 +409,7 @@ function renderRankings(){
 let keys=Object.keys(historico);
 let divAnual=document.getElementById('rankingAnual');
 if(keys.length===0){
-divAnual.innerHTML='<div class="card"><p>Nenhum dado ainda. Salve times e confrontos para ver o ranking. Dados da nuvem.</p></div>';
+divAnual.innerHTML='<div class="card"><p>Nenhum dado ainda. Salve times e confrontos para ver o ranking.</p></div>';
 return;
 }
 let porCorAnual={};
@@ -438,7 +455,7 @@ let tabelaArtilheiros=`<div class="card" style="border:2px solid #c62828"><h2 st
 let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('') || '<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div>`;
 divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist;
 }
-function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum domingo salvo na nuvem.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
+function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum domingo salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
 window.criacaoAddJogador=function(){
 let nome=document.getElementById('criacaoNome').value.trim();
 let peso=parseInt(document.getElementById('criacaoPeso').value);
@@ -449,7 +466,7 @@ document.getElementById('criacaoNome').value='';
 function renderCriacaoLista(){
 let div=document.getElementById('criacaoListaNomes');
 let total=document.getElementById('criacaoTotal');
-if(criacaoJogadores.length===0){div.innerHTML='<p style="font-size:12px;color:#999">Nenhum jogador adicionado ainda. Dados da nuvem.</p>';total.innerText='';return;}
+if(criacaoJogadores.length===0){div.innerHTML='<p style="font-size:12px;color:#999">Nenhum jogador adicionado ainda.</p>';total.innerText='';return;}
 div.innerHTML=criacaoJogadores.map(j=>{
 let pesoTxt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 - Bom ⭐':'2 - Médio';
 let classe='peso-'+j.peso;
@@ -458,10 +475,10 @@ return `<div class="jogador-item"><span>${j.nome} <span class="peso-badge ${clas
 let g=criacaoJogadores.filter(j=>j.peso===1).length;
 let m=criacaoJogadores.filter(j=>j.peso===2).length;
 let b=criacaoJogadores.filter(j=>j.peso===3).length;
-total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros 1 (Goleiro): ${g} | Médios 2: ${m} | Bons 3: ${b}`;
+total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros: ${g} | Médios: ${m} | Bons: ${b}`;
 }
 window.criacaoRemover=function(key){remove(ref(db,'criacaoJogadores/'+key));}
-window.criacaoLimpar=function(){showConfirm('Limpar todos os nomes da nuvem?',function(){remove(ref(db,'criacaoJogadores'));document.getElementById('criacaoResultado').innerHTML='';document.getElementById('cardCriacaoSalvar').style.display='none';});}
+window.criacaoLimpar=function(){showConfirm('Limpar todos os nomes?',function(){remove(ref(db,'criacaoJogadores'));document.getElementById('criacaoResultado').innerHTML='';document.getElementById('cardCriacaoSalvar').style.display='none';});}
 window.criacaoSortear=function(){
 if(criacaoJogadores.length<2) return showAlert('Adicione pelo menos 2 jogadores');
 let numJog=parseInt(document.getElementById('criacaoNumJogadores').value);
@@ -570,8 +587,8 @@ onValue(ref(db,'historico'), snap=>{
 onValue(ref(db,'proximos'), snap=>{
  const val=snap.val();
  if(!val){proximosJogos=[];} else {
- proximosJogos=Object.entries(val).map(([k,v])=>({...v,_key:k})).sort((a,b)=> (b.criado||0)-(a.criado||0)).reverse();
- proximosJogos.sort((a,b)=> new Date(a.data+'T'+a.hora) - new Date(b.data+'T'+b.hora));
+ proximosJogos=Object.entries(val).map(([k,v])=>({...v,_key:k})).sort((a,b)=> (b.criado||0)-(a.criado||0));
+ proximosJogos.sort((a,b)=> new Date(a.data+'T'+a.horaInicio) - new Date(b.data+'T'+b.horaInicio));
  }
  renderProximos();renderInicio();
 });
