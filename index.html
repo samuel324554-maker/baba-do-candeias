@@ -6,67 +6,72 @@
 <title>Baba do Candeias</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f0f0f0;color:#222}
-header{background:#0a5c36;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
-header h1{font-size:22px;margin:0}
-.subtitulo{font-size:12px;opacity:0.9;margin-top:3px;font-style:italic}
-nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;background:#0a5c36;padding:8px 8px 12px 8px;position:sticky;top:58px;z-index:9}
-nav button{border:0;padding:8px 14px;border-radius:20px;background:#fff;color:#0a5c36;font-weight:bold;cursor:pointer}
-nav button.ativo{background:#ffcc00;color:#222}
-.secao{display:none;padding:10px;max-width:600px;margin:0 auto}
+body{background:#0a5c36;font-family:Arial,sans-serif;color:white}
+header{text-align:center;padding:25px 15px 10px}
+header h1{font-size:36px;font-weight:900;text-shadow:2px 3px 0 rgba(0,0,0,.3)}
+header p{opacity:.9;font-size:13px;margin-top:4px}
+nav{background:rgba(0,0,0,.25);display:flex;justify-content:center;gap:6px;padding:10px;position:sticky;top:0;z-index:10;flex-wrap:wrap}
+nav button{background:transparent;border:1px solid #a7f3d0;color:#a7f3d0;padding:6px 12px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:11px}
+nav button.ativo{background:white;color:#0a5c36}
+.secao{display:none;max-width:1000px;margin:15px auto;padding:0 10px}
 .secao.ativa{display:block}
-.card{background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.card h2{font-size:16px;margin-bottom:8px;color:#0a5c36}
-.row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-input,select{flex:1;padding:10px;border:1px solid #ccc;border-radius:8px;min-width:80px}
-label{font-size:12px;font-weight:bold;color:#555;margin-top:6px;display:block}
-.btn{border:0;padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%}
-.btn-verde{background:#0a5c36;color:#fff}
-.btn-amarelo{background:#ffcc00;color:#222}
-.cal-mes{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:bold}
-.cal-grade{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.dia{background:#fff;border-radius:8px;padding:8px 2px;text-align:center;font-size:12px;min-height:58px;cursor:pointer;border:1px solid #eee}
-.dia.selecionado{background:#0a5c36;color:#fff}
-.semana{font-weight:bold;text-align:center;padding:6px 0;font-size:12px;color:#666}
-.tag{padding:2px 8px;border-radius:10px;font-size:11px;color:#fff;display:inline-block;margin-right:4px}
-.amarelo{background:#f1c40f;color:#222} .vermelho{background:#e74c3c} .azul{background:#3498db} .verde{background:#27ae60} .preto{background:#222}
+.card{background:white;color:#222;padding:16px;border-radius:14px;margin-bottom:12px;box-shadow:0 8px 16px rgba(0,0,0,.25)}
+.card h2{color:#0a5c36;margin-bottom:10px;font-size:16px}
+.btn{padding:10px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;width:100%;margin-top:8px}
+.btn-verde{background:#0a5c36;color:white}
+.btn-preto{background:#111;color:white}
+.btn-cinza{background:#eee;color:#333}
+input,select{padding:10px;border-radius:8px;border:1px solid #ccc;width:100%;margin:3px 0}
+.row{display:flex;gap:6px}
+.peso{display:inline-block;background:#0a5c36;color:white;padding:2px 6px;border-radius:8px;font-size:11px;margin-left:4px}
+.bolinha{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px}
+.jogador-linha{background:#f3f3f3;padding:8px;border-radius:8px;margin:4px 0;display:flex;justify-content:space-between;font-size:13px}
 </style>
 </head>
 <body>
-<header><h1>BABA DO CANDEIAS</h1><p class="subtitulo">o baba mais raiz de Vitoria da Conquista - AO VIVO NA NUVEM</p></header>
+<header><h1>BABA DO CANDEIAS</h1><p>o baba mais raiz de Vitoria da Conquista - VERDE TOTAL + PESO + NUVEM</p></header>
 <nav>
-<button id="btn-inicio" class="ativo" onclick="navegar('inicio')">Inicio</button>
-<button id="btn-times" onclick="navegar('times')">Times</button>
-<button id="btn-proximos" onclick="navegar('proximos')">Proximos</button>
-<button id="btn-ranking" onclick="navegar('ranking')">Ranking</button>
-<button id="btn-fotos" onclick="navegar('fotos')">Fotos</button>
-<button id="btn-historico" onclick="navegar('historico')">Historico</button>
+<button class="ativo" onclick="aba('inicio',this)">Inicio</button>
+<button onclick="aba('times',this)">Times</button>
+<button onclick="aba('proximos',this)">Proximos</button>
+<button onclick="aba('ranking',this)">Ranking</button>
+<button onclick="aba('fotos',this)">Fotos</button>
+<button onclick="aba('historico',this)">Historico</button>
 </nav>
 
 <div id="inicio" class="secao ativa">
-<div class="card"><h2>Bem vindo ao Baba do Candeias!</h2><p>Agora tudo salvo na nuvem - adicionou no PC, aparece no celular na hora!</p></div>
-<div class="card" style="background:#ffcc00;border:2px solid #0a5c36"><h2>DESTAQUE</h2><p id="destaqueProximo" style="font-size:18px;font-weight:bold;color:#0a5c36">Carregando proximo baba da nuvem...</p></div>
-<div id="resumoTimes" class="card"><h2>Times Cadastrados</h2><div id="resumoTimesLista"></div></div>
-</div>
-
-<div id="proximos" class="secao">
-<div class="card"><h2>Adicionar Proximo Jogo - Salva na nuvem</h2><label>Data</label><input id="proxData" type="date"><label>Hora</label><input id="proxHora" type="time" value="08:00"><label>Local</label><input id="proxLocal" placeholder="Campo do Candeias"><label>Observacao</label><input id="proxObs" placeholder="Levar colete..."><button class="btn btn-verde" onclick="salvarProximoJogo()">Salvar na Nuvem para Todos</button><p id="statusProx" style="text-align:center;color:green;margin-top:6px"></p></div>
-<div class="card"><h2>Calendario 2026 e 2027 - Clique no dia</h2><div class="cal-mes"><button onclick="mudarMes(-1,'proximos')"><</button><span id="mesAnoTxtProximos"></span><button onclick="mudarMes(1,'proximos')">></button></div><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn btn-amarelo" onclick="irAno(2026,'proximos')">2026</button><button class="btn btn-amarelo" onclick="irAno(2027,'proximos')">2027</button></div><div id="calDiasSemanaProximos" class="cal-grade"></div><div id="calGridProximos" class="cal-grade"></div></div>
-<div id="listaProximos"></div>
+<div class="card"><h2>Bem vindo! Verde total com peso</h2><p>Adicionou jogador no PC, aparece no celular na hora! Agora com peso pra balancear os times.</p></div>
+<div class="card" style="border-left:6px solid #0a5c36"><h2>Proximo Baba - Ao vivo</h2><div id="destaqueInicio">Carregando da nuvem...</div></div>
+<div id="resumoTimesInicio"></div>
 </div>
 
 <div id="times" class="secao">
-<div class="card"><h2>Adicionar Time</h2><div class="row"><input id="nomeTime" placeholder="Nome do time"><select id="corTime"><option value="amarelo">Amarelo</option><option value="vermelho">Vermelho</option><option value="azul">Azul</option><option value="verde">Verde</option><option value="preto">Preto</option></select></div><button class="btn btn-verde" onclick="adicionarTime()">Adicionar Time na Nuvem</button></div>
-<div id="listaTimes"></div>
+<div class="card">
+<h2>1. Cadastro Geral de Jogadores com PESO (1 a 10)</h2>
+<p style="font-size:12px;color:#666">Peso 10 = craque, Peso 1 = iniciante. O sistema usa o peso pra não deixar os pesados no mesmo time.</p>
+<div class="row"><input id="nomeJogadorGeral" placeholder="Nome do jogador"><select id="pesoJogador" style="max-width:90px"><option value="5">Peso 5</option><option value="10">10 - Craque</option><option value="9">9</option><option value="8">8</option><option value="7">7</option><option value="6">6</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1 - Iniciante</option></select><button class="btn btn-verde" style="width:auto;margin:0" onclick="addJogadorGeral()">+ Add</button></div>
+<div id="listaJogadoresGerais" style="margin-top:10px"></div>
+<div style="margin-top:12px;display:flex;gap:6px"><input id="qtdTimes" type="number" value="2" min="2" max="6" style="max-width:80px"><button class="btn btn-preto" onclick="balancearTimes()">⚖️ MONTAR TIMES BALANCEADOS AUTOMATICO POR PESO</button></div>
+<p style="font-size:11px;color:#666;margin-top:4px">Ex: Se tem 12 jogadores e coloca 2 times, ele divide 6 pra cada com soma de pesos parecida.</p>
 </div>
 
-<div id="ranking" class="secao"><div class="card"><h2>Ranking - Automático da nuvem</h2><div id="rankingAnual"></div></div></div>
-<div id="fotos" class="secao"><div class="card"><h2>Fotos do Baba</h2><p>Em breve galeria na nuvem</p><div id="galeriaFotos"></div></div></div>
-<div id="historico" class="secao"><div class="card"><h2>Histórico</h2><div id="historicoDetalhe"></div></div></div>
+<div id="listaTimesGerados"></div>
+
+<div class="card">
+<h2>Salvar times deste Domingo na Nuvem</h2>
+<input id="dataTime" type="date"><button class="btn btn-verde" onclick="salvarDia()">SALVAR TUDO NA NUVEM</button>
+<p id="statusTimes" style="color:green;text-align:center;margin-top:6px"></p>
+</div>
+</div>
+
+<div id="proximos" class="secao"><div class="card"><h2>Proximos Jogos</h2><input id="pData" type="date"><input id="pHora" type="time" value="08:00"><input id="pLocal" placeholder="Campo do Candeias"><button class="btn btn-verde" onclick="salvarProximo()">Salvar na Nuvem</button></div><div id="listaProximos"></div></div>
+<div id="ranking" class="secao"><div class="card"><h2>Ranking</h2><div id="rankLista"></div></div></div>
+<div id="fotos" class="secao"><div class="card"><h2>Fotos</h2><p>Em breve</p></div></div>
+<div id="historico" class="secao"><div class="card"><h2>Historico de Domingos Salvos</h2><div id="histLista"></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const firebaseConfig = {
   apiKey: "AIzaSyBOAcvw9TvgKhNzi_qmsioXcLheC4Erww",
   authDomain: "baba-do-candeias.firebaseapp.com",
@@ -79,66 +84,88 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let times=[], jogos=[], proximos=[], mesAtual=new Date().getMonth(), anoAtual=new Date().getFullYear(), mesProximos=new Date().getMonth(), anoProximos=2026;
+window.aba = function(id,btn){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');}
 
-window.navegar = function(id){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));document.getElementById('btn-'+id).classList.add('ativo');}
+let jogadores = [];
+let timesAtuais = [];
 
-window.mudarMes = function(dir,tipo){if(tipo=='proximos'){mesProximos+=dir;if(mesProximos<0){mesProximos=11;anoProximos--}if(mesProximos>11){mesProximos=0;anoProximos++}renderCalendarioProximos();}}
+onValue(ref(db,'jogadoresGerais'), snap=>{
+ const d=snap.val(); jogadores = d ? Object.entries(d).map(([k,v])=>({...v,_k:k})) : [];
+ renderJogadores();
+});
 
-window.irAno = function(a,tipo){if(tipo=='proximos'){anoProximos=a;renderCalendarioProximos();}}
-
-window.selecionarDiaProximos = function(ds){document.getElementById('proxData').value=ds;renderCalendarioProximos();}
-
-window.salvarProximoJogo = function(){
- let d=document.getElementById('proxData').value,h=document.getElementById('proxHora').value,l=document.getElementById('proxLocal').value,o=document.getElementById('proxObs').value;
- if(!d) return alert('Escolha a data no calendario');
- push(ref(db,'proximos'),{id:Date.now(),data:d,hora:h,local:l,obs:o,criado:Date.now()});
- document.getElementById('statusProx').innerText='✅ Salvo na nuvem! Todo mundo já vê!';
- setTimeout(()=>document.getElementById('statusProx').innerText='',2000);
+function renderJogadores(){
+ const div=document.getElementById('listaJogadoresGerais');
+ if(jogadores.length==0){div.innerHTML='<p style=color:#888>Nenhum jogador cadastrado</p>';return;}
+ div.innerHTML=jogadores.map(j=>`<div class="jogador-linha"><span>${j.nome} <span class="peso">PESO ${j.peso}</span></span><button onclick="apagarJog('${j._k}')" style="background:#c0392b;color:white;border:0;padding:2px 6px;border-radius:6px">x</button></div>`).join('');
 }
 
-window.adicionarTime = function(){
- let n=document.getElementById('nomeTime').value.trim(),c=document.getElementById('corTime').value;
- if(!n) return;
- push(ref(db,'times'),{nome:n,cor:c,criado:Date.now()});
- document.getElementById('nomeTime').value='';
+window.addJogadorGeral = function(){
+ const nome=document.getElementById('nomeJogadorGeral').value.trim();
+ const peso=parseInt(document.getElementById('pesoJogador').value);
+ if(!nome) return alert('Nome');
+ push(ref(db,'jogadoresGerais'),{nome,peso,criado:Date.now()});
+ document.getElementById('nomeJogadorGeral').value='';
+}
+window.apagarJog = function(k){ if(confirm('Apagar jogador?')) remove(ref(db,'jogadoresGerais/'+k)); }
+
+window.balancearTimes = function(){
+ if(jogadores.length<2) return alert('Cadastre pelo menos 2 jogadores');
+ const qtd=parseInt(document.getElementById('qtdTimes').value)||2;
+ const cores=['vermelho','azul','preto','amarelo','verde','roxo'];
+ const hexs={'vermelho':'red','azul':'#1e88e5','preto':'#111','amarelo':'#ffcc00','verde':'#0a5c36','roxo':'#8e44ad'};
+ // ordena por peso decrescente
+ let lista=[...jogadores].sort((a,b)=>b.peso-a.peso);
+ timesAtuais = Array.from({length:qtd},(_,i)=>({nome:'TIME '+cores[i].toUpperCase(),cor:cores[i],hex:hexs[cores[i]],jogadores:[],pesoTotal:0}));
+ // distribui tipo snake para balancear
+ lista.forEach((jog,idx)=>{
+   let round=Math.floor(idx/qtd);
+   let pos = round%2==0 ? idx%qtd : (qtd-1 - idx%qtd);
+   // para ficar mais balanceado, escolhe o time com menor peso total no round
+   let timeMenor = timesAtuais.reduce((prev,curr)=>curr.pesoTotal<prev.pesoTotal?curr:prev);
+   // se for snake, ainda respeita mas tenta equilibrar
+   let alvo = timesAtuais[pos];
+   if(Math.abs(alvo.pesoTotal - timeMenor.pesoTotal) > 3) alvo = timeMenor;
+   alvo.jogadores.push(jog);
+   alvo.pesoTotal+=jog.peso;
+ });
+ renderTimesGerados();
 }
 
-function renderCalendarioProximos(){
- let m=['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
- document.getElementById('mesAnoTxtProximos').innerText=m[mesProximos]+' '+anoProximos;
- document.getElementById('calDiasSemanaProximos').innerHTML=['D','S','T','Q','Q','S','S'].map(d=>`<div class="semana">${d}</div>`).join('');
- let prim=new Date(anoProximos,mesProximos,1).getDay(),dias=new Date(anoProximos,mesProximos+1,0).getDate(),h='';
- for(let i=0;i<prim;i++)h+='<div></div>';
- for(let d=1;d<=dias;d++){let ds=`${anoProximos}-${String(mesProximos+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,sel=document.getElementById('proxData').value==ds;h+=`<div class="dia ${sel?'selecionado':''}" onclick="selecionarDiaProximos('${ds}')">${d}</div>`;}
- document.getElementById('calGridProximos').innerHTML=h;
+function renderTimesGerados(){
+ const div=document.getElementById('listaTimesGerados');
+ div.innerHTML=timesAtuais.map(t=>`<div class="card"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome} - Peso total: ${t.pesoTotal} - ${t.jogadores.length} jogadores</h2>${t.jogadores.map(j=>`<div class="jogador-linha"><span>${j.nome}</span><span class="peso">PESO ${j.peso}</span></div>`).join('')}</div>`).join('');
+}
+
+window.salvarDia = function(){
+ const data=document.getElementById('dataTime').value;
+ if(!data) return alert('Escolha a data');
+ if(timesAtuais.length==0) return alert('Primeiro clique em MONTAR TIMES BALANCEADOS');
+ push(ref(db,'historico'),{data,times:timesAtuais,criado:Date.now()});
+ document.getElementById('statusTimes').innerText='✅ Salvo na nuvem! Todos veem!';
+ setTimeout(()=>document.getElementById('statusTimes').innerText='',2000);
+}
+
+window.salvarProximo = function(){
+ const data=document.getElementById('pData').value,hora=document.getElementById('pHora').value,local=document.getElementById('pLocal').value;
+ if(!data) return alert('Data');
+ push(ref(db,'proximos'),{data,hora,local,criado:Date.now()});
 }
 
 onValue(ref(db,'proximos'), snap=>{
- const div=document.getElementById('listaProximos'); const destaque=document.getElementById('destaqueProximo');
- const dados=snap.val();
- if(!dados){div.innerHTML='';destaque.innerText='Nenhum baba marcado ainda - adicione o primeiro!';return;}
- const lista=Object.entries(dados).map(([k,v])=>({...v,_key:k})).sort((a,b)=>b.criado-a.criado);
- const ultimo=lista[0];
- if(ultimo){let dia=new Date(ultimo.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long'});destaque.innerText=`Proximo Baba ${dia} ${ultimo.data.split('-').reverse().join('/')} as ${ultimo.hora} - ${ultimo.local}`;}
- div.innerHTML=lista.map(p=>`<div class="card"><b>${p.data} as ${p.hora}</b><br>${p.local}<br><small>${p.obs||''}</small><br><button onclick="apagar('proximos/${p._key}')" style="background:#c0392b;color:#fff;border:0;padding:4px 8px;border-radius:6px;margin-top:6px">Apagar</button></div>`).join('');
- document.getElementById('historicoDetalhe').innerHTML=div.innerHTML;
- renderCalendarioProximos();
+ const d=snap.val(); const lista=d?Object.entries(d).map(([k,v])=>({...v,_k:k})).sort((a,b)=>b.criado-a.criado):[];
+ document.getElementById('listaProximos').innerHTML=lista.map(p=>`<div class="card"><b>${p.data} ${p.hora||''}</b><br>${p.local} <button onclick="apagar('proximos/${p._k}')" style="float:right;background:#c0392b;color:white;border:0;padding:2px 6px;border-radius:6px">x</button></div>`).join('');
+ document.getElementById('destaqueInicio').innerHTML=lista[0]?`${lista[0].data} as ${lista[0].hora} - ${lista[0].local}`:'Nenhum baba marcado - adicione o primeiro!';
+ document.getElementById('rankLista').innerHTML=document.getElementById('listaProximos').innerHTML;
 });
 
-onValue(ref(db,'times'), snap=>{
- const div=document.getElementById('listaTimes'); const resumo=document.getElementById('resumoTimesLista');
- const dados=snap.val();
- if(!dados){div.innerHTML='<div class=card>Nenhum time</div>';resumo.innerHTML='Nenhum';return;}
- const lista=Object.entries(dados).map(([k,v])=>({...v,_key:k}));
- div.innerHTML=lista.map(t=>`<div class="card"><span class="tag ${t.cor}">${t.cor}</span> ${t.nome} <button onclick="apagar('times/${t._key}')" style="float:right;background:#c0392b;color:#fff;border:0;padding:2px 6px;border-radius:6px">x</button></div>`).join('');
- resumo.innerHTML=lista.map(t=>`<div><span class="tag ${t.cor}">${t.cor}</span> ${t.nome}</div>`).join('');
- document.getElementById('rankingAnual').innerHTML=lista.map(t=>`<div class="card">${t.nome} - 0 pontos</div>`).join('');
+onValue(ref(db,'historico'), snap=>{
+ const d=snap.val(); const lista=d?Object.entries(d).map(([k,v])=>({...v,_k:k})).sort((a,b)=>b.criado-a.criado):[];
+ document.getElementById('histLista').innerHTML=lista.map(h=>`<div class="card"><b>${h.data}</b> - ${h.times.length} times <button onclick="apagar('historico/${h._k}')" style="float:right;background:#c0392b;color:white;border:0;padding:2px 6px;border-radius:6px">x</button><div style="margin-top:6px">${h.times.map(t=>`<div><span class="bolinha" style="background:${t.hex}"></span>${t.nome} (${t.pesoTotal} peso): ${t.jogadores.map(j=>j.nome).join(', ')}</div>`).join('')}</div></div>`).join('');
+ document.getElementById('resumoTimesInicio').innerHTML=lista[0]?`<div class="card"><h2>Times do ultimo domingo ${lista[0].data}</h2>${lista[0].times.map(t=>`<div><span class="bolinha" style="background:${t.hex}"></span>${t.nome} - ${t.jogadores.map(j=>j.nome+' (P'+j.peso+')').join(', ')}</div>`).join('')}</div>`:'';
 });
 
-window.apagar = function(path){if(confirm('Apagar este item para todos?')) remove(ref(db,path));}
-
-renderCalendarioProximos();
+window.apagar = function(path){ if(confirm('Apagar para todos?')) remove(ref(db,path)); }
 </script>
 </body>
 </html>
