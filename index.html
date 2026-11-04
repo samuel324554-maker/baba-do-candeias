@@ -155,10 +155,14 @@ td:first-child{text-align:left;font-weight:bold}
 </select>
 <h3 style="color:#0a5c36;margin-top:15px">2️⃣ Número de Jogadores por Time (titulares)</h3>
 <select id="criacaoNumJogadores">
+<option value="3">3 jogadores</option>
 <option value="4">4 jogadores</option>
 <option value="5" selected>5 jogadores</option>
 <option value="6">6 jogadores</option>
 <option value="7">7 jogadores</option>
+<option value="8">8 jogadores</option>
+<option value="9">9 jogadores</option>
+<option value="10">10 jogadores</option>
 </select>
 <h3 style="color:#0a5c36;margin-top:15px">3️⃣ Número de Reservas por Time</h3>
 <select id="criacaoNumReservas">
@@ -168,6 +172,8 @@ td:first-child{text-align:left;font-weight:bold}
 <option value="3">3 reservas</option>
 <option value="4">4 reservas</option>
 <option value="5">5 reservas</option>
+<option value="6">6 reservas</option>
+<option value="7">7 reservas</option>
 </select>
 
 <div style="background:#f9f9f9;padding:12px;border-radius:10px;margin-top:20px">
@@ -186,27 +192,33 @@ td:first-child{text-align:left;font-weight:bold}
 <p id="criacaoTotal" style="font-weight:bold;margin-top:10px;color:#0a5c36"></p>
 </div>
 
-<!-- NOVA ÁREA EM LOTE -->
 <div class="lote-box">
-<h3 style="color:#6a1b9a;margin-bottom:8px">⚡ Adicionar em Lote (rápido) - Para 24, 30 pessoas</h3>
-<p style="font-size:12px;color:#555;margin-bottom:10px">Cole a lista do grupo. Um nome por linha. Pode colar com vírgula também. Todos os de linha terão peso igual (2) e goleiros peso 1 - divisão igual e super rápida!</p>
+<h3 style="color:#6a1b9a;margin-bottom:8px">⚡ Adicionar em Lote (rápido) - Sem limite</h3>
+<p style="font-size:12px;color:#555;margin-bottom:10px">Cole quantos quiser. Um nome por linha ou separado por vírgula. Goleiros vão um por time. Bons peso 3 nunca juntos no mesmo time - distribuição igual: 4 bons + 4 times = 1 por time, 8 bons + 4 times = 2 por time.</p>
 
-<span class="label-peq">🧤 Goleiros (um por time - peso 1)</span>
+<span class="label-peq">🧤 Goleiros - peso 1 (um por time)</span>
 <textarea id="loteGoleiros" placeholder="Ex:
 Neném
 Rafinha
 Bruno
-- ou cole: Neném, Rafinha, Bruno"></textarea>
+- ou: Neném, Rafinha, Bruno"></textarea>
 
-<span class="label-peq" style="margin-top:10px">👟 Jogadores de Linha (todos peso 2 - igual)</span>
-<textarea id="loteLinha" style="min-height:140px" placeholder="Ex: cole a lista do grupo:
+<span class="label-peq" style="margin-top:10px">👟 Medianos - peso 2 (todos iguais)</span>
+<textarea id="loteLinha" style="min-height:90px" placeholder="Ex:
 Samuel
 Vitor
 Léo
 Gustavo
-Marcos
-... pode colar 20 nomes de uma vez!
-Aceita: um por linha, ou separado por vírgula"></textarea>
+- ou: Samuel, Vitor, Léo, Gustavo"></textarea>
+
+<span class="label-peq" style="margin-top:10px">⭐ Bons - peso 3 (nunca juntos, divisão igual)</span>
+<textarea id="loteBons" style="min-height:90px" placeholder="Ex:
+Tinga
+Igor
+Café
+Wallace
+- 4 bons + 4 times = 1 por time
+- 8 bons + 4 times = 2 por time"></textarea>
 
 <div class="row" style="margin-top:10px">
 <button class="btn btn-roxo" style="flex:1" onclick="criacaoAddLote()">⚡ ADICIONAR LISTA TODA DE UMA VEZ</button>
@@ -619,54 +631,59 @@ push(ref(db,'criacaoJogadores'),{nome,peso,criado:Date.now()});
 document.getElementById('criacaoNome').value='';
 }
 
-// ===== NOVA FUNÇÃO LOTE =====
 function parseNomes(texto){
   if(!texto) return [];
-  // separa por quebra de linha, vírgula, ponto e vírgula
   return texto.split(/[\n,;]+/)
     .map(s=>s.trim())
     .filter(s=>s.length>0)
     .map(s=>s.replace(/\s+/g,' ').trim())
-    .filter((v,i,arr)=>v.length>=2);
+    .filter(v=>v.length>=2);
 }
 
 window.criacaoAddLote=function(){
   let txtGoleiros=document.getElementById('loteGoleiros').value;
   let txtLinha=document.getElementById('loteLinha').value;
+  let txtBons=document.getElementById('loteBons').value;
   let nomesGoleiros=parseNomes(txtGoleiros);
   let nomesLinha=parseNomes(txtLinha);
-  if(nomesGoleiros.length===0 && nomesLinha.length===0){
-    return showAlert('Cole pelo menos um nome na caixinha de goleiros ou de jogadores de linha');
+  let nomesBons=parseNomes(txtBons);
+  if(nomesGoleiros.length===0 && nomesLinha.length===0 && nomesBons.length===0){
+    return showAlert('Cole pelo menos um nome em uma das caixinhas');
   }
   let existentes = new Set(criacaoJogadores.map(j=>j.nome.trim().toLowerCase()));
-  let addG=0, addL=0, dup=0;
+  let addG=0, addL=0, addB=0, dup=0;
 
   nomesGoleiros.forEach(nome=>{
     let key=nome.toLowerCase();
     if(existentes.has(key)){dup++; return;}
     push(ref(db,'criacaoJogadores'),{nome,peso:1,criado:Date.now()+Math.random()});
-    existentes.add(key);
-    addG++;
+    existentes.add(key); addG++;
   });
   nomesLinha.forEach(nome=>{
     let key=nome.toLowerCase();
     if(existentes.has(key)){dup++; return;}
     push(ref(db,'criacaoJogadores'),{nome,peso:2,criado:Date.now()+Math.random()});
-    existentes.add(key);
-    addL++;
+    existentes.add(key); addL++;
+  });
+  nomesBons.forEach(nome=>{
+    let key=nome.toLowerCase();
+    if(existentes.has(key)){dup++; return;}
+    push(ref(db,'criacaoJogadores'),{nome,peso:3,criado:Date.now()+Math.random()});
+    existentes.add(key); addB++;
   });
 
-  document.getElementById('loteInfo').innerText=`✅ Adicionados: ${addG} goleiros + ${addL} jogadores de linha = ${addG+addL} total. ${dup?`(${dup} duplicados ignorados)`:''}`;
-  // limpa só se adicionou
-  if(addG+addL>0){
+  document.getElementById('loteInfo').innerText=`✅ Adicionados: ${addG} goleiros + ${addL} medianos (peso 2) + ${addB} bons (peso 3) = ${addG+addL+addB} total. ${dup?`(${dup} duplicados ignorados)`:''}`;
+  if(addG+addL+addB>0){
     document.getElementById('loteGoleiros').value='';
     document.getElementById('loteLinha').value='';
-    showAlert(`Lista adicionada! ${addG} goleiros (peso 1, cada um em um time) + ${addL} jogadores (peso 2, divisão igual) = ${addG+addL} jogadores. Agora é só clicar em SORTEAR!`,'Lote Adicionado ✅');
+    document.getElementById('loteBons').value='';
+    showAlert(`Lista adicionada! ${addG} goleiros (peso 1, um por time) + ${addL} medianos (peso 2, divisão igual) + ${addB} bons (peso 3, nunca juntos - 1 por time se 4 bons/4 times, 2 por time se 8 bons/4 times) = ${addG+addL+addB} jogadores. Agora clica em SORTEAR!`,'Lote Adicionado ✅');
   }
 }
 window.limparLote=function(){
   document.getElementById('loteGoleiros').value='';
   document.getElementById('loteLinha').value='';
+  document.getElementById('loteBons').value='';
   document.getElementById('loteInfo').innerText='';
 }
 
@@ -682,10 +699,11 @@ return `<div class="jogador-item"><span>${j.nome} <span class="peso-badge ${clas
 let g=criacaoJogadores.filter(j=>j.peso===1).length;
 let m=criacaoJogadores.filter(j=>j.peso===2).length;
 let b=criacaoJogadores.filter(j=>j.peso===3).length;
-total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros: ${g} | Médios: ${m} | Bons: ${b}`;
+total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros: ${g} | Médios (peso 2): ${m} | Bons (peso 3): ${b}`;
 }
 window.criacaoRemover=function(key){remove(ref(db,'criacaoJogadores/'+key));}
 window.criacaoLimpar=function(){showConfirm('Limpar todos os nomes?',function(){remove(ref(db,'criacaoJogadores'));document.getElementById('criacaoResultado').innerHTML='';document.getElementById('cardCriacaoSalvar').style.display='none';});}
+
 window.criacaoSortear=function(){
 if(criacaoJogadores.length<2) return showAlert('Adicione pelo menos 2 jogadores');
 let numJog=parseInt(document.getElementById('criacaoNumJogadores').value);
@@ -702,7 +720,9 @@ let corSel=document.getElementById('criacaoCor').value;
 function embaralhar(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} return arr;}
 embaralhar(bons); embaralhar(medios); embaralhar(goleiros);
 let teams=[];
-for(let i=0;i<numTimes;i++){teams.push({id:i,nome:'TIME '+(i+1),jogadores:[],pesoTotal:0,cor:corSel,temGoleiro:false});}
+for(let i=0;i<numTimes;i++){teams.push({id:i,nome:'TIME '+(i+1),jogadores:[],pesoTotal:0,cor:corSel,temGoleiro:false,contBons:0});}
+
+// 1 - Distribui goleiros: 1 por time, nunca 2 juntos
 goleiros.forEach((g, idx)=>{
 let t=teams[idx % teams.length];
 if(!t.temGoleiro && t.jogadores.length<porTime){
@@ -711,23 +731,41 @@ t.jogadores.push(g); t.pesoTotal+=g.peso*2; t.temGoleiro=true;
 let outro=teams.find(tt=>!tt.temGoleiro && tt.jogadores.length<porTime);
 if(outro){outro.jogadores.push(g); outro.pesoTotal+=g.peso*2; outro.temGoleiro=true;}
 else{
-let extra={id:teams.length,nome:'TIME '+(teams.length+1),jogadores:[g],pesoTotal:g.peso*2,cor:corSel,temGoleiro:true};
+let extra={id:teams.length,nome:'TIME '+(teams.length+1),jogadores:[g],pesoTotal:g.peso*2,cor:corSel,temGoleiro:true,contBons:0};
 teams.push(extra);
 }
 }
 });
-bons.forEach(b=>{
-let candidatos=teams.filter(t=>t.jogadores.length<porTime);
-if(candidatos.length===0) return;
-let t=candidatos.sort((a,b)=>a.pesoTotal-b.pesoTotal)[0];
-t.jogadores.push(b); t.pesoTotal+=b.peso;
-});
+
+// 2 - Distribui BONS peso 3: nunca juntos, divisão igual (4 bons/4 times =1 cada, 8 bons/4 times=2 cada)
+let maxBonsPorTime = Math.ceil(bons.length / teams.length);
+let rodada=0;
+while(bons.length>0){
+  // ordena times pelo número de bons (menor primeiro) e depois por pesoTotal
+  let candidatos = teams.filter(t=>t.jogadores.length<porTime && t.contBons < maxBonsPorTime)
+                        .sort((a,b)=>a.contBons - b.contBons || a.pesoTotal - b.pesoTotal);
+  if(candidatos.length===0){
+    // se todos já atingiram max, aumenta max para permitir 2 por time quando 8 bons/4 times
+    maxBonsPorTime++;
+    continue;
+  }
+  let t=candidatos[0];
+  let b=bons.shift();
+  t.jogadores.push(b);
+  t.pesoTotal+=b.peso;
+  t.contBons++;
+  rodada++;
+  if(rodada>1000) break;
+}
+
+// 3 - Distribui medianos peso 2: divisão igual por pesoTotal
 medios.forEach(m=>{
 let candidatos=teams.filter(t=>t.jogadores.length<porTime);
 if(candidatos.length===0) return;
 let t=candidatos.sort((a,b)=>a.pesoTotal-b.pesoTotal)[0];
 t.jogadores.push(m); t.pesoTotal+=m.peso;
 });
+
 let coresDisponiveis=['vermelho','azul','preto','amarelo','verde'];
 if(corSel==='aleatorio'){
 embaralhar(coresDisponiveis);
@@ -751,7 +789,7 @@ let titulares=t.jogadores.slice(0,numJog);
 let reservas=t.jogadores.slice(numJog);
 let pesoSum=t.jogadores.reduce((s,j)=>s+j.peso,0);
 let temGol=t.temGoleiro?'🧤 1 (Goleiro) ok':'⚠️ sem goleiro';
-return `<div class="card team-criado" style="border-left-color:${t.hex}"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome} - ${t.jogadores.length} jog. | Peso: ${pesoSum} | ${temGol}</h2>
+return `<div class="card team-criado" style="border-left-color:${t.hex}"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome} - ${t.jogadores.length} jog. | Peso: ${pesoSum} | ${temGol} | Bons: ${t.contBons}</h2>
 <p style="font-size:12px;color:#666;margin-bottom:8px">Titulares (${titulares.length}):</p>
 ${titulares.map(j=>{
 let txt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 Bom ⭐':'2 Médio';
@@ -763,7 +801,7 @@ return `<div class="jogador-item" style="background:#e8f5e9"><span>${j.nome}</sp
 }).join(''):''}
 </div>`;
 }).join('');
-let resumo=`<div class="card" style="border:2px solid #6a1b9a"><h2>✅ Sorteio Realizado!</h2><p>${jogadores.length} jogadores divididos em ${teams.length} times de ${numJog} titulares + ${numRes} reservas (total ${porTime} por time)</p><p style="font-size:12px;color:#666;margin-top:5px">Regras: 1 (Goleiro) nunca 2 no mesmo time, 3 bons em times diferentes. Jogadores de peso igual divididos igualmente.</p></div>`;
+let resumo=`<div class="card" style="border:2px solid #6a1b9a"><h2>✅ Sorteio Realizado!</h2><p>${jogadores.length} jogadores divididos em ${teams.length} times de ${numJog} titulares + ${numRes} reservas (total ${porTime} por time) - até 10 titulares e até 7 reservas, igual profissional!</p><p style="font-size:12px;color:#666;margin-top:5px">Regras: Goleiros peso 1 nunca 2 no mesmo time | Bons peso 3 divisão igual: 4 bons/4 times=1 cada, 8 bons/4 times=2 cada | Medianos peso 2 divisão igual</p></div>`;
 document.getElementById('criacaoResultado').innerHTML=resumo+htmlResultado;
 document.getElementById('cardCriacaoSalvar').style.display='block';
 window.scrollTo({top:document.getElementById('criacaoResultado').offsetTop-80,behavior:'smooth'});
