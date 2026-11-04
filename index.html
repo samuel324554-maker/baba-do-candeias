@@ -3,72 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baba do Candeias - Conquista</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>body{font-family:Inter,sans-serif}.tab-active{background:#16a34a;color:white}</style>
+<title>Baba do Candeias</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f0f0f0;color:#222}
+header{background:#0a5c36;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
+header h1{font-size:22px;margin:0}
+.subtitulo{font-size:12px;opacity:0.9;margin-top:3px;font-style:italic}
+nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;background:#0a5c36;padding:8px 8px 12px 8px;position:sticky;top:58px;z-index:9}
+nav button{border:0;padding:8px 14px;border-radius:20px;background:#fff;color:#0a5c36;font-weight:bold;cursor:pointer}
+nav button.ativo{background:#ffcc00;color:#222}
+.secao{display:none;padding:10px;max-width:600px;margin:0 auto}
+.secao.ativa{display:block}
+.card{background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.card h2{font-size:16px;margin-bottom:8px;color:#0a5c36}
+.row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+input,select{flex:1;padding:10px;border:1px solid #ccc;border-radius:8px;min-width:80px}
+label{font-size:12px;font-weight:bold;color:#555;margin-top:6px;display:block}
+.btn{border:0;padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%}
+.btn-verde{background:#0a5c36;color:#fff}
+.btn-amarelo{background:#ffcc00;color:#222}
+.cal-mes{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:bold}
+.cal-grade{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dia{background:#fff;border-radius:8px;padding:8px 2px;text-align:center;font-size:12px;min-height:58px;cursor:pointer;border:1px solid #eee}
+.dia.selecionado{background:#0a5c36;color:#fff}
+.semana{font-weight:bold;text-align:center;padding:6px 0;font-size:12px;color:#666}
+.tag{padding:2px 8px;border-radius:10px;font-size:11px;color:#fff;display:inline-block;margin-right:4px}
+.amarelo{background:#f1c40f;color:#222} .vermelho{background:#e74c3c} .azul{background:#3498db} .verde{background:#27ae60} .preto{background:#222}
+</style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen">
-<header class="bg-gradient-to-r from-green-700 to-green-500 p-5 rounded-b-[25px]">
-<div class="max-w-4xl mx-auto flex justify-between items-center">
-<div><h1 class="text-2xl font-extrabold">⚽ Baba do Candeias</h1><p class="text-green-100 text-sm">Vitória da Conquista - BA • Ao vivo na nuvem</p></div>
-<div class="bg-white text-green-700 px-3 py-1 rounded-full text-xs font-bold animate-pulse">● AO VIVO</div>
+<body>
+<header><h1>BABA DO CANDEIAS</h1><p class="subtitulo">o baba mais raiz de Vitoria da Conquista - AO VIVO NA NUVEM</p></header>
+<nav>
+<button id="btn-inicio" class="ativo" onclick="navegar('inicio')">Inicio</button>
+<button id="btn-times" onclick="navegar('times')">Times</button>
+<button id="btn-proximos" onclick="navegar('proximos')">Proximos</button>
+<button id="btn-ranking" onclick="navegar('ranking')">Ranking</button>
+<button id="btn-fotos" onclick="navegar('fotos')">Fotos</button>
+<button id="btn-historico" onclick="navegar('historico')">Historico</button>
+</nav>
+
+<div id="inicio" class="secao ativa">
+<div class="card"><h2>Bem vindo ao Baba do Candeias!</h2><p>Agora tudo salvo na nuvem - adicionou no PC, aparece no celular na hora!</p></div>
+<div class="card" style="background:#ffcc00;border:2px solid #0a5c36"><h2>DESTAQUE</h2><p id="destaqueProximo" style="font-size:18px;font-weight:bold;color:#0a5c36">Carregando proximo baba da nuvem...</p></div>
+<div id="resumoTimes" class="card"><h2>Times Cadastrados</h2><div id="resumoTimesLista"></div></div>
 </div>
-</header>
-<div class="max-w-4xl mx-auto p-4">
-<div class="flex gap-2 overflow-x-auto pb-2 mt-2">
-<button onclick="aba('jogos')" id="btn-jogos" class="tab-active px-4 py-2 rounded-full font-bold"><i class="fa-solid fa-calendar"></i> Jogos</button>
-<button onclick="aba('times')" id="btn-times" class="bg-slate-800 px-4 py-2 rounded-full font-bold"><i class="fa-solid fa-people-group"></i> Times</button>
-<button onclick="aba('ranking')" id="btn-ranking" class="bg-slate-800 px-4 py-2 rounded-full font-bold"><i class="fa-solid fa-trophy"></i> Ranking</button>
-<button onclick="aba('artilharia')" id="btn-artilharia" class="bg-slate-800 px-4 py-2 rounded-full font-bold"><i class="fa-solid fa-futbol"></i> Artilharia</button>
+
+<div id="proximos" class="secao">
+<div class="card"><h2>Adicionar Proximo Jogo - Salva na nuvem</h2><label>Data</label><input id="proxData" type="date"><label>Hora</label><input id="proxHora" type="time" value="08:00"><label>Local</label><input id="proxLocal" placeholder="Campo do Candeias"><label>Observacao</label><input id="proxObs" placeholder="Levar colete..."><button class="btn btn-verde" onclick="salvarProximoJogo()">Salvar na Nuvem para Todos</button><p id="statusProx" style="text-align:center;color:green;margin-top:6px"></p></div>
+<div class="card"><h2>Calendario 2026 e 2027 - Clique no dia</h2><div class="cal-mes"><button onclick="mudarMes(-1,'proximos')"><</button><span id="mesAnoTxtProximos"></span><button onclick="mudarMes(1,'proximos')">></button></div><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn btn-amarelo" onclick="irAno(2026,'proximos')">2026</button><button class="btn btn-amarelo" onclick="irAno(2027,'proximos')">2027</button></div><div id="calDiasSemanaProximos" class="cal-grade"></div><div id="calGridProximos" class="cal-grade"></div></div>
+<div id="listaProximos"></div>
 </div>
-<div id="sec-jogos" class="mt-4">
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-<h3 class="font-bold text-lg mb-3">➕ Adicionar Baba</h3>
-<div class="grid grid-cols-2 gap-2">
-<input id="data" type="date" class="bg-slate-950 border border-slate-700 rounded-xl p-3">
-<input id="hora" type="time" value="08:00" class="bg-slate-950 border border-slate-700 rounded-xl p-3">
+
+<div id="times" class="secao">
+<div class="card"><h2>Adicionar Time</h2><div class="row"><input id="nomeTime" placeholder="Nome do time"><select id="corTime"><option value="amarelo">Amarelo</option><option value="vermelho">Vermelho</option><option value="azul">Azul</option><option value="verde">Verde</option><option value="preto">Preto</option></select></div><button class="btn btn-verde" onclick="adicionarTime()">Adicionar Time na Nuvem</button></div>
+<div id="listaTimes"></div>
 </div>
-<input id="local" placeholder="📍 Local: Campo do Candeias" class="w-full mt-2 bg-slate-950 border border-slate-700 rounded-xl p-3">
-<input id="times" placeholder="⚽ Ex: Os Primos x Candeias FC" class="w-full mt-2 bg-slate-950 border border-slate-700 rounded-xl p-3">
-<button onclick="salvarJogo()" class="w-full mt-3 bg-green-600 py-3 rounded-xl font-bold">Salvar na Nuvem para Todos</button>
-<p id="statusJogo" class="text-center text-green-400 text-sm mt-2"></p>
-</div>
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 mt-4">
-<h3 class="font-bold">📅 Próximos Babas - Sincronizado</h3>
-<div id="listaJogos" class="mt-3 space-y-2">Carregando da nuvem...</div>
-</div>
-</div>
-<div id="sec-times" class="hidden mt-4">
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-<h3 class="font-bold">👕 Cadastrar Time</h3>
-<input id="nomeTime" placeholder="Nome do time" class="w-full mt-2 bg-slate-950 border border-slate-700 rounded-xl p-3">
-<button onclick="salvarTime()" class="w-full mt-2 bg-blue-600 py-3 rounded-xl font-bold">Salvar Time na Nuvem</button>
-</div><div id="listaTimes" class="mt-4 grid gap-2"></div>
-</div>
-<div id="sec-ranking" class="hidden mt-4">
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-<h3 class="font-bold">🏆 Ranking</h3>
-<div class="flex gap-2 mt-3">
-<input id="timeRank" placeholder="Time" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl p-3">
-<input id="pontosRank" type="number" placeholder="Pontos" class="w-24 bg-slate-950 border border-slate-700 rounded-xl p-3">
-</div>
-<button onclick="salvarRanking()" class="w-full mt-2 bg-yellow-600 py-3 rounded-xl font-bold">Salvar Ranking</button>
-<div id="listaRanking" class="mt-4"></div>
-</div>
-</div>
-<div id="sec-artilharia" class="hidden mt-4">
-<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-<h3 class="font-bold">⚽ Artilharia</h3>
-<div class="grid grid-cols-2 gap-2 mt-3">
-<input id="jogador" placeholder="Nome do jogador" class="bg-slate-950 border border-slate-700 rounded-xl p-3">
-<input id="gols" type="number" placeholder="Gols" class="bg-slate-950 border border-slate-700 rounded-xl p-3">
-</div>
-<button onclick="salvarArtilharia()" class="w-full mt-2 bg-orange-600 py-3 rounded-xl font-bold">Salvar Artilheiro</button>
-<div id="listaArtilharia" class="mt-4"></div>
-</div>
-</div>
-</div>
+
+<div id="ranking" class="secao"><div class="card"><h2>Ranking - Automático da nuvem</h2><div id="rankingAnual"></div></div></div>
+<div id="fotos" class="secao"><div class="card"><h2>Fotos do Baba</h2><p>Em breve galeria na nuvem</p><div id="galeriaFotos"></div></div></div>
+<div id="historico" class="secao"><div class="card"><h2>Histórico</h2><div id="historicoDetalhe"></div></div></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -83,72 +78,67 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-window.aba = function(nome){
-  ['jogos','times','ranking','artilharia'].forEach(a=>{
-    document.getElementById('sec-'+a).classList.add('hidden');
-    document.getElementById('btn-'+a).classList.remove('tab-active');
-    document.getElementById('btn-'+a).classList.add('bg-slate-800');
-  });
-  document.getElementById('sec-'+nome).classList.remove('hidden');
-  document.getElementById('btn-'+nome).classList.add('tab-active');
-  document.getElementById('btn-'+nome).classList.remove('bg-slate-800');
+
+let times=[], jogos=[], proximos=[], mesAtual=new Date().getMonth(), anoAtual=new Date().getFullYear(), mesProximos=new Date().getMonth(), anoProximos=2026;
+
+window.navegar = function(id){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));document.getElementById('btn-'+id).classList.add('ativo');}
+
+window.mudarMes = function(dir,tipo){if(tipo=='proximos'){mesProximos+=dir;if(mesProximos<0){mesProximos=11;anoProximos--}if(mesProximos>11){mesProximos=0;anoProximos++}renderCalendarioProximos();}}
+
+window.irAno = function(a,tipo){if(tipo=='proximos'){anoProximos=a;renderCalendarioProximos();}}
+
+window.selecionarDiaProximos = function(ds){document.getElementById('proxData').value=ds;renderCalendarioProximos();}
+
+window.salvarProximoJogo = function(){
+ let d=document.getElementById('proxData').value,h=document.getElementById('proxHora').value,l=document.getElementById('proxLocal').value,o=document.getElementById('proxObs').value;
+ if(!d) return alert('Escolha a data no calendario');
+ push(ref(db,'proximos'),{id:Date.now(),data:d,hora:h,local:l,obs:o,criado:Date.now()});
+ document.getElementById('statusProx').innerText='✅ Salvo na nuvem! Todo mundo já vê!';
+ setTimeout(()=>document.getElementById('statusProx').innerText='',2000);
 }
-window.salvarJogo = function(){
-  const data=document.getElementById('data').value;
-  const hora=document.getElementById('hora').value;
-  const local=document.getElementById('local').value;
-  const times=document.getElementById('times').value;
-  if(!data||!local) return alert('Preencha data e local');
-  push(ref(db,'jogos'),{data,hora,local,times,criado:Date.now()});
-  document.getElementById('statusJogo').innerText='✅ Salvo! Todo mundo já vê!';
-  setTimeout(()=>document.getElementById('statusJogo').innerText='',2000);
-  document.getElementById('local').value='';document.getElementById('times').value='';
+
+window.adicionarTime = function(){
+ let n=document.getElementById('nomeTime').value.trim(),c=document.getElementById('corTime').value;
+ if(!n) return;
+ push(ref(db,'times'),{nome:n,cor:c,criado:Date.now()});
+ document.getElementById('nomeTime').value='';
 }
-window.salvarTime = function(){
-  const nome=document.getElementById('nomeTime').value;
-  if(!nome) return;
-  push(ref(db,'times'),{nome,criado:Date.now()});
-  document.getElementById('nomeTime').value='';
+
+function renderCalendarioProximos(){
+ let m=['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+ document.getElementById('mesAnoTxtProximos').innerText=m[mesProximos]+' '+anoProximos;
+ document.getElementById('calDiasSemanaProximos').innerHTML=['D','S','T','Q','Q','S','S'].map(d=>`<div class="semana">${d}</div>`).join('');
+ let prim=new Date(anoProximos,mesProximos,1).getDay(),dias=new Date(anoProximos,mesProximos+1,0).getDate(),h='';
+ for(let i=0;i<prim;i++)h+='<div></div>';
+ for(let d=1;d<=dias;d++){let ds=`${anoProximos}-${String(mesProximos+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,sel=document.getElementById('proxData').value==ds;h+=`<div class="dia ${sel?'selecionado':''}" onclick="selecionarDiaProximos('${ds}')">${d}</div>`;}
+ document.getElementById('calGridProximos').innerHTML=h;
 }
-window.salvarRanking = function(){
-  const time=document.getElementById('timeRank').value;
-  const pontos=parseInt(document.getElementById('pontosRank').value)||0;
-  if(!time) return;
-  push(ref(db,'ranking'),{time,pontos,criado:Date.now()});
-  document.getElementById('timeRank').value='';document.getElementById('pontosRank').value='';
-}
-window.salvarArtilharia = function(){
-  const jogador=document.getElementById('jogador').value;
-  const gols=parseInt(document.getElementById('gols').value)||0;
-  if(!jogador) return;
-  push(ref(db,'artilharia'),{jogador,gols,criado:Date.now()});
-  document.getElementById('jogador').value='';document.getElementById('gols').value='';
-}
-onValue(ref(db,'jogos'), snap=>{
-  const div=document.getElementById('listaJogos'); div.innerHTML='';
-  const dados=snap.val(); if(!dados){div.innerHTML='<p class=text-slate-500>Nenhum jogo</p>';return;}
-  Object.entries(dados).sort((a,b)=>b[1].criado-a[1].criado).forEach(([id,j])=>{
-    div.innerHTML+=`<div class="bg-slate-950 border-l-4 border-green-500 p-3 rounded-xl flex justify-between"><div><b>${j.data} ${j.hora}</b><br>📍 ${j.local}<br>⚽ ${j.times}</div><button onclick="apagar('jogos/${id}')" class="text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
-  });
+
+onValue(ref(db,'proximos'), snap=>{
+ const div=document.getElementById('listaProximos'); const destaque=document.getElementById('destaqueProximo');
+ const dados=snap.val();
+ if(!dados){div.innerHTML='';destaque.innerText='Nenhum baba marcado ainda - adicione o primeiro!';return;}
+ const lista=Object.entries(dados).map(([k,v])=>({...v,_key:k})).sort((a,b)=>b.criado-a.criado);
+ const ultimo=lista[0];
+ if(ultimo){let dia=new Date(ultimo.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long'});destaque.innerText=`Proximo Baba ${dia} ${ultimo.data.split('-').reverse().join('/')} as ${ultimo.hora} - ${ultimo.local}`;}
+ div.innerHTML=lista.map(p=>`<div class="card"><b>${p.data} as ${p.hora}</b><br>${p.local}<br><small>${p.obs||''}</small><br><button onclick="apagar('proximos/${p._key}')" style="background:#c0392b;color:#fff;border:0;padding:4px 8px;border-radius:6px;margin-top:6px">Apagar</button></div>`).join('');
+ document.getElementById('historicoDetalhe').innerHTML=div.innerHTML;
+ renderCalendarioProximos();
 });
+
 onValue(ref(db,'times'), snap=>{
-  const div=document.getElementById('listaTimes'); div.innerHTML='';
-  const dados=snap.val(); if(!dados) return;
-  Object.entries(dados).forEach(([id,t])=>{ div.innerHTML+=`<div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between"><span>👕 ${t.nome}</span><button onclick="apagar('times/${id}')" class="text-red-400">Apagar</button></div>`; });
+ const div=document.getElementById('listaTimes'); const resumo=document.getElementById('resumoTimesLista');
+ const dados=snap.val();
+ if(!dados){div.innerHTML='<div class=card>Nenhum time</div>';resumo.innerHTML='Nenhum';return;}
+ const lista=Object.entries(dados).map(([k,v])=>({...v,_key:k}));
+ div.innerHTML=lista.map(t=>`<div class="card"><span class="tag ${t.cor}">${t.cor}</span> ${t.nome} <button onclick="apagar('times/${t._key}')" style="float:right;background:#c0392b;color:#fff;border:0;padding:2px 6px;border-radius:6px">x</button></div>`).join('');
+ resumo.innerHTML=lista.map(t=>`<div><span class="tag ${t.cor}">${t.cor}</span> ${t.nome}</div>`).join('');
+ document.getElementById('rankingAnual').innerHTML=lista.map(t=>`<div class="card">${t.nome} - 0 pontos</div>`).join('');
 });
-onValue(ref(db,'ranking'), snap=>{
-  const div=document.getElementById('listaRanking'); div.innerHTML='';
-  const dados=snap.val(); if(!dados) return;
-  const lista=Object.entries(dados).map(([id,v])=>({...v,id})).sort((a,b)=>b.pontos-a.pontos);
-  lista.forEach((r,i)=>{ div.innerHTML+=`<div class="flex justify-between bg-slate-950 p-3 rounded-xl mt-2"><span>${i+1}º ${r.time}</span><b>${r.pontos} pts</b><button onclick="apagar('ranking/${r.id}')" class="text-red-400">x</button></div>`; });
-});
-onValue(ref(db,'artilharia'), snap=>{
-  const div=document.getElementById('listaArtilharia'); div.innerHTML='';
-  const dados=snap.val(); if(!dados) return;
-  const lista=Object.entries(dados).map(([id,v])=>({...v,id})).sort((a,b)=>b.gols-a.gols);
-  lista.forEach((r,i)=>{ div.innerHTML+=`<div class="flex justify-between bg-slate-950 p-3 rounded-xl mt-2"><span>${i+1}º ${r.jogador}</span><b>${r.gols} gols</b><button onclick="apagar('artilharia/${r.id}')" class="text-red-400">x</button></div>`; });
-});
-window.apagar = function(path){ if(confirm('Apagar para todos?')) remove(ref(db,path)); }
+
+window.apagar = function(path){if(confirm('Apagar este item para todos?')) remove(ref(db,path));}
+
+renderCalendarioProximos();
 </script>
 </body>
 </html>
