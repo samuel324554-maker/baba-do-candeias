@@ -80,13 +80,16 @@ td:first-child{text-align:left;font-weight:bold}
 .selecao-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;margin:6px 0;background:white;border-left:6px solid #0a5c36}
 .selecao-pos{font-weight:900;color:#0a5c36;font-size:12px;min-width:125px}
 .lote-box{background:#f1f8e9;border:2px dashed #6a1b9a;padding:12px;border-radius:12px;margin-top:18px}
-.conf-jogador{background:#f9f9f9;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.conf-jogador-nome{font-weight:bold;flex:1;font-size:14px}
-.conf-btns{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
-.btn-mini{border:0;border-radius:8px;padding:7px 9px;font-weight:900;cursor:pointer;font-size:14px;line-height:1}
+.conf-jogador{background:#f9f9f9;padding:12px;border-radius:12px;margin:8px 0}
+.conf-jogador-nome{font-weight:900;font-size:16px;margin-bottom:8px}
+.conf-linha{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #eee}
+.conf-linha:last-child{border-bottom:0}
+.conf-linha-info{font-size:16px;font-weight:bold;display:flex;align-items:center;gap:6px}
+.conf-btns{display:flex;gap:6px;align-items:center}
+.btn-mini{border:0;border-radius:10px;padding:10px 14px;font-weight:900;cursor:pointer;font-size:18px;line-height:1;min-width:44px;text-align:center}
 .btn-mini-gol{background:#0a5c36;color:white}
 .btn-mini-ast{background:#1e88e5;color:white}
-.btn-mini-menos{background:#eee;color:#333}
+.btn-mini-menos{background:#e0e0e0;color:#333}
 .conf-box{background:#f1f8e9;border:2px solid #0a5c36;border-radius:12px;padding:12px;margin-top:12px}
 .conf-box h4{color:#0a5c36;font-size:14px;margin-bottom:6px}
 </style>
@@ -128,7 +131,7 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="listaTimes"></div>
 <div class="card" id="cardConfrontos" style="display:none">
 <h2>⚔️ Confrontos do Dia - Ao Vivo</h2>
-<p style="font-size:12px;color:#666">Salve os times com 0 gols antes do jogo. Na hora do jogo, aperte + Gol no jogador. O placar sobe sozinho. Assistência só sobe no jogador, não no placar.</p>
+<p style="font-size:12px;color:#666">Salve os times com 0 gols antes do jogo. Na hora do jogo, aperte + no jogador. O placar sobe sozinho. Assistência só sobe no jogador, não no placar.</p>
 <div class="row" style="margin-top:10px"><select id="selTime1" onchange="onTrocarTimeConfronto()"></select><input id="placar1" type="number" placeholder="Gols" style="max-width:70px" oninput="onDigitarPlacar(1)"><span style="align-self:center;font-weight:bold"> X </span><input id="placar2" type="number" placeholder="Gols" style="max-width:70px" oninput="onDigitarPlacar(2)"><select id="selTime2" onchange="onTrocarTimeConfronto()"></select></div>
 <div id="areaConfrontoAoVivo"></div>
 <button class="btn btn-verde" onclick="addConfronto()">+ Adicionar Confronto</button>
@@ -154,7 +157,6 @@ td:first-child{text-align:left;font-weight:bold}
 <div class="card" style="border:2px solid #6a1b9a">
 <h2>🎲 Criação de Times - Sorteio Equilibrado</h2>
 <p style="font-size:13px;color:#555;margin-bottom:15px">Monte times equilibrados! Peso 3 (bons) nunca ficam juntos. Goleiros <strong>1 (Goleiro)</strong> nunca ficam no mesmo time.</p>
-
 <h3 style="color:#0a5c36;margin-top:10px">1️⃣ Selecione a Cor</h3>
 <select id="criacaoCor">
 <option value="aleatorio">🎲 Aleatório (cores diferentes)</option>
@@ -186,7 +188,6 @@ td:first-child{text-align:left;font-weight:bold}
 <option value="6">6 reservas</option>
 <option value="7">7 reservas</option>
 </select>
-
 <div style="background:#f9f9f9;padding:12px;border-radius:10px;margin-top:20px">
 <h3 style="color:#0a5c36">4️⃣ Adicionar Nome Individual + Peso</h3>
 <p style="font-size:12px;color:#666;margin-bottom:8px">1 (Goleiro) 🧤 | 2 = Médio | 3 = Bom ⭐</p>
@@ -202,18 +203,15 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="criacaoListaNomes" style="margin-top:10px"></div>
 <p id="criacaoTotal" style="font-weight:bold;margin-top:10px;color:#0a5c36"></p>
 </div>
-
 <div class="lote-box">
 <h3 style="color:#6a1b9a;margin-bottom:8px">⚡ Adicionar em Lote (rápido) - Sem limite</h3>
 <p style="font-size:12px;color:#555;margin-bottom:10px">Cole quantos quiser. Um nome por linha ou separado por vírgula. Goleiros vão um por time. Bons peso 3 nunca juntos no mesmo time - distribuição igual: 4 bons + 4 times = 1 por time, 8 bons + 4 times = 2 por time.</p>
-
 <span class="label-peq">🧤 Goleiros - peso 1 (um por time)</span>
 <textarea id="loteGoleiros" placeholder="Ex:
 Neném
 Rafinha
 Bruno
 - ou: Neném, Rafinha, Bruno"></textarea>
-
 <span class="label-peq" style="margin-top:10px">👟 Medianos - peso 2 (todos iguais)</span>
 <textarea id="loteLinha" style="min-height:90px" placeholder="Ex:
 Samuel
@@ -221,7 +219,6 @@ Vitor
 Léo
 Gustavo
 - ou: Samuel, Vitor, Léo, Gustavo"></textarea>
-
 <span class="label-peq" style="margin-top:10px">⭐ Bons - peso 3 (nunca juntos, divisão igual)</span>
 <textarea id="loteBons" style="min-height:90px" placeholder="Ex:
 Tinga
@@ -230,14 +227,12 @@ Café
 Wallace
 - 4 bons + 4 times = 1 por time
 - 8 bons + 4 times = 2 por time"></textarea>
-
 <div class="row" style="margin-top:10px">
 <button class="btn btn-roxo" style="flex:1" onclick="criacaoAddLote()">⚡ ADICIONAR LISTA TODA DE UMA VEZ</button>
 <button class="btn btn-cinza" style="flex:0.5" onclick="limparLote()">Limpar</button>
 </div>
 <p id="loteInfo" style="font-size:12px;color:#6a1b9a;margin-top:8px;font-weight:bold"></p>
 </div>
-
 <button class="btn btn-roxo" onclick="criacaoSortear()">🎲 SORTEAR TIMES AGORA</button>
 <button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="criacaoLimpar()">🗑️ Limpar Lista</button>
 </div>
@@ -307,7 +302,6 @@ let editandoData=null;
 let criacaoJogadores=[];
 let criacaoTimesSorteados=[];
 let editandoProxKey=null;
-// NOVO AO VIVO - SÓ ISSO FOI ADICIONADO, NADA MAIS
 let golsSemAutor={1:0,2:0};
 let ultimoPlacarCalculado={1:0,2:0};
 const coresMap={vermelho:{nome:'VERMELHO',hex:'red'},azul:{nome:'AZUL',hex:'#1e88e5'},preto:{nome:'PRETO',hex:'#111'},amarelo:{nome:'AMARELO',hex:'#ffcc00'},verde:{nome:'VERDE',hex:'#2e7d32'}};
@@ -368,22 +362,33 @@ function renderConfrontoAoVivo(zerarPlacar=true){
   if(!t1||!t2){div.innerHTML='';return;}
   if(zerarPlacar) syncPlacar();
   function bloco(time,lado){
-    return `<div class="conf-box"><h4><span class="bolinha" style="background:${time.hex}"></span> ${time.nome} - Toque em + Gol quando ele marcar</h4>
+    return `<div class="conf-box"><h4><span class="bolinha" style="background:${time.hex}"></span> ${time.nome} - Toque em + quando marcar</h4>
     ${time.jogadores.map(j=>`
       <div class="conf-jogador">
-        <span class="conf-jogador-nome">${j.nome}<br><span style="font-weight:normal;font-size:12px;color:#666">⚽ ${j.gols||0} gols | 🎯 ${j.ast||0} assist</span></span>
-        <div class="conf-btns">
-          <button class="btn-mini btn-mini-menos" onclick="altGolJogador('${time.id}','${j.id}',-1)">− Gol</button>
-          <button class="btn-mini btn-mini-gol" onclick="altGolJogador('${time.id}','${j.id}',1)">+ Gol</button>
-          <button class="btn-mini btn-mini-menos" onclick="altAstJogador('${time.id}','${j.id}',-1)">− Ast</button>
-          <button class="btn-mini btn-mini-ast" onclick="altAstJogador('${time.id}','${j.id}',1)">+ Assist</button>
+        <div class="conf-jogador-nome">${j.nome}</div>
+        <div class="conf-linha">
+          <span class="conf-linha-info">⚽ ${j.gols||0}</span>
+          <div class="conf-btns">
+            <button class="btn-mini btn-mini-menos" onclick="altGolJogador('${time.id}','${j.id}',-1)">−</button>
+            <button class="btn-mini btn-mini-gol" onclick="altGolJogador('${time.id}','${j.id}',1)">+</button>
+          </div>
+        </div>
+        <div class="conf-linha">
+          <span class="conf-linha-info">🎯 ${j.ast||0}</span>
+          <div class="conf-btns">
+            <button class="btn-mini btn-mini-menos" onclick="altAstJogador('${time.id}','${j.id}',-1)">−</button>
+            <button class="btn-mini btn-mini-ast" onclick="altAstJogador('${time.id}','${j.id}',1)">+</button>
+          </div>
         </div>
       </div>`).join('')}
       <div class="conf-jogador" style="background:#fffbe6">
-        <span class="conf-jogador-nome">Gol sem autor<br><span style="font-weight:normal;font-size:12px;color:#666">Só sobe no placar, sem dar gol pra ninguém • ${golsSemAutor[lado]} gols</span></span>
-        <div class="conf-btns">
-          <button class="btn-mini btn-mini-menos" onclick="addGolSemAutor(${lado},-1)">−</button>
-          <button class="btn-mini btn-mini-gol" onclick="addGolSemAutor(${lado},1)">+ Gol sem autor</button>
+        <div class="conf-jogador-nome">Gol sem autor</div>
+        <div class="conf-linha">
+          <span class="conf-linha-info">⚽ ${golsSemAutor[lado]}</span>
+          <div class="conf-btns">
+            <button class="btn-mini btn-mini-menos" onclick="addGolSemAutor(${lado},-1)">−</button>
+            <button class="btn-mini btn-mini-gol" onclick="addGolSemAutor(${lado},1)">+</button>
+          </div>
         </div>
       </div>
     </div>`;
@@ -428,14 +433,12 @@ return `<div><div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span
 div.innerHTML=`<div class="card" style="border:2px solid #0a5c36"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>${h.times.length} times | ${h.confrontos?.length||0} jogos</p><button class="btn btn-amarelo" onclick="editarDia('${dataStr}')">✏️ EDITAR TODAS AS INFORMAÇÕES DESSE DIA</button></div>`+confHtml+tabelaHtml+timesHtml;
 }
 window.editarDia=function(dataStr){showConfirm('Editar o dia '+dataStr.split('-').reverse().join('/')+'?',function(){let h=historico[dataStr];times=JSON.parse(JSON.stringify(h.times));confrontos=JSON.parse(JSON.stringify(h.confrontos||[]));dataSelecionada=dataStr;editandoData=dataStr;let info=getDiaSemanaInfo(dataStr);document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataStr.split('-').reverse().join('/');document.getElementById('btnSalvar').innerText=`SALVAR EDIÇÃO DO DIA ${dataStr.split('-').reverse().join('/')}`;document.getElementById('editandoTxt').style.display='block';document.getElementById('editandoTxt').innerText=`✏️ MODO EDIÇÃO - Editando ${dataStr.split('-').reverse().join('/')}`;document.getElementById('btnCancelarEdicao').style.display='block';document.getElementById('cardSalvar').style.display='block';renderTimes();atualizarSelects();renderConfrontos();renderTabela();window.scrollTo({top:0,behavior:'smooth'});},'Editar dia?');}
-
 function getHoraStr(j){
  if(j.horaInicio && j.horaFim) return `${j.horaInicio} às ${j.horaFim}`;
  if(j.horaInicio) return `${j.horaInicio}`;
  if(j.hora) return `${j.hora}`;
  return '';
 }
-
 window.salvarProximoJogo=function(){
 let data=document.getElementById('proxData').value;
 let horaInicio=document.getElementById('proxHoraInicio').value;
@@ -496,7 +499,6 @@ window.cancelarEdicaoProximo=function(){
  document.getElementById('editProxTxt').style.display='none';
 }
 window.removerProximo=function(key){showConfirm('Apagar próximo jogo?',function(){remove(ref(db,'proximos/'+key)); if(editandoProxKey===key) cancelarEdicaoProximo();});}
-
 function renderInicio(){
   let info=document.getElementById('inicioInfo');
   let titulo=document.getElementById('destaqueTitulo');
@@ -530,7 +532,6 @@ function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if
 window.apagarFoto=function(dataStr,key){showConfirm('Apagar essa foto?',function(){remove(ref(db,'fotos/'+dataStr+'/'+key));});}
 window.abrirModal=function(imgSrc, dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
 window.fecharModal=function(){document.getElementById('modalFoto').style.display='none';document.body.style.overflow='auto';}
-
 function renderRankings(){
 let keys=Object.keys(historico);
 let divAnual=document.getElementById('rankingAnual');
@@ -547,7 +548,6 @@ let playerWins={};
 let playerTimes={};
 let playerGolsMap={};
 let playerAstMap={};
-// NOVO - Ranking de Goleiro do Ano: vitoria + gol sofrido
 let goleiroStats={};
 let goleirosCadastrados={};
 criacaoJogadores.forEach(g=>{
@@ -564,7 +564,6 @@ function getGoleiroDoTime(time){
   return null;
 }
 function addGoleiroJogo(golKey, golNome, golsSofridos, resultado){
-  // resultado: 'V' vitoria, 'E' empate, 'D' derrota
   if(!goleiroStats[golKey]) goleiroStats[golKey]={nome:golNome, key:golKey, jogos:0, vitorias:0, empates:0, derrotas:0, golsSofridos:0, cleanSheets:0, pontos:0};
   let s=goleiroStats[golKey];
   s.jogos++;
@@ -573,11 +572,9 @@ function addGoleiroJogo(golKey, golNome, golsSofridos, resultado){
   if(resultado==='E') s.empates++;
   if(resultado==='D') s.derrotas++;
   if(golsSofridos===0) s.cleanSheets++;
-  // Recalcula pontos toda vez: V*10 + E*3 + Clean*5 - GS*2
   s.pontos = (s.vitorias*10) + (s.empates*3) + (s.cleanSheets*5) - (s.golsSofridos*2);
   s.mediaSofrida = s.jogos? (s.golsSofridos/s.jogos).toFixed(2) : '0.00';
 }
-
 keys.forEach(dataStr=>{
 let h=historico[dataStr];
 (h.confrontos||[]).forEach(c=>{
@@ -593,7 +590,6 @@ s1.J++;s2.J++;
 s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;
 s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;
 if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
-
  if(c.g1>c.g2){
    t1.jogadores.forEach(j=>{
      let key=j.nome.trim().toLowerCase();
@@ -609,7 +605,6 @@ if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}e
      playerTimes[key]=t2.cor;
    });
  }
- // NOVO - Computa goleiro dos 2 times nesse confronto
  let gol1=getGoleiroDoTime(t1);
  let gol2=getGoleiroDoTime(t2);
  if(gol1){
@@ -643,16 +638,12 @@ let anualOrd=Object.values(porCorAnual).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG)
 let artilheiros=Object.values(jogadoresGols).sort((a,b)=>b.gols-a.gols||b.ast-a.ast);
 let assistencias=Object.values(jogadoresAst).sort((a,b)=>b.ast-a.ast||b.gols-a.gols);
 let goleirosOrd=Object.values(goleiroStats).sort((a,b)=>b.pontos-a.pontos || b.vitorias-a.vitorias || a.golsSofridos-b.golsSofridos);
-
 let tabelaTimes=`<div class="card"><h2>🏆 Tabela Geral Anual</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${anualOrd.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div></div>`;
 let tabelaArtilheiros=`<div class="card" style="border:2px solid #c62828"><h2 style="color:#c62828">⚽ Artilheiros Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Gols</th><th>Assist</th></tr></thead><tbody>${artilheiros.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.gols}</strong></td><td>${j.ast}</td></tr>`).join('') || '<tr><td colspan="4">Nenhum gol registrado</td></tr>'}</tbody></table></div></div>`;
 let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('') || '<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div>`;
 let tabelaGoleiros=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🧤 Ranking Goleiro do Ano</h2><p style="font-size:12px;color:#666">Fórmula: Vitória x 10 + Empate x 3 + Sem tomar gol x 5 - Gols sofridos x 2</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Goleiro</th><th>Pts</th><th>J</th><th>V</th><th>E</th><th>GS</th><th>Sem Gol</th><th>Média GS</th></tr></thead><tbody>${goleirosOrd.map((g,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${g.nome}</td><td><strong>${g.pontos}</strong></td><td>${g.jogos}</td><td>${g.vitorias}</td><td>${g.empates}</td><td>${g.golsSofridos}</td><td>${g.cleanSheets}</td><td>${g.mediaSofrida}</td></tr>`).join('') || '<tr><td colspan="9">Nenhum goleiro cadastrado como peso 1. Cadastre os goleiros na Criação de Times como peso 1.</td></tr>'}</tbody></table></div></div>`;
-
 divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist+tabelaGoleiros;
-
 let melhorTime = anualOrd[0];
-// NOVO - Melhor goleiro agora é pelo PONTOS (vitoria + gol sofrido), não só por vitoria
 let melhorGoleiro = null;
 if(goleirosOrd.length>0){
   melhorGoleiro = goleirosOrd[0];
@@ -668,17 +659,14 @@ if(goleirosOrd.length>0){
     }
   }
 }
-
 let artilheiro = artilheiros[0]||null;
 let viceArtilheiro = artilheiros[1]||null;
 let liderAssist = assistencias[0]||null;
-
 let selecionadosKeys = new Set();
 if(melhorGoleiro) selecionadosKeys.add(melhorGoleiro.key);
 if(artilheiro) selecionadosKeys.add(artilheiro.nome.trim().toLowerCase());
 if(viceArtilheiro) selecionadosKeys.add(viceArtilheiro.nome.trim().toLowerCase());
 if(liderAssist) selecionadosKeys.add(liderAssist.nome.trim().toLowerCase());
-
 let rankingVitorias = Object.entries(playerWins)
   .map(([key,wins])=>{
     let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===key)?.nome || 
@@ -687,7 +675,6 @@ let rankingVitorias = Object.entries(playerWins)
     return {key, nome: nomeReal, vitorias:wins, gols: playerGolsMap[key]||0, ast: playerAstMap[key]||0};
   })
   .sort((a,b)=>b.vitorias-a.vitorias || b.gols-a.gols);
-
 let doisMaisVitoriosos = [];
 for(let p of rankingVitorias){
   if(!selecionadosKeys.has(p.key)){
@@ -696,7 +683,6 @@ for(let p of rankingVitorias){
     if(doisMaisVitoriosos.length===2) break;
   }
 }
-
 let selecaoHtml = '';
 if(melhorTime){
 selecaoHtml = `<div class="card selecao-card">
@@ -734,9 +720,7 @@ ${doisMaisVitoriosos[1] ? `<div class="selecao-item" style="border-left-color:#2
 }
 divSelecao.innerHTML=selecaoHtml;
 }
-
 function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum dia salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
-
 window.criacaoAddJogador=function(){
 let nome=document.getElementById('criacaoNome').value.trim();
 let peso=parseInt(document.getElementById('criacaoPeso').value);
@@ -744,7 +728,6 @@ if(!nome) return showAlert('Digite o nome do jogador');
 push(ref(db,'criacaoJogadores'),{nome,peso,criado:Date.now()});
 document.getElementById('criacaoNome').value='';
 }
-
 function parseNomes(texto){
   if(!texto) return [];
   return texto.split(/[\n,;]+/)
@@ -753,7 +736,6 @@ function parseNomes(texto){
     .map(s=>s.replace(/\s+/g,' ').trim())
     .filter(v=>v.length>=2);
 }
-
 window.criacaoAddLote=function(){
   let txtGoleiros=document.getElementById('loteGoleiros').value;
   let txtLinha=document.getElementById('loteLinha').value;
@@ -766,7 +748,6 @@ window.criacaoAddLote=function(){
   }
   let existentes = new Set(criacaoJogadores.map(j=>j.nome.trim().toLowerCase()));
   let addG=0, addL=0, addB=0, dup=0;
-
   nomesGoleiros.forEach(nome=>{
     let key=nome.toLowerCase();
     if(existentes.has(key)){dup++; return;}
@@ -785,7 +766,6 @@ window.criacaoAddLote=function(){
     push(ref(db,'criacaoJogadores'),{nome,peso:3,criado:Date.now()+Math.random()});
     existentes.add(key); addB++;
   });
-
   document.getElementById('loteInfo').innerText=`✅ Adicionados: ${addG} goleiros + ${addL} medianos (peso 2) + ${addB} bons (peso 3) = ${addG+addL+addB} total. ${dup?`(${dup} duplicados ignorados)`:''}`;
   if(addG+addL+addB>0){
     document.getElementById('loteGoleiros').value='';
@@ -800,7 +780,6 @@ window.limparLote=function(){
   document.getElementById('loteBons').value='';
   document.getElementById('loteInfo').innerText='';
 }
-
 function renderCriacaoLista(){
 let div=document.getElementById('criacaoListaNomes');
 let total=document.getElementById('criacaoTotal');
@@ -817,7 +796,6 @@ total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros: ${
 }
 window.criacaoRemover=function(key){remove(ref(db,'criacaoJogadores/'+key));}
 window.criacaoLimpar=function(){showConfirm('Limpar todos os nomes?',function(){remove(ref(db,'criacaoJogadores'));document.getElementById('criacaoResultado').innerHTML='';document.getElementById('cardCriacaoSalvar').style.display='none';});}
-
 window.criacaoSortear=function(){
 if(criacaoJogadores.length<2) return showAlert('Adicione pelo menos 2 jogadores');
 let numJog=parseInt(document.getElementById('criacaoNumJogadores').value);
@@ -835,8 +813,6 @@ function embaralhar(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.r
 embaralhar(bons); embaralhar(medios); embaralhar(goleiros);
 let teams=[];
 for(let i=0;i<numTimes;i++){teams.push({id:i,nome:'TIME '+(i+1),jogadores:[],pesoTotal:0,cor:corSel,temGoleiro:false,contBons:0});}
-
-// 1 - Distribui goleiros: 1 por time, nunca 2 juntos
 goleiros.forEach((g, idx)=>{
 let t=teams[idx % teams.length];
 if(!t.temGoleiro && t.jogadores.length<porTime){
@@ -850,16 +826,12 @@ teams.push(extra);
 }
 }
 });
-
-// 2 - Distribui BONS peso 3: nunca juntos, divisão igual (4 bons/4 times =1 cada, 8 bons/4 times=2 cada)
 let maxBonsPorTime = Math.ceil(bons.length / teams.length);
 let rodada=0;
 while(bons.length>0){
-  // ordena times pelo número de bons (menor primeiro) e depois por pesoTotal
   let candidatos = teams.filter(t=>t.jogadores.length<porTime && t.contBons < maxBonsPorTime)
                         .sort((a,b)=>a.contBons - b.contBons || a.pesoTotal - b.pesoTotal);
   if(candidatos.length===0){
-    // se todos já atingiram max, aumenta max para permitir 2 por time quando 8 bons/4 times
     maxBonsPorTime++;
     continue;
   }
@@ -871,15 +843,12 @@ while(bons.length>0){
   rodada++;
   if(rodada>1000) break;
 }
-
-// 3 - Distribui medianos peso 2: divisão igual por pesoTotal
 medios.forEach(m=>{
 let candidatos=teams.filter(t=>t.jogadores.length<porTime);
 if(candidatos.length===0) return;
 let t=candidatos.sort((a,b)=>a.pesoTotal-b.pesoTotal)[0];
 t.jogadores.push(m); t.pesoTotal+=m.peso;
 });
-
 let coresDisponiveis=['vermelho','azul','preto','amarelo','verde'];
 if(corSel==='aleatorio'){
 embaralhar(coresDisponiveis);
