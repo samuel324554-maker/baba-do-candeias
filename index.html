@@ -7,7 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-input, textarea, select, [contenteditable]{-webkit-user-select:text !important;-moz-user-select:text !important;-ms-user-select:text !important;user-select:text !important;-webkit-touch-callout:default !important}
+input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-user-select:text!important;-ms-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
 img{-webkit-user-drag:none;user-drag:none}
 body{background:#0a5c36;font-family:Arial,sans-serif;color:white}
 header{text-align:center;padding:28px 20px 14px}
@@ -45,7 +45,7 @@ textarea{resize:vertical;min-height:80px}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-dia{padding:10px 5px;text-align:center;border-radius:8px;background:#f5f5f5;cursor:pointer;font-size:13px;color:#222}
 .cal-dia.domingo{background:#ffebee;color:#c62828;font-weight:bold}
-.cal-dia.selecionado{background:#0a5c36 !important;color:white !important}
+.cal-dia.selecionado{background:#0a5c36!important;color:white!important}
 .cal-dia.tem-jogo{border:2px solid #0a5c36;position:relative}
 .cal-dia.tem-jogo::after{content:'⚽';position:absolute;top:-6px;right:-4px;font-size:10px}
 .cal-dia.tem-foto{border:2px solid #1e88e5;position:relative}
@@ -82,6 +82,7 @@ td:first-child{text-align:left;font-weight:bold}
 .selecao-pos{font-weight:900;color:#0a5c36;font-size:12px;min-width:125px}
 .lote-box{background:#f1f8e9;border:2px dashed #6a1b9a;padding:12px;border-radius:12px;margin-top:18px}
 .conf-jogador{background:#f9f9f9;padding:12px;border-radius:12px;margin:8px 0}
+.conf-jogador-temp{background:#fff3e0;border:2px dashed #ff9800}
 .conf-jogador-nome{font-weight:900;font-size:16px;margin-bottom:8px}
 .conf-linha{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #eee}
 .conf-linha:last-child{border-bottom:0}
@@ -95,6 +96,10 @@ td:first-child{text-align:left;font-weight:bold}
 .conf-box h4{color:#0a5c36;font-size:14px;margin-bottom:6px}
 .capa-img{width:100%;max-height:320px;object-fit:cover;border-radius:12px;display:block}
 .capa-inicio{position:sticky;top:60px;z-index:5}
+.edit-time-box{background:#fffbe6;border:2px solid #ffcc00;border-radius:12px;padding:12px;margin-top:10px}
+.edit-jogador-linha{display:flex;justify-content:space-between;align-items:center;background:white;padding:8px 10px;border-radius:10px;margin:5px 0;border:1px solid #eee}
+.temp-box{background:#fff3e0;border:2px dashed #ff9800;border-radius:12px;padding:12px;margin-top:12px}
+.temp-badge{background:#ff9800;color:white;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:900}
 </style>
 </head>
 <body>
@@ -156,135 +161,44 @@ td:first-child{text-align:left;font-weight:bold}
 </div>
 <div id="detalheDia"></div>
 </div>
-
 <div id="criacao" class="secao">
 <div class="card" style="border:2px solid #6a1b9a">
 <h2>🎲 Criação de Times - Sorteio Equilibrado</h2>
 <p style="font-size:13px;color:#555;margin-bottom:15px">Monte times equilibrados! Peso 3 (bons) nunca ficam juntos. Goleiros <strong>1 (Goleiro)</strong> nunca ficam no mesmo time.</p>
 <h3 style="color:#0a5c36;margin-top:10px">1️⃣ Selecione a Cor</h3>
-<select id="criacaoCor">
-<option value="aleatorio">🎲 Aleatório (cores diferentes)</option>
-<option value="vermelho">🔴 Vermelho</option>
-<option value="azul">🔵 Azul</option>
-<option value="preto">⚫ Preto</option>
-<option value="amarelo">🟡 Amarelo</option>
-<option value="verde">🟢 Verde</option>
-</select>
+<select id="criacaoCor"><option value="aleatorio">🎲 Aleatório (cores diferentes)</option><option value="vermelho">🔴 Vermelho</option><option value="azul">🔵 Azul</option><option value="preto">⚫ Preto</option><option value="amarelo">🟡 Amarelo</option><option value="verde">🟢 Verde</option></select>
 <h3 style="color:#0a5c36;margin-top:15px">2️⃣ Número de Jogadores por Time (titulares)</h3>
-<select id="criacaoNumJogadores">
-<option value="3">3 jogadores</option>
-<option value="4">4 jogadores</option>
-<option value="5" selected>5 jogadores</option>
-<option value="6">6 jogadores</option>
-<option value="7">7 jogadores</option>
-<option value="8">8 jogadores</option>
-<option value="9">9 jogadores</option>
-<option value="10">10 jogadores</option>
-</select>
+<select id="criacaoNumJogadores"><option value="3">3 jogadores</option><option value="4">4 jogadores</option><option value="5" selected>5 jogadores</option><option value="6">6 jogadores</option><option value="7">7 jogadores</option><option value="8">8 jogadores</option><option value="9">9 jogadores</option><option value="10">10 jogadores</option></select>
 <h3 style="color:#0a5c36;margin-top:15px">3️⃣ Número de Reservas por Time</h3>
-<select id="criacaoNumReservas">
-<option value="0">0 reservas</option>
-<option value="1">1 reserva</option>
-<option value="2" selected>2 reservas</option>
-<option value="3">3 reservas</option>
-<option value="4">4 reservas</option>
-<option value="5">5 reservas</option>
-<option value="6">6 reservas</option>
-<option value="7">7 reservas</option>
-</select>
+<select id="criacaoNumReservas"><option value="0">0 reservas</option><option value="1">1 reserva</option><option value="2" selected>2 reservas</option><option value="3">3 reservas</option><option value="4">4 reservas</option><option value="5">5 reservas</option><option value="6">6 reservas</option><option value="7">7 reservas</option></select>
 <div style="background:#f9f9f9;padding:12px;border-radius:10px;margin-top:20px">
 <h3 style="color:#0a5c36">4️⃣ Adicionar Nome Individual + Peso</h3>
 <p style="font-size:12px;color:#666;margin-bottom:8px">1 (Goleiro) 🧤 | 2 = Médio | 3 = Bom ⭐</p>
-<div class="row">
-<input id="criacaoNome" placeholder="Nome do jogador" style="flex:2">
-<select id="criacaoPeso" style="flex:1;max-width:150px">
-<option value="1">1 (Goleiro)</option>
-<option value="2" selected>2</option>
-<option value="3">3</option>
-</select>
-<button class="btn btn-verde" style="max-width:100px;margin-top:0" onclick="criacaoAddJogador()">+ Adicionar</button>
-</div>
-<div id="criacaoListaNomes" style="margin-top:10px"></div>
-<p id="criacaoTotal" style="font-weight:bold;margin-top:10px;color:#0a5c36"></p>
+<div class="row"><input id="criacaoNome" placeholder="Nome do jogador" style="flex:2"><select id="criacaoPeso" style="flex:1;max-width:150px"><option value="1">1 (Goleiro)</option><option value="2" selected>2</option><option value="3">3</option></select><button class="btn btn-verde" style="max-width:100px;margin-top:0" onclick="criacaoAddJogador()">+ Adicionar</button></div>
+<div id="criacaoListaNomes" style="margin-top:10px"></div><p id="criacaoTotal" style="font-weight:bold;margin-top:10px;color:#0a5c36"></p>
 </div>
 <div class="lote-box">
 <h3 style="color:#6a1b9a;margin-bottom:8px">⚡ Adicionar em Lote (rápido) - Sem limite</h3>
-<p style="font-size:12px;color:#555;margin-bottom:10px">Cole quantos quiser. Um nome por linha ou separado por vírgula. Goleiros vão um por time. Bons peso 3 nunca juntos no mesmo time - distribuição igual: 4 bons + 4 times = 1 por time, 8 bons + 4 times = 2 por time.</p>
-<span class="label-peq">🧤 Goleiros - peso 1 (um por time)</span>
-<textarea id="loteGoleiros" placeholder="Ex:
-Neném
-Rafinha
-Bruno
-- ou: Neném, Rafinha, Bruno"></textarea>
-<span class="label-peq" style="margin-top:10px">👟 Medianos - peso 2 (todos iguais)</span>
-<textarea id="loteLinha" style="min-height:90px" placeholder="Ex:
-Samuel
-Vitor
-Léo
-Gustavo
-- ou: Samuel, Vitor, Léo, Gustavo"></textarea>
-<span class="label-peq" style="margin-top:10px">⭐ Bons - peso 3 (nunca juntos, divisão igual)</span>
-<textarea id="loteBons" style="min-height:90px" placeholder="Ex:
-Tinga
-Igor
-Café
-Wallace
-- 4 bons + 4 times = 1 por time
-- 8 bons + 4 times = 2 por time"></textarea>
-<div class="row" style="margin-top:10px">
-<button class="btn btn-roxo" style="flex:1" onclick="criacaoAddLote()">⚡ ADICIONAR LISTA TODA DE UMA VEZ</button>
-<button class="btn btn-cinza" style="flex:0.5" onclick="limparLote()">Limpar</button>
-</div>
+<p style="font-size:12px;color:#555;margin-bottom:10px">Cole quantos quiser. Um nome por linha ou separado por vírgula. Goleiros vão um por time. Bons peso 3 nunca juntos - distribuição igual: 4 bons + 4 times = 1 por time, 8 bons + 4 times = 2 por time.</p>
+<span class="label-peq">🧤 Goleiros - peso 1 (um por time)</span><textarea id="loteGoleiros" placeholder="Ex: Neném, Rafinha, Bruno"></textarea>
+<span class="label-peq" style="margin-top:10px">👟 Medianos - peso 2</span><textarea id="loteLinha" style="min-height:90px" placeholder="Ex: Samuel, Vitor, Léo, Gustavo"></textarea>
+<span class="label-peq" style="margin-top:10px">⭐ Bons - peso 3 (nunca juntos, divisão igual)</span><textarea id="loteBons" style="min-height:90px" placeholder="Ex: Tinga, Igor, Café, Wallace"></textarea>
+<div class="row" style="margin-top:10px"><button class="btn btn-roxo" style="flex:1" onclick="criacaoAddLote()">⚡ ADICIONAR LISTA TODA DE UMA VEZ</button><button class="btn btn-cinza" style="flex:0.5" onclick="limparLote()">Limpar</button></div>
 <p id="loteInfo" style="font-size:12px;color:#6a1b9a;margin-top:8px;font-weight:bold"></p>
 </div>
 <button class="btn btn-roxo" onclick="criacaoSortear()">🎲 SORTEAR TIMES AGORA</button>
 <button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="criacaoLimpar()">🗑️ Limpar Lista</button>
 </div>
 <div id="criacaoResultado"></div>
-<div class="card" id="cardCriacaoSalvar" style="display:none;border:2px solid #0a5c36">
-<h2>💾 Quer salvar esses times sorteados?</h2>
-<p style="font-size:13px">Os times sorteados vão aparecer na aba Times. Depois é só salvar no calendário.</p>
-<button class="btn btn-verde" onclick="criacaoEnviarParaTimes()">✅ ENVIAR PARA ABA TIMES</button>
+<div class="card" id="cardCriacaoSalvar" style="display:none;border:2px solid #0a5c36"><h2>💾 Quer salvar esses times sorteados?</h2><p style="font-size:13px">Os times sorteados vão aparecer na aba Times. Depois é só salvar no calendário.</p><button class="btn btn-verde" onclick="criacaoEnviarParaTimes()">✅ ENVIAR PARA ABA TIMES</button></div>
 </div>
-</div>
-
 <div id="proximos" class="secao">
-<div class="card">
-<h2>➕ Adicionar Próximo Jogo</h2>
-<span class="label-peq">Data</span>
-<input id="proxData" type="date">
-<div class="row">
-<div style="flex:1"><span class="label-peq">Início</span><input id="proxHoraInicio" type="time" value="08:00"></div>
-<div style="flex:1"><span class="label-peq">Término</span><input id="proxHoraFim" type="time" value="11:00"></div>
+<div class="card"><h2>➕ Adicionar Próximo Jogo</h2><span class="label-peq">Data</span><input id="proxData" type="date"><div class="row"><div style="flex:1"><span class="label-peq">Início</span><input id="proxHoraInicio" type="time" value="08:00"></div><div style="flex:1"><span class="label-peq">Término</span><input id="proxHoraFim" type="time" value="11:00"></div></div><span class="label-peq">Local</span><input id="proxLocal" placeholder="Campo do Candeias"><span class="label-peq">Observação (opcional)</span><input id="proxObs" placeholder="Ex: levar água"><button class="btn btn-verde" id="btnProxSalvar" onclick="salvarProximoJogo()">Salvar Próximo Jogo</button><button class="btn btn-cinza" id="btnProxCancelar" style="display:none;margin-top:8px" onclick="cancelarEdicaoProximo()">Cancelar Edição</button><p id="editProxTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px;text-align:center"></p></div>
+<div id="listaProximos"></div><div id="listaProximosHistorico"></div>
 </div>
-<span class="label-peq">Local</span>
-<input id="proxLocal" placeholder="Campo do Candeias">
-<span class="label-peq">Observação (opcional)</span>
-<input id="proxObs" placeholder="Ex: levar água">
-<button class="btn btn-verde" id="btnProxSalvar" onclick="salvarProximoJogo()">Salvar Próximo Jogo</button>
-<button class="btn btn-cinza" id="btnProxCancelar" style="display:none;margin-top:8px" onclick="cancelarEdicaoProximo()">Cancelar Edição</button>
-<p id="editProxTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px;text-align:center"></p>
-</div>
-<div id="listaProximos"></div>
-<div id="listaProximosHistorico"></div>
-</div>
-<div id="ranking" class="secao">
-<div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual</h2><p style="font-size:12px;color:#666">Goleiro do Ano = Vitória x 10 + Empate x 3 + Jogo sem tomar gol x 5 - Gols sofridos x 2</p></div>
-<div id="rankingAnual"></div>
-<div id="selecaoAnual"></div>
-</div>
+<div id="ranking" class="secao"><div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual</h2><p style="font-size:12px;color:#666">Goleiro do Ano = Vitória x 10 + Empate x 3 + Jogo sem tomar gol x 5 - Gols sofridos x 2</p></div><div id="rankingAnual"></div><div id="selecaoAnual"></div></div>
 <div id="fotos" class="secao">
-<div class="card" style="border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)">
-<h2 style="color:#b77900">🏆 Capa do Baba - Time que foi melhor</h2>
-<p style="font-size:12px;color:#666">Dura 7 dias certinho. Salvou na terça, sai na terça que vem. Salvou domingo, sai domingo que vem. Depois fica salva no dia que você salvou, na aba Fotos.</p>
-<div id="capaAtual"></div>
-<span class="label-peq">Nome do time da capa (ex: TIME VERMELHO - Campeão do Ba-Vi)</span>
-<input id="capaTitulo" placeholder="Ex: TIME VERMELHO - Campeão do Ba-Vi">
-<span class="label-peq">Escolher foto da capa</span>
-<input type="file" id="inputCapa" accept="image/*">
-<button class="btn btn-amarelo" onclick="salvarCapa()">💾 SALVAR CAPA DO BABA</button>
-<button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="removerCapa()">🗑️ Remover Capa</button>
-</div>
+<div class="card" style="border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)"><h2 style="color:#b77900">🏆 Capa do Baba - Time que foi melhor</h2><p style="font-size:12px;color:#666">Dura 7 dias certinho. Salvou na terça, sai na terça que vem. Depois fica salva no dia que você salvou, na aba Fotos.</p><div id="capaAtual"></div><span class="label-peq">Nome do time da capa</span><input id="capaTitulo" placeholder="Ex: TIME VERMELHO - Campeão do Ba-Vi"><span class="label-peq">Escolher foto da capa</span><input type="file" id="inputCapa" accept="image/*"><button class="btn btn-amarelo" onclick="salvarCapa()">💾 SALVAR CAPA DO BABA</button><button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="removerCapa()">🗑️ Remover Capa</button></div>
 <div class="card"><h2>📸 Fotos e 🎥 Vídeos do Baba</h2><div class="cal-header" style="margin-top:15px"><button class="btn btn-cinza" onclick="mudarMes(-1,'fotos')">◀</button><h2 id="mesAnoTxtFotos" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'fotos')">▶</button></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'fotos')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'fotos')">2027</button></div><div class="cal-grid" id="calDiasSemanaFotos"></div><div class="cal-grid" id="calGridFotos"></div></div>
 <div class="card" id="cardAddFoto" style="display:none"><h2>➕ Adicionar Foto ou Vídeo no dia <span id="dataFotoTxt"></span></h2><input type="file" id="inputFoto" accept="image/*,video/*"><p style="font-size:12px;color:#666">Pode ser foto ou vídeo. Vídeo curto fica melhor, até 30 segundos.</p><button class="btn btn-verde" onclick="adicionarFoto()">Adicionar Foto / Vídeo</button></div>
 <div id="galeriaFotos"></div>
@@ -292,157 +206,111 @@ Wallace
 <div id="historico" class="secao"><div class="card"><h2>🕓 Histórico Geral</h2></div><div id="historicoDetalhe"></div></div>
 <div id="modalFoto" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;justify-content:center;align-items:center;padding:20px" onclick="fecharModal()"><span style="position:absolute;top:15px;right:25px;color:white;font-size:45px;cursor:pointer;font-weight:bold">×</span><img id="imgModal" style="max-width:95%;max-height:90%;border-radius:12px"><p id="dataModal" style="position:absolute;bottom:25px;color:white;text-align:center;width:100%;font-size:14px"></p></div>
 <div id="customModal"><div class="customModalBox"><div class="customModalHeader">⚽ <span id="customModalTitle">Baba do Candeias</span></div><div class="customModalBody" id="customModalBody"></div><div class="customModalFooter" id="customModalFooter"></div></div></div>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, set, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyBOAcvw9TvgKhNzi_qmsioXcLheC4Erww",
-  authDomain: "baba-do-candeias.firebaseapp.com",
-  databaseURL: "https://baba-do-candeias-default-rtdb.firebaseio.com",
-  projectId: "baba-do-candeias",
-  storageBucket: "baba-do-candeias.appspot.com",
-  messagingSenderId: "227896511604",
-  appId: "1:227896511604:web:5cd1213b30f64b19d89521"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-document.addEventListener('contextmenu', function(e){ if(e.target.tagName==='INPUT' || e.target.tagName==='TEXTAREA' || e.target.tagName==='SELECT') return true; e.preventDefault(); return false; });
-document.addEventListener('selectstart', function(e){ let t=e.target; if(t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.tagName==='SELECT' || t.isContentEditable) return true; e.preventDefault(); return false; });
-document.addEventListener('dragstart', function(e){ e.preventDefault(); return false; });
-let times=[], confrontos=[], corTemp='', corHex='', jogadoresTemp=[], dataSelecionada=null, dataSelecionadaFotos=null, mesAtual=10, mesAtualFotos=10, anoAtual=2026, anoAtualFotos=2026;
-let historico={};
-let proximosJogos=[];
-let fotosData={};
-let capaBaba=null;
-let editandoData=null;
-let criacaoJogadores=[];
-let criacaoTimesSorteados=[];
-let editandoProxKey=null;
-let golsSemAutor={1:0,2:0};
-let ultimoPlacarCalculado={1:0,2:0};
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getDatabase,ref,push,onValue,remove,set,update} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyBOAcvw9TvgKhNzi_qmsioXcLheC4Erww",authDomain:"baba-do-candeias.firebaseapp.com",databaseURL:"https://baba-do-candeias-default-rtdb.firebaseio.com",projectId:"baba-do-candeias",storageBucket:"baba-do-candeias.appspot.com",messagingSenderId:"227896511604",appId:"1:227896511604:web:5cd1213b30f64b19d89521"};
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+document.addEventListener('contextmenu',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return true;e.preventDefault();return false;});
+document.addEventListener('selectstart',e=>{let t=e.target;if(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)return true;e.preventDefault();return false;});
+document.addEventListener('dragstart',e=>{e.preventDefault();return false;});
+let times=[],confrontos=[],corTemp='',corHex='',jogadoresTemp=[],dataSelecionada=null,dataSelecionadaFotos=null,mesAtual=10,mesAtualFotos=10,anoAtual=2026,anoAtualFotos=2026;
+let historico={},proximosJogos=[],fotosData={},capaBaba=null,editandoData=null,criacaoJogadores=[],criacaoTimesSorteados=[],editandoProxKey=null,golsSemAutor={1:0,2:0},editandoTimeId=null;
+let tempJogadores={};
+let baseGols={};
+function getBaseKey(a,b){return String(a)+'|'+String(b)}
+function getBase(a,b){return baseGols[getBaseKey(a,b)]||{gols:0,ast:0}}
+function setBase(a,b,g,al){baseGols[getBaseKey(a,b)]={gols:g,ast:al}}
+function resetBase(){baseGols={};times.forEach(t=>{t.jogadores.forEach(j=>setBase(t.id,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0));});Object.keys(tempJogadores).forEach(k=>{tempJogadores[k].forEach(j=>setBase(k,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0));});}
 const coresMap={vermelho:{nome:'VERMELHO',hex:'red'},azul:{nome:'AZUL',hex:'#1e88e5'},preto:{nome:'PRETO',hex:'#111'},amarelo:{nome:'AMARELO',hex:'#ffcc00'},verde:{nome:'VERDE',hex:'#2e7d32'}};
-// NOVO - Regras de validade
-const CAPA_DURACAO_MS = 7*24*60*60*1000; // 7 dias exatos
-function dataHojeStr(){ let n=new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
-function capaExpirada(capa){ if(!capa||!capa.criado) return false; return (Date.now()-capa.criado) > CAPA_DURACAO_MS; }
-function capaDiasRestantes(capa){ if(!capa||!capa.criado) return 7; let rest=Math.ceil((CAPA_DURACAO_MS-(Date.now()-capa.criado))/(24*60*60*1000)); return Math.max(0,rest); }
-function capaDataFimStr(capa){ if(!capa||!capa.criado) return ''; let d=new Date(capa.criado+CAPA_DURACAO_MS); return d.toLocaleDateString('pt-BR'); }
-function jogoJaTerminou(j){ if(!j||!j.data) return false; let fimStr=j.data+'T'+(j.horaFim||j.hora||'23:59'); let fim=new Date(fimStr); return Date.now() > fim.getTime(); }
-function getProximoJogoFuturo(){ let futuros=proximosJogos.filter(j=>!jogoJaTerminou(j)); futuros.sort((a,b)=> new Date(a.data+'T'+(a.horaInicio||'00:00')) - new Date(b.data+'T'+(b.horaInicio||'00:00'))); return futuros[0]||null; }
-function showAlert(msg,title='Baba do Candeias'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalOk" onclick="closeModal()">OK</button>';document.getElementById('customModal').classList.add('ativo');}
-function showConfirm(msg,onConfirm,title='Confirmação'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalCancel" onclick="closeModal()">Cancelar</button><button class="btnModalConfirm" id="btnConfirmOk">Confirmar</button>';document.getElementById('customModal').classList.add('ativo');document.getElementById('btnConfirmOk').onclick=function(){closeModal();onConfirm();};}
-window.closeModal=function(){document.getElementById('customModal').classList.remove('ativo');}
-document.getElementById('customModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+const CAPA_DURACAO_MS=7*24*60*60*1000;
+function dataHojeStr(){let n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`}
+function capaExpirada(c){if(!c||!c.criado)return false;return (Date.now()-c.criado)>CAPA_DURACAO_MS}
+function capaDiasRestantes(c){if(!c||!c.criado)return 7;return Math.max(0,Math.ceil((CAPA_DURACAO_MS-(Date.now()-c.criado))/(24*60*60*1000)))}
+function capaDataFimStr(c){if(!c||!c.criado)return '';return new Date(c.criado+CAPA_DURACAO_MS).toLocaleDateString('pt-BR')}
+function jogoJaTerminou(j){if(!j||!j.data)return false;return Date.now()>new Date(j.data+'T'+(j.horaFim||j.hora||'23:59')).getTime()}
+function getProximoJogoFuturo(){let f=proximosJogos.filter(j=>!jogoJaTerminou(j));f.sort((a,b)=>new Date(a.data+'T'+(a.horaInicio||'00:00'))-new Date(b.data+'T'+(b.horaInicio||'00:00')));return f[0]||null}
+function showAlert(msg,title='Baba do Candeias'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalOk" onclick="closeModal()">OK</button>';document.getElementById('customModal').classList.add('ativo')}
+function showConfirm(msg,onConfirm,title='Confirmação'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalCancel" onclick="closeModal()">Cancelar</button><button class="btnModalConfirm" id="btnConfirmOk">Confirmar</button>';document.getElementById('customModal').classList.add('ativo');document.getElementById('btnConfirmOk').onclick=function(){closeModal();onConfirm();}}
+window.closeModal=function(){document.getElementById('customModal').classList.remove('ativo')}
+document.getElementById('customModal').addEventListener('click',e=>{if(e.target===this)closeModal()});
 window.mostrar=function(id,btn){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');if(id==='times')renderCalendario('times');if(id==='criacao')renderCriacaoLista();if(id==='fotos'){renderCalendario('fotos');renderGaleriaFotos();renderCapa();}if(id==='proximos')renderProximos();if(id==='ranking')renderRankings();if(id==='historico')renderHistoricoGeral();if(id==='inicio')renderInicio();}
 window.selCor=function(nome,hex,el){corTemp=nome;corHex=hex;document.querySelectorAll('.cor-opcao').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');document.getElementById('corTxt').innerText='TIME '+nome.toUpperCase();document.getElementById('areaJogador').style.display='block';document.getElementById('timeAtualNome').innerText='TIME '+nome.toUpperCase();jogadoresTemp=[];renderTemp();}
 window.addJogador=function(){let n=document.getElementById('jogNome').value.trim();let g=parseInt(document.getElementById('jogGols').value)||0;let a=parseInt(document.getElementById('jogAst').value)||0;if(!n)return showAlert('Digite o nome do jogador');jogadoresTemp.push({nome:n,gols:g,ast:a,id:Date.now()+Math.random()});document.getElementById('jogNome').value='';document.getElementById('jogGols').value='';document.getElementById('jogAst').value='';renderTemp();}
-function renderTemp(){document.getElementById('listaTemp').innerHTML=jogadoresTemp.map(j=>`<span style="background:#0a5c36;color:white;padding:3px 8px;border-radius:12px;margin:2px;display:inline-block;font-size:12px">${j.nome} ${j.gols}G/${j.ast}A</span>`).join('');}
-window.finalizarTime=function(){if(jogadoresTemp.length===0)return showAlert('Adicione pelo menos um jogador');if(times.find(t=>t.cor===corTemp))return showAlert('TIME '+corTemp.toUpperCase()+' já existe');times.push({id:Date.now(),nome:'TIME '+corTemp.toUpperCase(),cor:corTemp,hex:corHex,jogadores:[...jogadoresTemp]});jogadoresTemp=[];corTemp='';corHex='';document.getElementById('areaJogador').style.display='none';document.getElementById('corTxt').innerText='';document.querySelectorAll('.cor-opcao').forEach(c=>c.classList.remove('sel'));document.getElementById('listaTemp').innerHTML='';renderTimes();atualizarSelects();}
-window.toggleDetalhe=function(id){let el=document.getElementById(id);if(!el) return;el.classList.toggle('aberto');}
+function renderTemp(){document.getElementById('listaTemp').innerHTML=jogadoresTemp.map(j=>`<span style="background:#0a5c36;color:white;padding:3px 8px;border-radius:12px;margin:2px;display:inline-block;font-size:12px">${j.nome} ${j.gols}G/${j.ast}A</span>`).join('')}
+window.finalizarTime=function(){if(jogadoresTemp.length===0)return showAlert('Adicione pelo menos um jogador');if(times.find(t=>t.cor===corTemp))return showAlert('TIME '+corTemp.toUpperCase()+' já existe');let novo={id:Date.now(),nome:'TIME '+corTemp.toUpperCase(),cor:corTemp,hex:corHex,jogadores:[...jogadoresTemp]};times.push(novo);novo.jogadores.forEach(j=>setBase(novo.id,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0));jogadoresTemp=[];corTemp='';corHex='';document.getElementById('areaJogador').style.display='none';document.getElementById('corTxt').innerText='';document.querySelectorAll('.cor-opcao').forEach(c=>c.classList.remove('sel'));document.getElementById('listaTemp').innerHTML='';renderTimes();atualizarSelects();}
+window.toggleDetalhe=function(id){let el=document.getElementById(id);if(!el)return;el.classList.toggle('aberto')}
+window.toggleEditarTime=function(timeId){editandoTimeId=(String(editandoTimeId)===String(timeId)?null:timeId);renderTimes();atualizarSelects();}
+window.concluirEdicaoTime=function(){editandoTimeId=null;renderTimes();atualizarSelects();renderConfrontoAoVivo();showAlert('Time atualizado! Já pode usar no confronto.','Time atualizado ✅')}
+window.addJogadorNoTimeEdit=function(timeId){let ne=document.getElementById('editNome_'+timeId);let ge=document.getElementById('editGols_'+timeId);let ae=document.getElementById('editAst_'+timeId);let nome=ne?ne.value.trim():'';if(!nome)return showAlert('Digite o nome do jogador que chegou');let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let novo={nome:nome,gols:parseInt(ge.value)||0,ast:parseInt(ae.value)||0,id:Date.now()+Math.random()};time.jogadores.push(novo);setBase(time.id,novo.id,novo.gols,novo.ast);if(ne)ne.value='';renderTimes();atualizarSelects();renderConfrontoAoVivo();}
+window.removerJogadorDoTime=function(timeId,jogId){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let j=time.jogadores.find(x=>String(x.id)===String(jogId));showConfirm('Remover '+(j?j.nome:'esse jogador')+' do '+time.nome+'?',function(){time.jogadores=time.jogadores.filter(x=>String(x.id)!==String(jogId));delete baseGols[getBaseKey(timeId,jogId)];renderTimes();atualizarSelects();renderConfrontoAoVivo();});}
+function getTemp(timeId){if(!tempJogadores[String(timeId)])tempJogadores[String(timeId)]=[];return tempJogadores[String(timeId)]}
+function somaGolsTemp(timeId){return getTemp(timeId).reduce((s,j)=>s+(parseInt(j.gols)||0),0)}
+window.addJogadorTemporario=function(timeId,origem){let inputId=origem==='conf'?'tempConfNome_'+timeId:'tempNome_'+timeId;let el=document.getElementById(inputId);let nome=el?el.value.trim():'';if(!nome)return showAlert('Digite o nome do jogador temporário');let novo={nome:nome,gols:0,ast:0,id:Date.now()+Math.random()};getTemp(timeId).push(novo);setBase(timeId,novo.id,0,0);if(el)el.value='';renderTimes();atualizarSelects();renderConfrontoAoVivo();showAlert(nome+' adicionado como TEMPORÁRIO - só dessa partida. Não fica salvo no time.','Temporário ✅');}
+window.removerJogadorTemporario=function(timeId,jogId){let arr=getTemp(timeId);let j=arr.find(x=>String(x.id)===String(jogId));showConfirm('Remover temporário '+(j?j.nome:'')+'? Os gols dele já ficam salvos na partida que você adicionar. Ele só sai do time.',function(){tempJogadores[String(timeId)]=arr.filter(x=>String(x.id)!==String(jogId));delete baseGols[getBaseKey(timeId,jogId)];renderTimes();atualizarSelects();renderConfrontoAoVivo();});}
+window.limparTemporariosTime=function(timeId){showConfirm('Limpar todos os temporários desse time? Os gols já salvos na partida continuam salvos.',function(){tempJogadores[String(timeId)]=[];renderTimes();atualizarSelects();renderConfrontoAoVivo();});}
+window.altGolTemp=function(timeId,jogId,delta){let j=getTemp(timeId).find(x=>String(x.id)===String(jogId));if(!j)return;j.gols=Math.max(0,(parseInt(j.gols)||0)+delta);syncPlacar();renderTimes();renderConfrontoAoVivo(false);}
+window.altAstTemp=function(timeId,jogId,delta){let j=getTemp(timeId).find(x=>String(x.id)===String(jogId));if(!j)return;j.ast=Math.max(0,(parseInt(j.ast)||0)+delta);renderTimes();renderConfrontoAoVivo(false);}
 function renderTimes(){
-document.getElementById('listaTimes').innerHTML=times.map(t=>`<div class="card"><div style="display:flex;justify-content:space-between;cursor:pointer" onclick="this.nextElementSibling.classList.toggle('aberta')"><div><span class="bolinha" style="background:${t.hex}"></span><strong>${t.nome}</strong> - ${t.jogadores.length} jogadores</div><div>▼</div></div><div class="mini-aba">${t.jogadores.map(j=>{
-let detId='det_'+t.id+'_'+j.id;
-return `<div><div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span>${j.nome}</span><span style="font-size:11px;color:#666">👁️ ver gols</span></div><div class="detalhe" id="${detId}">⚽ Gols: <strong>${j.gols||0}</strong> | 🎯 Assistências: <strong>${j.ast||0}</strong></div></div>`;
-}).join('')}<button class="btn btn-cinza" style="margin-top:8px" onclick="removerTime(${t.id})">Apagar ${t.nome}</button></div></div>`).join('');
+document.getElementById('listaTimes').innerHTML=times.map(t=>{
+let estaEditando=String(editandoTimeId)===String(t.id);let editHtml='';
+if(estaEditando){
+let temps=getTemp(t.id);
+editHtml=`<div class="edit-time-box"><p style="font-weight:900;color:#b77900;margin-bottom:8px">✏️ Editando ${t.nome} - adicione quem chegou ou remova quem saiu</p><span class="label-peq">➕ ADICIONAR JOGADOR - fixo, fica no time</span><div class="row"><input id="editNome_${t.id}" placeholder="Nome que chegou agora"><input id="editGols_${t.id}" type="number" placeholder="Gols" style="max-width:70px"><input id="editAst_${t.id}" type="number" placeholder="Assist" style="max-width:70px"></div><button class="btn btn-verde" style="margin-top:8px" onclick="addJogadorNoTimeEdit('${t.id}')">+ Adicionar Jogador nesse time</button><div style="margin-top:10px"><p style="font-size:12px;font-weight:bold">Jogadores - aperte X para REMOVER / SUBSTITUIR:</p>${t.jogadores.map(j=>`<div class="edit-jogador-linha"><span><strong>${j.nome}</strong> - ⚽ ${j.gols||0} / 🎯 ${j.ast||0}</span><button class="btn-del" onclick="removerJogadorDoTime('${t.id}','${j.id}')">X Remover Jogador</button></div>`).join('')||'<p style="font-size:12px;color:#888">Nenhum jogador fixo ainda.</p>'}</div><div class="temp-box"><p style="font-weight:900;color:#e65100;margin-bottom:4px">⏱️ ÚLTIMA OPÇÃO - ADICIONAR JOGADOR TEMPORÁRIO</p><p style="font-size:12px;color:#666;margin-bottom:8px">Jogou 1 partida e saiu, não é desse time. Faz gol, conta no placar, mas NÃO fica salvo no ${t.nome}.</p><div class="row"><input id="tempNome_${t.id}" placeholder="Ex: Samuel - jogou só essa partida"></div><button class="btn" style="background:#ff9800;color:white;width:100%;margin-top:8px" onclick="addJogadorTemporario('${t.id}','edit')">+ Adicionar Jogador Temporário</button><div style="margin-top:10px">${temps.map(j=>`<div class="edit-jogador-linha" style="border-color:#ff9800"><span><strong>${j.nome}</strong> <span class="temp-badge">TEMPORÁRIO</span> - ⚽ ${j.gols||0} / 🎯 ${j.ast||0}</span><button class="btn-del" onclick="removerJogadorTemporario('${t.id}','${j.id}')">X Tirar</button></div>`).join('')||'<p style="font-size:12px;color:#888">Nenhum temporário nesse time.</p>'}</div>${temps.length?`<button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="limparTemporariosTime('${t.id}')">🧹 Limpar temporários desse time</button>`:''}</div><button class="btn btn-amarelo" onclick="concluirEdicaoTime()">✅ Concluir Edição</button></div>`;
+}
+return `<div class="card"><div style="display:flex;justify-content:space-between;cursor:pointer" onclick="this.nextElementSibling.classList.toggle('aberta')"><div><span class="bolinha" style="background:${t.hex}"></span><strong>${t.nome}</strong> - ${t.jogadores.length} fixos ${getTemp(t.id).length?`+ ${getTemp(t.id).length} temporário(s)`:''}</div><div>▼ CLIQUE PARA ABRIR</div></div><div class="mini-aba ${estaEditando?'aberta':''}">${t.jogadores.map(j=>{let detId='det_'+t.id+'_'+j.id;return `<div><div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span>${j.nome}</span><span style="font-size:11px;color:#666">👁️ ver gols</span></div><div class="detalhe" id="${detId}">⚽ Gols: <strong>${j.gols||0}</strong> | 🎯 Assistências: <strong>${j.ast||0}</strong></div></div>`;}).join('')}${getTemp(t.id).map(j=>`<div class="jogador-item" style="background:#fff3e0;border:1px dashed #ff9800"><span>${j.nome} <span class="temp-badge">TEMPORÁRIO</span></span><span>⚽ ${j.gols||0} / 🎯 ${j.ast||0}</span></div>`).join('')}<div style="display:flex;gap:8px;margin-top:10px"><button class="btn-edit" style="flex:1" onclick="toggleEditarTime('${t.id}')">${estaEditando?'Fechar Edição':'✏️ Editar Time - Adicionar / Remover Jogador'}</button><button class="btn btn-cinza" style="flex:1" onclick="removerTime(${t.id})">Apagar ${t.nome}</button></div>${editHtml}</div></div>`;
+}).join('');
 document.getElementById('cardConfrontos').style.display=times.length>=2?'block':'none';
 document.getElementById('cardTabela').style.display=confrontos.length>0?'block':'none';
 if(times.length>=2) renderConfrontoAoVivo();
 }
-window.removerTime=function(id){showConfirm('Apagar esse time?',function(){times=times.filter(t=>t.id!==id);confrontos=confrontos.filter(c=>c.t1!==id && c.t2!==id);renderTimes();renderConfrontos();renderTabela();});}
-function atualizarSelects(){let opts=times.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');document.getElementById('selTime1').innerHTML=opts;document.getElementById('selTime2').innerHTML=opts;if(times.length>=2){document.getElementById('selTime2').selectedIndex=1;} renderConfrontoAoVivo();}
-function getTimeSelecionado(lado){let sel=document.getElementById(lado===1?'selTime1':'selTime2');if(!sel||!sel.value) return null;return times.find(t=>String(t.id)===String(sel.value));}
-function somaGolsTime(time){if(!time) return 0;return time.jogadores.reduce((s,j)=>s+(parseInt(j.gols)||0),0);}
-function syncPlacar(){let t1=getTimeSelecionado(1);let t2=getTimeSelecionado(2);let p1=somaGolsTime(t1)+golsSemAutor[1];let p2=somaGolsTime(t2)+golsSemAutor[2];document.getElementById('placar1').value=p1;document.getElementById('placar2').value=p2;ultimoPlacarCalculado={1:p1,2:p2};}
+window.removerTime=function(id){showConfirm('Apagar esse time?',function(){times=times.filter(t=>t.id!==id);confrontos=confrontos.filter(c=>c.t1!==id&&c.t2!==id);delete tempJogadores[String(id)];if(String(editandoTimeId)===String(id))editandoTimeId=null;renderTimes();renderConfrontos();renderTabela();});}
+function atualizarSelects(){let opts=times.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');document.getElementById('selTime1').innerHTML=opts;document.getElementById('selTime2').innerHTML=opts;if(times.length>=2){document.getElementById('selTime2').selectedIndex=1;}renderConfrontoAoVivo();}
+function getTimeSelecionado(lado){let sel=document.getElementById(lado===1?'selTime1':'selTime2');if(!sel||!sel.value)return null;return times.find(t=>String(t.id)===String(sel.value));}
+function somaGolsTime(time){if(!time)return 0;return time.jogadores.reduce((s,j)=>s+(parseInt(j.gols)||0),0);}
+function syncPlacar(){let t1=getTimeSelecionado(1);let t2=getTimeSelecionado(2);let p1=somaGolsTime(t1)+(t1?somaGolsTemp(t1.id):0)+golsSemAutor[1];let p2=somaGolsTime(t2)+(t2?somaGolsTemp(t2.id):0)+golsSemAutor[2];document.getElementById('placar1').value=p1;document.getElementById('placar2').value=p2;}
 window.onTrocarTimeConfronto=function(){golsSemAutor={1:0,2:0};renderConfrontoAoVivo();}
-window.onDigitarPlacar=function(lado){
-  let val=parseInt(document.getElementById(lado===1?'placar1':'placar2').value)||0;
-  let time=getTimeSelecionado(lado);
-  let somaJogadores=somaGolsTime(time);
-  let novoSemAutor=val - somaJogadores;
-  if(novoSemAutor<0) novoSemAutor=0;
-  golsSemAutor[lado]=novoSemAutor;
-  syncPlacar();
-  renderConfrontoAoVivo(false);
-}
-window.addGolSemAutor=function(lado,delta){
-  golsSemAutor[lado]=Math.max(0,golsSemAutor[lado]+delta);
-  syncPlacar(); renderConfrontoAoVivo(false);
-}
-window.altGolJogador=function(timeId,jogId,delta){
-  let time=times.find(t=>String(t.id)===String(timeId)); if(!time) return;
-  let j=time.jogadores.find(x=>String(x.id)===String(jogId)); if(!j) return;
-  j.gols=Math.max(0,(parseInt(j.gols)||0)+delta);
-  syncPlacar(); renderTimes(); renderConfrontoAoVivo(false);
-}
-window.altAstJogador=function(timeId,jogId,delta){
-  let time=times.find(t=>String(t.id)===String(timeId)); if(!time) return;
-  let j=time.jogadores.find(x=>String(x.id)===String(jogId)); if(!j) return;
-  j.ast=Math.max(0,(parseInt(j.ast)||0)+delta);
-  renderTimes(); renderConfrontoAoVivo(false);
-}
+window.onDigitarPlacar=function(lado){let val=parseInt(document.getElementById(lado===1?'placar1':'placar2').value)||0;let time=getTimeSelecionado(lado);let somaJog=somaGolsTime(time)+somaGolsTemp(time?time.id:0);let novo=val-somaJog;if(novo<0)novo=0;golsSemAutor[lado]=novo;syncPlacar();renderConfrontoAoVivo(false);}
+window.addGolSemAutor=function(lado,delta){golsSemAutor[lado]=Math.max(0,golsSemAutor[lado]+delta);syncPlacar();renderConfrontoAoVivo(false);}
+window.altGolJogador=function(timeId,jogId,delta){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let j=time.jogadores.find(x=>String(x.id)===String(jogId));if(!j)return;j.gols=Math.max(0,(parseInt(j.gols)||0)+delta);syncPlacar();renderTimes();renderConfrontoAoVivo(false);};
+window.altAstJogador=function(timeId,jogId,delta){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let j=time.jogadores.find(x=>String(x.id)===String(jogId));if(!j)return;j.ast=Math.max(0,(parseInt(j.ast)||0)+delta);renderTimes();renderConfrontoAoVivo(false);};
 function renderConfrontoAoVivo(zerarPlacar=true){
-  let div=document.getElementById('areaConfrontoAoVivo'); if(!div) return;
-  let t1=getTimeSelecionado(1); let t2=getTimeSelecionado(2);
-  if(!t1||!t2){div.innerHTML='';return;}
-  if(zerarPlacar) syncPlacar();
-  function bloco(time,lado){
-    return `<div class="conf-box"><h4><span class="bolinha" style="background:${time.hex}"></span> ${time.nome} - Toque em + quando marcar</h4>
-    ${time.jogadores.map(j=>`
-      <div class="conf-jogador">
-        <div class="conf-jogador-nome">${j.nome}</div>
-        <div class="conf-linha">
-          <span class="conf-linha-info">⚽ ${j.gols||0}</span>
-          <div class="conf-btns">
-            <button class="btn-mini btn-mini-menos" onclick="altGolJogador('${time.id}','${j.id}',-1)">−</button>
-            <button class="btn-mini btn-mini-gol" onclick="altGolJogador('${time.id}','${j.id}',1)">+</button>
-          </div>
-        </div>
-        <div class="conf-linha">
-          <span class="conf-linha-info">🎯 ${j.ast||0}</span>
-          <div class="conf-btns">
-            <button class="btn-mini btn-mini-menos" onclick="altAstJogador('${time.id}','${j.id}',-1)">−</button>
-            <button class="btn-mini btn-mini-ast" onclick="altAstJogador('${time.id}','${j.id}',1)">+</button>
-          </div>
-        </div>
-      </div>`).join('')}
-      <div class="conf-jogador" style="background:#fffbe6">
-        <div class="conf-jogador-nome">Gol sem autor</div>
-        <div class="conf-linha">
-          <span class="conf-linha-info">⚽ ${golsSemAutor[lado]}</span>
-          <div class="conf-btns">
-            <button class="btn-mini btn-mini-menos" onclick="addGolSemAutor(${lado},-1)">−</button>
-            <button class="btn-mini btn-mini-gol" onclick="addGolSemAutor(${lado},1)">+</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }
-  div.innerHTML=bloco(t1,1)+bloco(t2,2);
+let div=document.getElementById('areaConfrontoAoVivo');if(!div)return;let t1=getTimeSelecionado(1);let t2=getTimeSelecionado(2);if(!t1||!t2){div.innerHTML='';return;}if(zerarPlacar)syncPlacar();
+function bloco(time,lado){
+let temps=getTemp(time.id);
+return `<div class="conf-box"><h4><span class="bolinha" style="background:${time.hex}"></span> ${time.nome} - Toque em + quando marcar</h4>${time.jogadores.map(j=>`<div class="conf-jogador"><div class="conf-jogador-nome">${j.nome}</div><div class="conf-linha"><span class="conf-linha-info">⚽ ${j.gols||0}</span><div class="conf-btns"><button class="btn-mini btn-mini-menos" onclick="altGolJogador('${time.id}','${j.id}',-1)">−</button><button class="btn-mini btn-mini-gol" onclick="altGolJogador('${time.id}','${j.id}',1)">+</button></div></div><div class="conf-linha"><span class="conf-linha-info">🎯 ${j.ast||0}</span><div class="conf-btns"><button class="btn-mini btn-mini-menos" onclick="altAstJogador('${time.id}','${j.id}',-1)">−</button><button class="btn-mini btn-mini-ast" onclick="altAstJogador('${time.id}','${j.id}',1)">+</button></div></div></div>`).join('')}${temps.map(j=>`<div class="conf-jogador conf-jogador-temp"><div class="conf-jogador-nome">${j.nome} <span class="temp-badge">TEMPORÁRIO - só essa partida</span></div><div class="conf-linha"><span class="conf-linha-info">⚽ ${j.gols||0}</span><div class="conf-btns"><button class="btn-mini btn-mini-menos" onclick="altGolTemp('${time.id}','${j.id}',-1)">−</button><button class="btn-mini btn-mini-gol" onclick="altGolTemp('${time.id}','${j.id}',1)">+</button></div></div><div class="conf-linha"><span class="conf-linha-info">🎯 ${j.ast||0}</span><div class="conf-btns"><button class="btn-mini btn-mini-menos" onclick="altAstTemp('${time.id}','${j.id}',-1)">−</button><button class="btn-mini btn-mini-ast" onclick="altAstTemp('${time.id}','${j.id}',1)">+</button></div></div><button class="btn btn-cinza" style="width:100%;margin-top:6px" onclick="removerJogadorTemporario('${time.id}','${j.id}')">X Tirar temporário</button></div>`).join('')}<div style="background:#fff3e0;border:2px dashed #ff9800;border-radius:10px;padding:10px;margin-top:8px"><p style="font-size:12px;font-weight:bold;color:#e65100">⏱️ ÚLTIMA OPÇÃO - JOGADOR TEMPORÁRIO AQUI TAMBÉM</p><p style="font-size:12px;color:#666">Jogou 1 partida e saiu, não é desse time.</p><div class="row" style="margin-top:6px"><input id="tempConfNome_${time.id}" placeholder="Nome temporário"><button class="btn" style="background:#ff9800;color:white;max-width:130px" onclick="addJogadorTemporario('${time.id}','conf')">+ Temporário</button></div></div><div class="conf-jogador" style="background:#fffbe6"><div class="conf-jogador-nome">Gol sem autor</div><div class="conf-linha"><span class="conf-linha-info">⚽ ${golsSemAutor[lado]}</span><div class="conf-btns"><button class="btn-mini btn-mini-menos" onclick="addGolSemAutor(${lado},-1)">−</button><button class="btn-mini btn-mini-gol" onclick="addGolSemAutor(${lado},1)">+</button></div></div></div></div>`;
 }
-window.addConfronto=function(){let t1=parseInt(document.getElementById('selTime1').value);let t2=parseInt(document.getElementById('selTime2').value);let g1=parseInt(document.getElementById('placar1').value);let g2=parseInt(document.getElementById('placar2').value);if(!t1||!t2)return showAlert('Escolha os 2 times');if(t1===t2)return showAlert('Não pode confronto do mesmo time');if(isNaN(g1)||isNaN(g2))return showAlert('Digite o placar');confrontos.push({id:Date.now(),t1,t2,g1,g2});golsSemAutor={1:0,2:0};document.getElementById('placar1').value='';document.getElementById('placar2').value='';renderConfrontos();renderTabela();renderConfrontoAoVivo();}
-function renderConfrontos(){document.getElementById('listaConfrontos').innerHTML=confrontos.map(c=>{let t1=times.find(t=>t.id===c.t1);let t2=times.find(t=>t.id===c.t2);return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}</span><button class="btn btn-cinza" style="padding:4px 8px" onclick="removerConfronto(${c.id})">X</button></div>`}).join('');}
+div.innerHTML=bloco(t1,1)+bloco(t2,2);
+}
+window.addConfronto=function(){
+let t1=parseInt(document.getElementById('selTime1').value);let t2=parseInt(document.getElementById('selTime2').value);let g1=parseInt(document.getElementById('placar1').value);let g2=parseInt(document.getElementById('placar2').value);if(!t1||!t2)return showAlert('Escolha os 2 times');if(t1===t2)return showAlert('Não pode confronto do mesmo time');if(isNaN(g1)||isNaN(g2))return showAlert('Digite o placar');
+function deltaTime(timeId){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return [];let lista=[];time.jogadores.forEach(j=>{let b=getBase(timeId,j.id);let dg=(parseInt(j.gols)||0)-b.gols;let da=(parseInt(j.ast)||0)-b.ast;if(dg>0||da>0)lista.push({nome:j.nome,gols:dg,ast:da,temporario:false});setBase(timeId,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0);});getTemp(timeId).forEach(j=>{let b=getBase(timeId,j.id);let dg=(parseInt(j.gols)||0)-b.gols;let da=(parseInt(j.ast)||0)-b.ast;if(dg>0||da>0)lista.push({nome:j.nome,gols:dg,ast:da,temporario:true});setBase(timeId,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0);});return lista;}
+let detalhe1=deltaTime(t1);let detalhe2=deltaTime(t2);
+let tempSnap1=JSON.parse(JSON.stringify(getTemp(t1)));let tempSnap2=JSON.parse(JSON.stringify(getTemp(t2)));
+confrontos.push({id:Date.now(),t1,t2,g1,g2,temp1:tempSnap1,temp2:tempSnap2,detalhe1:detalhe1,detalhe2:detalhe2});
+golsSemAutor={1:0,2:0};document.getElementById('placar1').value='';document.getElementById('placar2').value='';renderConfrontos();renderTabela();renderConfrontoAoVivo();
+let resumo=[...detalhe1,...detalhe2].map(d=>d.nome+' '+d.gols+'G/'+d.ast+'A').join(', ');
+showAlert(resumo?('Confronto salvo! Gols desse jogo: '+resumo):'Confronto salvo!','Confronto ✅');
+}
+function renderConfrontos(){document.getElementById('listaConfrontos').innerHTML=confrontos.map(c=>{let t1=times.find(t=>t.id===c.t1);let t2=times.find(t=>t.id===c.t2);let txt='';let det=[...(c.detalhe1||[]),...(c.detalhe2||[])];if(det.length){txt='<br><small style="color:#0a5c36;font-weight:bold">⚽ '+det.map(d=>d.nome+' '+d.gols+'G/'+d.ast+'A'+(d.temporario?' (temp)':'')).join(', ')+'</small>';}else if((c.temp1&&c.temp1.length)||(c.temp2&&c.temp2.length)){txt='<br><small style="color:#e65100">'+[...(c.temp1||[]).map(j=>j.nome+' (temp '+j.gols+'G/'+j.ast+'A)'),...(c.temp2||[]).map(j=>j.nome+' (temp '+j.gols+'G/'+j.ast+'A)')].join(', ')+'</small>';}return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}${txt}</span><button class="btn btn-cinza" style="padding:4px 8px" onclick="removerConfronto(${c.id})">X</button></div>`}).join('');}
 window.removerConfronto=function(id){confrontos=confrontos.filter(c=>c.id!==id);renderConfrontos();renderTabela();}
 function renderTabela(){if(confrontos.length===0){document.getElementById('cardTabela').style.display='none';return;}let stats={};times.forEach(t=>{stats[t.id]={id:t.id,nome:t.nome,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0}});confrontos.forEach(c=>{let s1=stats[c.t1];let s2=stats[c.t2];if(!s1||!s2)return;s1.J++;s2.J++;s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}});let ord=Object.values(stats).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);document.getElementById('tbodyTabela').innerHTML=ord.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('');document.getElementById('cardTabela').style.display='block';}
 function renderCalendario(tipo='times'){if(tipo==='times'){const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];document.getElementById('mesAnoTxt').innerText=`${meses[mesAtual]} ${anoAtual}`;let primeiro=new Date(anoAtual,mesAtual,1).getDay();let dias=new Date(anoAtual,mesAtual+1,0).getDate();let diasSem=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];document.getElementById('calDiasSemana').innerHTML=diasSem.map(d=>`<div class="cal-nome-dia">${d}</div>`).join('');let html='';for(let i=0;i<primeiro;i++)html+=`<div></div>`;for(let d=1;d<=dias;d++){let str=`${anoAtual}-${String(mesAtual+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;let isDom=new Date(anoAtual,mesAtual,d).getDay()===0;let tem=historico[str];let sel=dataSelecionada===str?'selecionado':'';html+=`<div class="cal-dia ${isDom?'domingo':''} ${tem?'tem-jogo':''} ${sel}" onclick="selecionarData('${str}','times')">${d}</div>`;}document.getElementById('calGrid').innerHTML=html;}else{const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];document.getElementById('mesAnoTxtFotos').innerText=`${meses[mesAtualFotos]} ${anoAtualFotos}`;let primeiro=new Date(anoAtualFotos,mesAtualFotos,1).getDay();let dias=new Date(anoAtualFotos,mesAtualFotos+1,0).getDate();let diasSem=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];document.getElementById('calDiasSemanaFotos').innerHTML=diasSem.map(d=>`<div class="cal-nome-dia">${d}</div>`).join('');let html='';for(let i=0;i<primeiro;i++)html+=`<div></div>`;for(let d=1;d<=dias;d++){let str=`${anoAtualFotos}-${String(mesAtualFotos+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;let isDom=new Date(anoAtualFotos,mesAtualFotos,d).getDay()===0;let tem=fotosData[str];let sel=dataSelecionadaFotos===str?'selecionado':'';html+=`<div class="cal-dia ${isDom?'domingo':''} ${tem?'tem-foto':''} ${sel}" onclick="selecionarData('${str}','fotos')">${d}</div>`;}document.getElementById('calGridFotos').innerHTML=html;}}
-function getDiaSemanaInfo(str){let d=new Date(str+'T12:00:00');let dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];let nome=dias[d.getDay()];let prep=(nome==='Domingo'||nome==='Sábado')?'no':'na';return {nome, prep};}
+function getDiaSemanaInfo(str){let d=new Date(str+'T12:00:00');let dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];let nome=dias[d.getDay()];let prep=(nome==='Domingo'||nome==='Sábado')?'no':'na';return {nome,prep};}
 window.selecionarData=function(str,tipo='times'){if(tipo==='times'){dataSelecionada=str;let info=getDiaSemanaInfo(str);let dataBr=str.split('-').reverse().join('/');document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataBr;document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';document.getElementById('cardSalvar').style.display='block';if(!editandoData)renderCalendario('times');mostrarDetalheNaTimes(str);}else{dataSelecionadaFotos=str;document.getElementById('dataFotoTxt').innerText=str.split('-').reverse().join('/');document.getElementById('cardAddFoto').style.display='block';renderCalendario('fotos');renderGaleriaFotos();}}
 window.mudarMes=function(dir,tipo){if(tipo==='times'){mesAtual+=dir;if(mesAtual>11){mesAtual=0;anoAtual++;}if(mesAtual<0){mesAtual=11;anoAtual--;};renderCalendario('times');}else{mesAtualFotos+=dir;if(mesAtualFotos>11){mesAtualFotos=0;anoAtualFotos++;}if(mesAtualFotos<0){mesAtualFotos=11;anoAtualFotos--;};renderCalendario('fotos');}}
 window.irAno=function(a,tipo){if(tipo==='times'){anoAtual=a;mesAtual=0;renderCalendario('times');}else{anoAtualFotos=a;mesAtualFotos=0;renderCalendario('fotos');}}
 window.salvarNoCalendario=function(){
 if(!dataSelecionada)return showAlert('Selecione um dia no calendário');
-if(times.length===0 && !editandoData){
-showConfirm('Apagar o dia '+dataSelecionada.split('-').reverse().join('/')+'?',function(){
-remove(ref(db,'historico/'+dataSelecionada));
-showAlert('Dia apagado!');editandoData=null;dataSelecionada=null;times=[];confrontos=[];document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
-});
-return;
+if(times.length===0&&!editandoData){showConfirm('Apagar o dia '+dataSelecionada.split('-').reverse().join('/')+'?',function(){remove(ref(db,'historico/'+dataSelecionada));showAlert('Dia apagado!');editandoData=null;dataSelecionada=null;times=[];confrontos=[];baseGols={};document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';});return;}
+let timesParaSalvar=JSON.parse(JSON.stringify(times));
+timesParaSalvar.forEach(t=>{let temps=getTemp(t.id);temps.forEach(j=>{t.jogadores.push({nome:j.nome,gols:j.gols,ast:j.ast,id:'temp_'+j.id,temporario:true});});});
+set(ref(db,'historico/'+dataSelecionada),{data:dataSelecionada,times:JSON.parse(JSON.stringify(timesParaSalvar)),confrontos:JSON.parse(JSON.stringify(confrontos)),criado:Date.now()});
+showAlert((editandoData?'ATUALIZADO':'Salvo')+' em '+dataSelecionada.split('-').reverse().join('/')+'! Gols e assistências somados no Ranking.','Salvo ✅');
+editandoData=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';dataSelecionada=null;times=[];confrontos=[];editandoTimeId=null;tempJogadores={};baseGols={};renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
 }
-set(ref(db,'historico/'+dataSelecionada),{data:dataSelecionada, times: JSON.parse(JSON.stringify(times)), confrontos: JSON.parse(JSON.stringify(confrontos)), criado:Date.now()});
-showAlert((editandoData?'ATUALIZADO':'Salvo')+' em '+dataSelecionada.split('-').reverse().join('/')+'!','Salvo ✅');
-editandoData=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';dataSelecionada=null;times=[];confrontos=[];renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
-}
-window.cancelarEdicao=function(){editandoData=null;times=[];confrontos=[];dataSelecionada=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';renderTimes();renderConfrontos();renderTabela();}
+window.cancelarEdicao=function(){editandoData=null;times=[];confrontos=[];dataSelecionada=null;editandoTimeId=null;tempJogadores={};baseGols={};document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';document.getElementById('btnSalvar').innerText='SALVAR TUDO NESSE DIA';renderTimes();renderConfrontos();renderTabela();}
 function mostrarDetalheNaTimes(dataStr){
 let h=historico[dataStr];let div=document.getElementById('detalheDia');
 if(!h){div.innerHTML=`<div class="card"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>Nenhum dia salvo. Monte os times acima e salve.</p></div>`;return;}
@@ -450,590 +318,107 @@ let stats={};h.times.forEach(t=>{stats[t.id]={id:t.id,nome:t.nome,hex:t.hex,P:0,
 (h.confrontos||[]).forEach(c=>{let s1=stats[c.t1];let s2=stats[c.t2];if(!s1||!s2)return;s1.J++;s2.J++;s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}});
 let ord=Object.values(stats).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
 let tabelaHtml=`<div class="card"><h2>🏆 Tabela do dia ${dataStr.split('-').reverse().join('/')}</h2><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${ord.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div>`;
-let confHtml=(h.confrontos||[]).length?`<div class="card"><h2>⚔️ Confrontos</h2>${h.confrontos.map(c=>{let t1=h.times.find(t=>t.id===c.t1);let t2=h.times.find(t=>t.id===c.t2);return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}</span></div>`}).join('')}</div>`:'';
-let timesHtml=h.times.map(t=>`<div class="card"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome}</h2>${t.jogadores.map(j=>{
-let detId='hist_'+dataStr+'_'+t.id+'_'+j.id;
-return `<div><div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span>${j.nome}</span><span style="font-size:11px;color:#666">👁️ ${j.gols||0}G/${j.ast||0}A</span></div><div class="detalhe" id="${detId}">⚽ Gols: <strong>${j.gols||0}</strong> | 🎯 Assistências: <strong>${j.ast||0}</strong></div></div>`;
-}).join('')}</div>`).join('');
+let confHtml=(h.confrontos||[]).length?`<div class="card"><h2>⚔️ Confrontos</h2>${h.confrontos.map(c=>{let t1=h.times.find(t=>t.id===c.t1);let t2=h.times.find(t=>t.id===c.t2);let tt='';let det=[...(c.detalhe1||[]),...(c.detalhe2||[])];if(det.length){tt='<br><small style="color:#0a5c36;font-weight:bold">⚽ '+det.map(d=>d.nome+' '+d.gols+'G/'+d.ast+'A').join(', ')+'</small>';}return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}${tt}</span></div>`}).join('')}</div>`:'';
+let timesHtml=h.times.map(t=>`<div class="card"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome}</h2>${t.jogadores.map(j=>{let detId='hist_'+dataStr+'_'+t.id+'_'+j.id;return `<div><div class="jogador-item" onclick="toggleDetalhe('${detId}')"><span>${j.nome} ${j.temporario?'<span class="temp-badge">TEMPORÁRIO</span>':''}</span><span style="font-size:11px;color:#666">👁️ ${j.gols||0}G/${j.ast||0}A</span></div><div class="detalhe" id="${detId}">⚽ Gols: <strong>${j.gols||0}</strong> | 🎯 Assistências: <strong>${j.ast||0}</strong></div></div>`;}).join('')}</div>`).join('');
 div.innerHTML=`<div class="card" style="border:2px solid #0a5c36"><h2>📅 ${dataStr.split('-').reverse().join('/')}</h2><p>${h.times.length} times | ${h.confrontos?.length||0} jogos</p><button class="btn btn-amarelo" onclick="editarDia('${dataStr}')">✏️ EDITAR TODAS AS INFORMAÇÕES DESSE DIA</button></div>`+confHtml+tabelaHtml+timesHtml;
 }
-window.editarDia=function(dataStr){showConfirm('Editar o dia '+dataStr.split('-').reverse().join('/')+'?',function(){let h=historico[dataStr];times=JSON.parse(JSON.stringify(h.times));confrontos=JSON.parse(JSON.stringify(h.confrontos||[]));dataSelecionada=dataStr;editandoData=dataStr;let info=getDiaSemanaInfo(dataStr);document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataStr.split('-').reverse().join('/');document.getElementById('btnSalvar').innerText=`SALVAR EDIÇÃO DO DIA ${dataStr.split('-').reverse().join('/')}`;document.getElementById('editandoTxt').style.display='block';document.getElementById('editandoTxt').innerText=`✏️ MODO EDIÇÃO - Editando ${dataStr.split('-').reverse().join('/')}`;document.getElementById('btnCancelarEdicao').style.display='block';document.getElementById('cardSalvar').style.display='block';renderTimes();atualizarSelects();renderConfrontos();renderTabela();window.scrollTo({top:0,behavior:'smooth'});},'Editar dia?');}
-function getHoraStr(j){
- if(j.horaInicio && j.horaFim) return `${j.horaInicio} às ${j.horaFim}`;
- if(j.horaInicio) return `${j.horaInicio}`;
- if(j.hora) return `${j.hora}`;
- return '';
-}
-window.salvarProximoJogo=function(){
-let data=document.getElementById('proxData').value;
-let horaInicio=document.getElementById('proxHoraInicio').value;
-let horaFim=document.getElementById('proxHoraFim').value;
-let local=document.getElementById('proxLocal').value.trim();
-let obs=document.getElementById('proxObs').value.trim();
-if(!data||!horaInicio||!horaFim||!local) return showAlert('Preencha data, horário de início, término e local');
-if(editandoProxKey){
- update(ref(db,'proximos/'+editandoProxKey),{data,horaInicio,horaFim,local,obs});
- showAlert('Atualizado!','Atualizado ✅');
- cancelarEdicaoProximo();
-} else {
- push(ref(db,'proximos'),{data,horaInicio,horaFim,local,obs,criado:Date.now()});
- document.getElementById('proxData').value='';
- document.getElementById('proxLocal').value='';
- document.getElementById('proxObs').value='';
- showAlert('Próximo jogo salvo!','Salvo ✅');
-}
-}
-function renderProximos(){
-let div=document.getElementById('listaProximos');
-let divHist=document.getElementById('listaProximosHistorico');
-let futuros=proximosJogos.filter(j=>!jogoJaTerminou(j));
-let passados=proximosJogos.filter(j=>jogoJaTerminou(j));
-passados.sort((a,b)=> new Date(b.data)-new Date(a.data));
-if(futuros.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo. Quando acabar, ele vai para o histórico abaixo.</p></div>';}
-else{
-div.innerHTML='<div class="card"><h2>📅 Próximos Jogos</h2></div>'+futuros.map(j=>`
-<div class="card" style="border-left:6px solid #0a5c36">
-<h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)}</h2>
-<p>📍 ${j.local}</p>
-<p>${j.obs?`📝 ${j.obs}`:''}</p>
-<div style="display:flex;gap:8px;margin-top:10px">
-<button class="btn-edit" onclick="editarProximo('${j._key}')">✏️ Editar</button>
-<button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button>
-</div>
-</div>`).join('');
-}
-if(passados.length===0){divHist.innerHTML='';}
-else{
-divHist.innerHTML='<div class="card" style="border:2px solid #888;background:#f5f5f5"><h2 style="color:#555">🕓 Histórico - Jogos que já terminaram</h2><p style="font-size:12px;color:#666">Quando o jogo acaba, ele sai do Destaque e fica aqui salvo.</p></div>'+passados.map(j=>`
-<div class="card" style="border-left:6px solid #888;opacity:.9">
-<h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)} <span style="font-size:12px;background:#eee;padding:3px 8px;border-radius:10px">JÁ ACONTECEU</span></h2>
-<p>📍 ${j.local}</p>
-<p>${j.obs?`📝 ${j.obs}`:''}</p>
-<div style="display:flex;gap:8px;margin-top:10px">
-<button class="btn-edit" onclick="editarProximo('${j._key}')">✏️ Editar</button>
-<button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button>
-</div>
-</div>`).join('');
-}
-}
-window.editarProximo=function(key){
- let j=proximosJogos.find(x=>x._key===key);
- if(!j) return;
- document.getElementById('proxData').value=j.data;
- document.getElementById('proxHoraInicio').value=j.horaInicio || j.hora || '08:00';
- document.getElementById('proxHoraFim').value=j.horaFim || '11:00';
- document.getElementById('proxLocal').value=j.local;
- document.getElementById('proxObs').value=j.obs||'';
- editandoProxKey=key;
- document.getElementById('btnProxSalvar').innerText='💾 SALVAR EDIÇÃO';
- document.getElementById('btnProxCancelar').style.display='block';
- document.getElementById('editProxTxt').style.display='block';
- document.getElementById('editProxTxt').innerText='✏️ Editando jogo de '+j.data.split('-').reverse().join('/')+' - altere e clique em Salvar Edição';
- window.scrollTo({top:0,behavior:'smooth'});
-}
-window.cancelarEdicaoProximo=function(){
- editandoProxKey=null;
- document.getElementById('proxData').value='';
- document.getElementById('proxHoraInicio').value='08:00';
- document.getElementById('proxHoraFim').value='11:00';
- document.getElementById('proxLocal').value='';
- document.getElementById('proxObs').value='';
- document.getElementById('btnProxSalvar').innerText='Salvar Próximo Jogo';
- document.getElementById('btnProxCancelar').style.display='none';
- document.getElementById('editProxTxt').style.display='none';
-}
-window.removerProximo=function(key){showConfirm('Apagar próximo jogo?',function(){remove(ref(db,'proximos/'+key)); if(editandoProxKey===key) cancelarEdicaoProximo();});}
-function renderCapa(){
-  let divInicio=document.getElementById('capaInicio');
-  let divAtual=document.getElementById('capaAtual');
-  if(!capaBaba || !capaBaba.img){
-    if(divInicio) divInicio.innerHTML='';
-    if(divAtual) divAtual.innerHTML='<p style="font-size:13px;color:#888">Nenhuma capa ainda. Escolha a foto do time que foi melhor e salve.</p>';
-    return;
-  }
-  let titulo=capaBaba.titulo||'🏆 Capa do Baba';
-  let expirada=capaExpirada(capaBaba);
-  let dataSalva=capaBaba.dataSalva||'';
-  let dataSalvaBr=dataSalva?dataSalva.split('-').reverse().join('/'):'';
-  if(expirada){
-    if(divInicio) divInicio.innerHTML='';
-    if(divAtual) divAtual.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img" style="opacity:.6"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p><p style="text-align:center;font-size:12px;color:#c62828;font-weight:bold">⏰ Capa expirou - durou 7 dias, até ${capaDataFimStr(capaBaba)}. Saiu do Início, mas ficou salva no dia ${dataSalvaBr} na aba Fotos.</p></div>`;
-    return;
-  }
-  let diasRest=capaDiasRestantes(capaBaba);
-  if(divAtual) divAtual.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p><p style="text-align:center;font-size:12px;color:#0a5c36">✅ Ativa - faltam ${diasRest} dia(s), sai em ${capaDataFimStr(capaBaba)}. Salva no dia ${dataSalvaBr}.</p></div>`;
-  if(divInicio) divInicio.innerHTML=`<div class="card capa-inicio" style="border:3px solid #ffcc00;padding:12px"><h2 style="color:#b77900;text-align:center">🏆 Capa do Baba</h2><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;text-align:center;margin-top:10px;font-size:16px">${titulo}</p><p style="text-align:center;font-size:12px;color:#666">Time que foi melhor - fica aqui por 7 dias, até ${capaDataFimStr(capaBaba)} (faltam ${diasRest} dia(s))</p></div>`;
-  let inp=document.getElementById('capaTitulo'); if(inp && !inp.value) inp.value=capaBaba.titulo||'';
-}
-window.salvarCapa=function(){
-  let titulo=document.getElementById('capaTitulo').value.trim()||'🏆 Capa do Baba';
-  let input=document.getElementById('inputCapa');
-  if(!input.files[0] && !capaBaba) return showAlert('Escolha a foto da capa');
-  if(!input.files[0] && capaBaba){
-    let nova={img:capaBaba.img,titulo,criado:capaBaba.criado||Date.now(),dataSalva:capaBaba.dataSalva||dataHojeStr()};
-    set(ref(db,'capaBaba'),nova);
-    document.getElementById('capaTitulo').value='';
-    showAlert('Título da capa atualizado!','Capa ✅');
-    return;
-  }
-  let reader=new FileReader();
-  reader.onload=function(e){
-    let agora=Date.now();
-    let hoje=dataHojeStr();
-    let dados={img:e.target.result,titulo,criado:agora,dataSalva:hoje};
-    set(ref(db,'capaBaba'),dados);
-    push(ref(db,'fotos/'+hoje),{img:e.target.result,tipo:'capa',titulo:titulo,criado:agora});
-    document.getElementById('inputCapa').value='';
-    document.getElementById('capaTitulo').value='';
-    showAlert('Capa salva! Vai ficar 7 dias no Início, até '+capaDataFimStr(dados)+'. E já ficou salva no dia '+hoje.split('-').reverse().join('/')+' na aba Fotos.','Capa ✅');
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-window.removerCapa=function(){showConfirm('Remover a capa do Baba? Ela continua salva no dia que você salvou, na aba Fotos.',function(){remove(ref(db,'capaBaba')); showAlert('Capa removida do Início! Continua salva no dia, na aba Fotos.');});}
-function renderInicio(){
-  renderCapa();
-  let info=document.getElementById('inicioInfo');
-  let titulo=document.getElementById('destaqueTitulo');
-  let prox=getProximoJogoFuturo();
-  if(!prox){
-    titulo.innerText='⏰ Nenhum baba agendado';
-    info.innerHTML='<p style="color:#666">Salve um próximo jogo na aba Próximos Jogos<br>📍 Campo do Candeias - Vitória da Conquista</p><p style="font-size:12px;color:#999;margin-top:8px">Os jogos que já terminaram ficam no histórico, na aba Próximos Jogos.</p>';
-    return;
-  }
-  let dataBr=prox.data.split('-').reverse().join('/');
-  let diaSemana=new Date(prox.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long'});
-  titulo.innerText=`⏰ Próximo Baba - ${dataBr}`;
-  let horarioTxt=getHoraStr(prox);
-  let html=`
-    <div style="display:grid;gap:6px">
-      <div>📅 <strong>Data:</strong> ${dataBr} - ${diaSemana}</div>
-      <div>⏰ <strong>Horário:</strong> ${horarioTxt}</div>
-      <div>📍 <strong>Local:</strong> ${prox.local}</div>
-    </div>`;
-  if(prox.obs && prox.obs.trim()!==''){
-    html+=`
-    <div style="margin-top:14px;background:#fffbe6;padding:12px;border-radius:10px;border-left:5px solid #ffcc00">
-      <strong>📝 Observação:</strong><br>
-      <span style="font-size:14px">${prox.obs}</span>
-    </div>`;
-  }
-  info.innerHTML=html;
-}
-window.adicionarFoto=function(){if(!dataSelecionadaFotos) return showAlert('Selecione um dia no calendário de fotos');let input=document.getElementById('inputFoto');if(!input.files[0]) return showAlert('Escolha uma foto ou vídeo');let file=input.files[0];let tipo=file.type.startsWith('video')?'video':'foto';let reader=new FileReader();reader.onload=function(e){let imgData=e.target.result;push(ref(db,'fotos/'+dataSelecionadaFotos),{img:imgData,tipo:tipo,criado:Date.now()});input.value='';showAlert(tipo==='video'?'Vídeo adicionado!':'Foto adicionada!','Salvo ✅');};reader.readAsDataURL(file);}
-function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos e vídeos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ou vídeo ainda.</p></div>`;return;}let qtdFoto=fotos.filter(f=>(f.tipo||'foto')==='foto').length;let qtdVideo=fotos.filter(f=>f.tipo==='video').length;let qtdCapa=fotos.filter(f=>f.tipo==='capa').length;div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${qtdFoto} fotos, ${qtdVideo} vídeos, ${qtdCapa} capa</h2></div>`+fotos.map(f=>{if(f.tipo==='video'){return `<div class="card"><div class="foto-item"><video src="${f.img}" controls playsinline preload="metadata"></video></div><p style="font-size:12px;color:#666;margin-top:6px">🎥 Vídeo</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Vídeo</button></div>`}else if(f.tipo==='capa'){return `<div class="card" style="border:3px solid #ffcc00"><div class="foto-item" onclick="abrirModal('${f.img}', 'Capa')"><img src="${f.img}"></div><p style="font-size:13px;font-weight:bold;text-align:center;margin-top:8px">🏆 ${f.titulo||'Capa do Baba'} - ficou salva nesse dia</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Capa salva</button></div>`}else{return `<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Foto</button></div>`}}).join('');}
+window.editarDia=function(dataStr){showConfirm('Editar o dia '+dataStr.split('-').reverse().join('/')+'?',function(){let h=historico[dataStr];times=JSON.parse(JSON.stringify(h.times));confrontos=JSON.parse(JSON.stringify(h.confrontos||[]));dataSelecionada=dataStr;editandoData=dataStr;resetBase();let info=getDiaSemanaInfo(dataStr);document.getElementById('tituloSalvar').innerText=`💾 Salvar ${info.prep} ${info.nome}`;document.getElementById('labelDiaSelecionado').innerText=`${info.nome} selecionado`;document.getElementById('dataSelTxt').innerText=dataStr.split('-').reverse().join('/');document.getElementById('btnSalvar').innerText=`SALVAR EDIÇÃO DO DIA ${dataStr.split('-').reverse().join('/')}`;document.getElementById('editandoTxt').style.display='block';document.getElementById('editandoTxt').innerText=`✏️ MODO EDIÇÃO - Editando ${dataStr.split('-').reverse().join('/')}`;document.getElementById('btnCancelarEdicao').style.display='block';document.getElementById('cardSalvar').style.display='block';renderTimes();atualizarSelects();renderConfrontos();renderTabela();window.scrollTo({top:0,behavior:'smooth'});},'Editar dia?');}
+function getHoraStr(j){if(j.horaInicio&&j.horaFim)return `${j.horaInicio} às ${j.horaFim}`;if(j.horaInicio)return `${j.horaInicio}`;if(j.hora)return `${j.hora}`;return '';}
+window.salvarProximoJogo=function(){let data=document.getElementById('proxData').value;let horaInicio=document.getElementById('proxHoraInicio').value;let horaFim=document.getElementById('proxHoraFim').value;let local=document.getElementById('proxLocal').value.trim();let obs=document.getElementById('proxObs').value.trim();if(!data||!horaInicio||!horaFim||!local)return showAlert('Preencha data, horário de início, término e local');if(editandoProxKey){update(ref(db,'proximos/'+editandoProxKey),{data,horaInicio,horaFim,local,obs});showAlert('Atualizado!','Atualizado ✅');cancelarEdicaoProximo();}else{push(ref(db,'proximos'),{data,horaInicio,horaFim,local,obs,criado:Date.now()});document.getElementById('proxData').value='';document.getElementById('proxLocal').value='';document.getElementById('proxObs').value='';showAlert('Próximo jogo salvo!','Salvo ✅');}}
+function renderProximos(){let div=document.getElementById('listaProximos');let divHist=document.getElementById('listaProximosHistorico');let futuros=proximosJogos.filter(j=>!jogoJaTerminou(j));let passados=proximosJogos.filter(j=>jogoJaTerminou(j));passados.sort((a,b)=>new Date(b.data)-new Date(a.data));if(futuros.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo. Quando acabar, ele vai para o histórico abaixo.</p></div>';}else{div.innerHTML='<div class="card"><h2>📅 Próximos Jogos</h2></div>'+futuros.map(j=>`<div class="card" style="border-left:6px solid #0a5c36"><h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)}</h2><p>📍 ${j.local}</p><p>${j.obs?`📝 ${j.obs}`:''}</p><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-edit" onclick="editarProximo('${j._key}')">✏️ Editar</button><button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button></div></div>`).join('');}if(passados.length===0){divHist.innerHTML='';}else{divHist.innerHTML='<div class="card" style="border:2px solid #888;background:#f5f5f5"><h2 style="color:#555">🕓 Histórico - Jogos que já terminaram</h2><p style="font-size:12px;color:#666">Quando o jogo acaba, ele sai do Destaque e fica aqui salvo.</p></div>'+passados.map(j=>`<div class="card" style="border-left:6px solid #888;opacity:.9"><h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)} <span style="font-size:12px;background:#eee;padding:3px 8px;border-radius:10px">JÁ ACONTECEU</span></h2><p>📍 ${j.local}</p><p>${j.obs?`📝 ${j.obs}`:''}</p><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-edit" onclick="editarProximo('${j._key}')">✏️ Editar</button><button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button></div></div>`).join('');}}
+window.editarProximo=function(key){let j=proximosJogos.find(x=>x._key===key);if(!j)return;document.getElementById('proxData').value=j.data;document.getElementById('proxHoraInicio').value=j.horaInicio||j.hora||'08:00';document.getElementById('proxHoraFim').value=j.horaFim||'11:00';document.getElementById('proxLocal').value=j.local;document.getElementById('proxObs').value=j.obs||'';editandoProxKey=key;document.getElementById('btnProxSalvar').innerText='💾 SALVAR EDIÇÃO';document.getElementById('btnProxCancelar').style.display='block';document.getElementById('editProxTxt').style.display='block';document.getElementById('editProxTxt').innerText='✏️ Editando jogo de '+j.data.split('-').reverse().join('/')+' - altere e clique em Salvar Edição';window.scrollTo({top:0,behavior:'smooth'});}
+window.cancelarEdicaoProximo=function(){editandoProxKey=null;document.getElementById('proxData').value='';document.getElementById('proxHoraInicio').value='08:00';document.getElementById('proxHoraFim').value='11:00';document.getElementById('proxLocal').value='';document.getElementById('proxObs').value='';document.getElementById('btnProxSalvar').innerText='Salvar Próximo Jogo';document.getElementById('btnProxCancelar').style.display='none';document.getElementById('editProxTxt').style.display='none';}
+window.removerProximo=function(key){showConfirm('Apagar próximo jogo?',function(){remove(ref(db,'proximos/'+key));if(editandoProxKey===key)cancelarEdicaoProximo();});}
+function renderCapa(){let di=document.getElementById('capaInicio');let da=document.getElementById('capaAtual');if(!capaBaba||!capaBaba.img){if(di)di.innerHTML='';if(da)da.innerHTML='<p style="font-size:13px;color:#888">Nenhuma capa ainda. Escolha a foto do time que foi melhor e salve.</p>';return;}let titulo=capaBaba.titulo||'🏆 Capa do Baba';let exp=capaExpirada(capaBaba);let ds=capaBaba.dataSalva||'';let dsBr=ds?ds.split('-').reverse().join('/'):'';
+if(exp){if(di)di.innerHTML='';if(da)da.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img" style="opacity:.6"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p><p style="text-align:center;font-size:12px;color:#c62828;font-weight:bold">⏰ Capa expirou - durou 7 dias, até ${capaDataFimStr(capaBaba)}. Saiu do Início, mas ficou salva no dia ${dsBr} na aba Fotos.</p></div>`;return;}
+let dias=capaDiasRestantes(capaBaba);if(da)da.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p><p style="text-align:center;font-size:12px;color:#0a5c36">✅ Ativa - faltam ${dias} dia(s), sai em ${capaDataFimStr(capaBaba)}. Salva no dia ${dsBr}.</p></div>`;if(di)di.innerHTML=`<div class="card capa-inicio" style="border:3px solid #ffcc00;padding:12px"><h2 style="color:#b77900;text-align:center">🏆 Capa do Baba</h2><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;text-align:center;margin-top:10px;font-size:16px">${titulo}</p><p style="text-align:center;font-size:12px;color:#666">Time que foi melhor - fica aqui por 7 dias, até ${capaDataFimStr(capaBaba)} (faltam ${dias} dia(s))</p></div>`;let inp=document.getElementById('capaTitulo');if(inp&&!inp.value)inp.value=capaBaba.titulo||'';}
+window.salvarCapa=function(){let titulo=document.getElementById('capaTitulo').value.trim()||'🏆 Capa do Baba';let input=document.getElementById('inputCapa');if(!input.files[0]&&!capaBaba)return showAlert('Escolha a foto da capa');if(!input.files[0]&&capaBaba){set(ref(db,'capaBaba'),{img:capaBaba.img,titulo,criado:capaBaba.criado||Date.now(),dataSalva:capaBaba.dataSalva||dataHojeStr()});document.getElementById('capaTitulo').value='';showAlert('Título da capa atualizado!','Capa ✅');return;}let reader=new FileReader();reader.onload=function(e){let agora=Date.now();let hoje=dataHojeStr();let dados={img:e.target.result,titulo,criado:agora,dataSalva:hoje};set(ref(db,'capaBaba'),dados);push(ref(db,'fotos/'+hoje),{img:e.target.result,tipo:'capa',titulo:titulo,criado:agora});document.getElementById('inputCapa').value='';document.getElementById('capaTitulo').value='';showAlert('Capa salva! Vai ficar 7 dias no Início, até '+capaDataFimStr(dados)+'. E já ficou salva no dia '+hoje.split('-').reverse().join('/')+' na aba Fotos.','Capa ✅');};reader.readAsDataURL(input.files[0]);}
+window.removerCapa=function(){showConfirm('Remover a capa do Baba? Ela continua salva no dia que você salvou, na aba Fotos.',function(){remove(ref(db,'capaBaba'));showAlert('Capa removida do Início! Continua salva no dia, na aba Fotos.');});}
+function renderInicio(){renderCapa();let info=document.getElementById('inicioInfo');let titulo=document.getElementById('destaqueTitulo');let prox=getProximoJogoFuturo();if(!prox){titulo.innerText='⏰ Nenhum baba agendado';info.innerHTML='<p style="color:#666">Salve um próximo jogo na aba Próximos Jogos<br>📍 Campo do Candeias - Vitória da Conquista</p><p style="font-size:12px;color:#999;margin-top:8px">Os jogos que já terminaram ficam no histórico, na aba Próximos Jogos.</p>';return;}let dataBr=prox.data.split('-').reverse().join('/');let diaSemana=new Date(prox.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long'});titulo.innerText=`⏰ Próximo Baba - ${dataBr}`;let horarioTxt=getHoraStr(prox);let html=`<div style="display:grid;gap:6px"><div>📅 <strong>Data:</strong> ${dataBr} - ${diaSemana}</div><div>⏰ <strong>Horário:</strong> ${horarioTxt}</div><div>📍 <strong>Local:</strong> ${prox.local}</div></div>`;if(prox.obs&&prox.obs.trim()!==''){html+=`<div style="margin-top:14px;background:#fffbe6;padding:12px;border-radius:10px;border-left:5px solid #ffcc00"><strong>📝 Observação:</strong><br><span style="font-size:14px">${prox.obs}</span></div>`;}info.innerHTML=html;}
+window.adicionarFoto=function(){if(!dataSelecionadaFotos)return showAlert('Selecione um dia no calendário de fotos');let input=document.getElementById('inputFoto');if(!input.files[0])return showAlert('Escolha uma foto ou vídeo');let file=input.files[0];let tipo=file.type.startsWith('video')?'video':'foto';let reader=new FileReader();reader.onload=function(e){push(ref(db,'fotos/'+dataSelecionadaFotos),{img:e.target.result,tipo:tipo,criado:Date.now()});input.value='';showAlert(tipo==='video'?'Vídeo adicionado!':'Foto adicionada!','Salvo ✅');};reader.readAsDataURL(file);}
+function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos e vídeos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ou vídeo ainda.</p></div>`;return;}let qf=fotos.filter(f=>(f.tipo||'foto')==='foto').length;let qv=fotos.filter(f=>f.tipo==='video').length;let qc=fotos.filter(f=>f.tipo==='capa').length;div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${qf} fotos, ${qv} vídeos, ${qc} capa</h2></div>`+fotos.map(f=>{if(f.tipo==='video'){return `<div class="card"><div class="foto-item"><video src="${f.img}" controls playsinline preload="metadata"></video></div><p style="font-size:12px;color:#666;margin-top:6px">🎥 Vídeo</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Vídeo</button></div>`}else if(f.tipo==='capa'){return `<div class="card" style="border:3px solid #ffcc00"><div class="foto-item" onclick="abrirModal('${f.img}', 'Capa')"><img src="${f.img}"></div><p style="font-size:13px;font-weight:bold;text-align:center;margin-top:8px">🏆 ${f.titulo||'Capa do Baba'} - ficou salva nesse dia</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Capa salva</button></div>`}else{return `<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Foto</button></div>`}}).join('');}
 window.apagarFoto=function(dataStr,key){showConfirm('Apagar essa foto / vídeo?',function(){remove(ref(db,'fotos/'+dataStr+'/'+key));});}
-window.abrirModal=function(imgSrc, dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
+window.abrirModal=function(imgSrc,dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
 window.fecharModal=function(){document.getElementById('modalFoto').style.display='none';document.body.style.overflow='auto';}
-function renderRankings(){
-let keys=Object.keys(historico);
-let divAnual=document.getElementById('rankingAnual');
-let divSelecao=document.getElementById('selecaoAnual');
-if(keys.length===0){
-divAnual.innerHTML='<div class="card"><p>Nenhum dia salvo. Salve times e confrontos para ver o ranking.</p></div>';
-divSelecao.innerHTML='';
-return;
-}
-let porCorAnual={};
-let jogadoresGols={};
-let jogadoresAst={};
-let playerWins={};
-let playerTimes={};
-let playerGolsMap={};
-let playerAstMap={};
-let goleiroStats={};
-let goleirosCadastrados={};
-criacaoJogadores.forEach(g=>{
-  if(g.peso===1){
-    goleirosCadastrados[g.nome.trim().toLowerCase()]=g.nome.trim();
-  }
-});
-function getGoleiroDoTime(time){
-  if(!time || !time.jogadores) return null;
-  for(let j of time.jogadores){
-    let key=j.nome.trim().toLowerCase();
-    if(goleirosCadastrados[key]) return {nome: goleirosCadastrados[key], key:key};
-  }
-  return null;
-}
-function addGoleiroJogo(golKey, golNome, golsSofridos, resultado){
-  if(!goleiroStats[golKey]) goleiroStats[golKey]={nome:golNome, key:golKey, jogos:0, vitorias:0, empates:0, derrotas:0, golsSofridos:0, cleanSheets:0, pontos:0};
-  let s=goleiroStats[golKey];
-  s.jogos++;
-  s.golsSofridos+=golsSofridos;
-  if(resultado==='V') s.vitorias++;
-  if(resultado==='E') s.empates++;
-  if(resultado==='D') s.derrotas++;
-  if(golsSofridos===0) s.cleanSheets++;
-  s.pontos = (s.vitorias*10) + (s.empates*3) + (s.cleanSheets*5) - (s.golsSofridos*2);
-  s.mediaSofrida = s.jogos? (s.golsSofridos/s.jogos).toFixed(2) : '0.00';
-}
-keys.forEach(dataStr=>{
-let h=historico[dataStr];
-(h.confrontos||[]).forEach(c=>{
-let t1=h.times.find(t=>t.id===c.t1);
-let t2=h.times.find(t=>t.id===c.t2);
-if(!t1||!t2) return;
-[t1,t2].forEach(t=>{
-if(!porCorAnual[t.cor]) porCorAnual[t.cor]={nome:t.nome,cor:t.cor,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0};
-});
-let s1=porCorAnual[t1.cor];
-let s2=porCorAnual[t2.cor];
-s1.J++;s2.J++;
-s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;
-s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;
-if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
- if(c.g1>c.g2){
-   t1.jogadores.forEach(j=>{
-     let key=j.nome.trim().toLowerCase();
-     if(!playerWins[key]) playerWins[key]=0;
-     playerWins[key]++;
-     playerTimes[key]=t1.cor;
-   });
- } else if(c.g2>c.g1){
-   t2.jogadores.forEach(j=>{
-     let key=j.nome.trim().toLowerCase();
-     if(!playerWins[key]) playerWins[key]=0;
-     playerWins[key]++;
-     playerTimes[key]=t2.cor;
-   });
- }
- let gol1=getGoleiroDoTime(t1);
- let gol2=getGoleiroDoTime(t2);
- if(gol1){
-   let res1 = c.g1>c.g2 ? 'V' : c.g1===c.g2 ? 'E' : 'D';
-   addGoleiroJogo(gol1.key, gol1.nome, c.g2, res1);
- }
- if(gol2){
-   let res2 = c.g2>c.g1 ? 'V' : c.g2===c.g1 ? 'E' : 'D';
-   addGoleiroJogo(gol2.key, gol2.nome, c.g1, res2);
- }
-});
-h.times.forEach(t=>{
-t.jogadores.forEach(j=>{
-let nome=j.nome.trim();
-if(!nome) return;
-let key=nome.toLowerCase();
-if(!jogadoresGols[key]) jogadoresGols[key]={nome:nome,gols:0,ast:0,vitorias:0,cor:t.cor};
-if(!jogadoresAst[key]) jogadoresAst[key]={nome:nome,gols:0,ast:0,vitorias:0,cor:t.cor};
-jogadoresGols[key].gols+=parseInt(j.gols||0);
-jogadoresGols[key].ast+=parseInt(j.ast||0);
-jogadoresAst[key].gols+=parseInt(j.gols||0);
-jogadoresAst[key].ast+=parseInt(j.ast||0);
-playerGolsMap[key]=(playerGolsMap[key]||0)+parseInt(j.gols||0);
-playerAstMap[key]=(playerAstMap[key]||0)+parseInt(j.ast||0);
-if(playerWins[key]) jogadoresGols[key].vitorias=playerWins[key];
-if(playerWins[key]) jogadoresAst[key].vitorias=playerWins[key];
-});
-});
-});
-let anualOrd=Object.values(porCorAnual).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
-let artilheiros=Object.values(jogadoresGols).sort((a,b)=>b.gols-a.gols||b.ast-a.ast);
-let assistencias=Object.values(jogadoresAst).sort((a,b)=>b.ast-a.ast||b.gols-a.gols);
-let goleirosOrd=Object.values(goleiroStats).sort((a,b)=>b.pontos-a.pontos || b.vitorias-a.vitorias || a.golsSofridos-b.golsSofridos);
-let tabelaTimes=`<div class="card"><h2>🏆 Tabela Geral Anual</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${anualOrd.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div></div>`;
-let tabelaArtilheiros=`<div class="card" style="border:2px solid #c62828"><h2 style="color:#c62828">⚽ Artilheiros Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Gols</th><th>Assist</th></tr></thead><tbody>${artilheiros.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.gols}</strong></td><td>${j.ast}</td></tr>`).join('') || '<tr><td colspan="4">Nenhum gol registrado</td></tr>'}</tbody></table></div></div>`;
-let tabelaAssist=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('') || '<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div>`;
-let tabelaGoleiros=`<div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🧤 Ranking Goleiro do Ano</h2><p style="font-size:12px;color:#666">Fórmula: Vitória x 10 + Empate x 3 + Sem tomar gol x 5 - Gols sofridos x 2</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Goleiro</th><th>Pts</th><th>J</th><th>V</th><th>E</th><th>GS</th><th>Sem Gol</th><th>Média GS</th></tr></thead><tbody>${goleirosOrd.map((g,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${g.nome}</td><td><strong>${g.pontos}</strong></td><td>${g.jogos}</td><td>${g.vitorias}</td><td>${g.empates}</td><td>${g.golsSofridos}</td><td>${g.cleanSheets}</td><td>${g.mediaSofrida}</td></tr>`).join('') || '<tr><td colspan="9">Nenhum goleiro cadastrado como peso 1. Cadastre os goleiros na Criação de Times como peso 1.</td></tr>'}</tbody></table></div></div>`;
-divAnual.innerHTML=tabelaTimes+tabelaArtilheiros+tabelaAssist+tabelaGoleiros;
-let melhorTime = anualOrd[0];
-let melhorGoleiro = null;
-if(goleirosOrd.length>0){
-  melhorGoleiro = goleirosOrd[0];
-} else {
-  let goleiros = criacaoJogadores.filter(j=>j.peso===1);
-  if(goleiros.length>0){
-    melhorGoleiro = {nome: goleiros[0].nome, key: goleiros[0].nome.trim().toLowerCase(), vitorias:0, empates:0, golsSofridos:0, cleanSheets:0, pontos:0, jogos:0, mediaSofrida:'0.00'};
-  } else {
-    let maisVitorioso = Object.entries(playerWins).sort((a,b)=>b[1]-a[1])[0];
-    if(maisVitorioso){
-      let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===maisVitorioso[0])?.nome || maisVitorioso[0];
-      melhorGoleiro = {nome: nomeReal, key: maisVitorioso[0], vitorias: maisVitorioso[1], empates:0, golsSofridos:0, cleanSheets:0, pontos: maisVitorioso[1]*10, jogos:0, mediaSofrida:'0.00'};
-    }
-  }
-}
-let artilheiro = artilheiros[0]||null;
-let viceArtilheiro = artilheiros[1]||null;
-let liderAssist = assistencias[0]||null;
-let selecionadosKeys = new Set();
-if(melhorGoleiro) selecionadosKeys.add(melhorGoleiro.key);
-if(artilheiro) selecionadosKeys.add(artilheiro.nome.trim().toLowerCase());
-if(viceArtilheiro) selecionadosKeys.add(viceArtilheiro.nome.trim().toLowerCase());
-if(liderAssist) selecionadosKeys.add(liderAssist.nome.trim().toLowerCase());
-let rankingVitorias = Object.entries(playerWins)
-  .map(([key,wins])=>{
-    let nomeReal = artilheiros.find(a=>a.nome.toLowerCase()===key)?.nome || 
-                   assistencias.find(a=>a.nome.toLowerCase()===key)?.nome ||
-                   criacaoJogadores.find(c=>c.nome.trim().toLowerCase()===key)?.nome || key;
-    return {key, nome: nomeReal, vitorias:wins, gols: playerGolsMap[key]||0, ast: playerAstMap[key]||0};
-  })
-  .sort((a,b)=>b.vitorias-a.vitorias || b.gols-a.gols);
-let doisMaisVitoriosos = [];
-for(let p of rankingVitorias){
-  if(!selecionadosKeys.has(p.key)){
-    doisMaisVitoriosos.push(p);
-    selecionadosKeys.add(p.key);
-    if(doisMaisVitoriosos.length===2) break;
-  }
-}
-let selecaoHtml = '';
-if(melhorTime){
-selecaoHtml = `<div class="card selecao-card">
-<h2 style="color:#b77900">⭐ Seleção do Ano - ${new Date().getFullYear()}</h2>
-<p style="font-size:12px;color:#666;margin-bottom:10px">6 jogadores - sem repetir - atualizado até agora</p>
-<div class="selecao-item" style="background:#fff8e1;border-left-color:${melhorTime.hex}">
-<span class="selecao-pos">🏆 Melhor Time</span>
-<span><span class="bolinha" style="background:${melhorTime.hex}"></span><strong>${melhorTime.nome}</strong> - ${melhorTime.V} vitórias, ${melhorTime.P} pontos</span>
-</div>
-${melhorGoleiro ? `<div class="selecao-item" style="border-left-color:#1e88e5">
-<span class="selecao-pos">🧤 Goleiro do Ano</span>
-<span><strong>${melhorGoleiro.nome}</strong> - ${melhorGoleiro.pontos} pts | ${melhorGoleiro.vitorias}V ${melhorGoleiro.empates||0}E | Sofreu ${melhorGoleiro.golsSofridos} gols em ${melhorGoleiro.jogos} jogos | ${melhorGoleiro.cleanSheets} sem tomar gol</span>
-</div>` : ''}
-${artilheiro ? `<div class="selecao-item" style="border-left-color:#c62828">
-<span class="selecao-pos">⚽ Artilheiro</span>
-<span><strong>${artilheiro.nome}</strong> - ${artilheiro.gols} gols, ${artilheiro.ast} assist</span>
-</div>` : ''}
-${viceArtilheiro ? `<div class="selecao-item" style="border-left-color:#ff9800">
-<span class="selecao-pos">🥈 Vice-Artilheiro</span>
-<span><strong>${viceArtilheiro.nome}</strong> - ${viceArtilheiro.gols} gols, ${viceArtilheiro.ast} assist</span>
-</div>` : ''}
-${liderAssist ? `<div class="selecao-item" style="border-left-color:#1e88e5">
-<span class="selecao-pos">🎯 Líder Assistência</span>
-<span><strong>${liderAssist.nome}</strong> - ${liderAssist.ast} assist, ${liderAssist.gols} gols</span>
-</div>` : ''}
-${doisMaisVitoriosos[0] ? `<div class="selecao-item" style="border-left-color:#2e7d32">
-<span class="selecao-pos">🏅 Mais venceu (1º)</span>
-<span><strong>${doisMaisVitoriosos[0].nome}</strong> - ${doisMaisVitoriosos[0].vitorias} vitórias, ${doisMaisVitoriosos[0].gols} gols</span>
-</div>` : ''}
-${doisMaisVitoriosos[1] ? `<div class="selecao-item" style="border-left-color:#2e7d32">
-<span class="selecao-pos">🏅 Mais venceu (2º)</span>
-<span><strong>${doisMaisVitoriosos[1].nome}</strong> - ${doisMaisVitoriosos[1].vitorias} vitórias, ${doisMaisVitoriosos[1].gols} gols</span>
-</div>` : ''}
-</div>`;
-}
-divSelecao.innerHTML=selecaoHtml;
-}
-function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum dia salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
-window.criacaoAddJogador=function(){
-let nome=document.getElementById('criacaoNome').value.trim();
-let peso=parseInt(document.getElementById('criacaoPeso').value);
-if(!nome) return showAlert('Digite o nome do jogador');
-push(ref(db,'criacaoJogadores'),{nome,peso,criado:Date.now()});
-document.getElementById('criacaoNome').value='';
-}
-function parseNomes(texto){
-  if(!texto) return [];
-  return texto.split(/[\n,;]+/)
-    .map(s=>s.trim())
-    .filter(s=>s.length>0)
-    .map(s=>s.replace(/\s+/g,' ').trim())
-    .filter(v=>v.length>=2);
-}
-window.criacaoAddLote=function(){
-  let txtGoleiros=document.getElementById('loteGoleiros').value;
-  let txtLinha=document.getElementById('loteLinha').value;
-  let txtBons=document.getElementById('loteBons').value;
-  let nomesGoleiros=parseNomes(txtGoleiros);
-  let nomesLinha=parseNomes(txtLinha);
-  let nomesBons=parseNomes(txtBons);
-  if(nomesGoleiros.length===0 && nomesLinha.length===0 && nomesBons.length===0){
-    return showAlert('Cole pelo menos um nome em uma das caixinhas');
-  }
-  let existentes = new Set(criacaoJogadores.map(j=>j.nome.trim().toLowerCase()));
-  let addG=0, addL=0, addB=0, dup=0;
-  nomesGoleiros.forEach(nome=>{
-    let key=nome.toLowerCase();
-    if(existentes.has(key)){dup++; return;}
-    push(ref(db,'criacaoJogadores'),{nome,peso:1,criado:Date.now()+Math.random()});
-    existentes.add(key); addG++;
-  });
-  nomesLinha.forEach(nome=>{
-    let key=nome.toLowerCase();
-    if(existentes.has(key)){dup++; return;}
-    push(ref(db,'criacaoJogadores'),{nome,peso:2,criado:Date.now()+Math.random()});
-    existentes.add(key); addL++;
-  });
-  nomesBons.forEach(nome=>{
-    let key=nome.toLowerCase();
-    if(existentes.has(key)){dup++; return;}
-    push(ref(db,'criacaoJogadores'),{nome,peso:3,criado:Date.now()+Math.random()});
-    existentes.add(key); addB++;
-  });
-  document.getElementById('loteInfo').innerText=`✅ Adicionados: ${addG} goleiros + ${addL} medianos (peso 2) + ${addB} bons (peso 3) = ${addG+addL+addB} total. ${dup?`(${dup} duplicados ignorados)`:''}`;
-  if(addG+addL+addB>0){
-    document.getElementById('loteGoleiros').value='';
-    document.getElementById('loteLinha').value='';
-    document.getElementById('loteBons').value='';
-    showAlert(`Lista adicionada! ${addG} goleiros (peso 1, um por time) + ${addL} medianos (peso 2, divisão igual) + ${addB} bons (peso 3, nunca juntos - 1 por time se 4 bons/4 times, 2 por time se 8 bons/4 times) = ${addG+addL+addB} jogadores. Agora clica em SORTEAR!`,'Lote Adicionado ✅');
-  }
-}
-window.limparLote=function(){
-  document.getElementById('loteGoleiros').value='';
-  document.getElementById('loteLinha').value='';
-  document.getElementById('loteBons').value='';
-  document.getElementById('loteInfo').innerText='';
-}
-function renderCriacaoLista(){
-let div=document.getElementById('criacaoListaNomes');
-let total=document.getElementById('criacaoTotal');
-if(criacaoJogadores.length===0){div.innerHTML='<p style="font-size:12px;color:#999">Nenhum jogador adicionado ainda.</p>';total.innerText='';return;}
-div.innerHTML=criacaoJogadores.map(j=>{
-let pesoTxt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 - Bom ⭐':'2 - Médio';
-let classe='peso-'+j.peso;
-return `<div class="jogador-item"><span>${j.nome} <span class="peso-badge ${classe}">${pesoTxt}</span></span><button class="btn btn-cinza" style="padding:3px 8px" onclick="criacaoRemover('${j._key}')">X</button></div>`;
-}).join('');
-let g=criacaoJogadores.filter(j=>j.peso===1).length;
-let m=criacaoJogadores.filter(j=>j.peso===2).length;
-let b=criacaoJogadores.filter(j=>j.peso===3).length;
-total.innerText=`Total: ${criacaoJogadores.length} jogadores | 🧤 Goleiros: ${g} | Médios (peso 2): ${m} | Bons (peso 3): ${b}`;
-}
+function renderCriacaoLista(){let div=document.getElementById('criacaoListaNomes');if(!div)return;if(criacaoJogadores.length===0){div.innerHTML='<p style="font-size:12px;color:#999">Nenhum jogador ainda.</p>';document.getElementById('criacaoTotal').innerText='';return;}div.innerHTML=criacaoJogadores.map(j=>`<div class="jogador-item"><span>${j.nome} <span class="peso-badge peso-${j.peso}">${j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 - Bom ⭐':'2 - Médio'}</span></span><button class="btn btn-cinza" style="padding:3px 8px" onclick="criacaoRemover('${j._key}')">X</button></div>`).join('');let g=criacaoJogadores.filter(j=>j.peso===1).length;let m=criacaoJogadores.filter(j=>j.peso===2).length;let b=criacaoJogadores.filter(j=>j.peso===3).length;document.getElementById('criacaoTotal').innerText=`Total: ${criacaoJogadores.length} | 🧤 Goleiros: ${g} | Médios: ${m} | Bons: ${b}`;}
+window.criacaoAddJogador=function(){let nome=document.getElementById('criacaoNome').value.trim();let peso=parseInt(document.getElementById('criacaoPeso').value);if(!nome)return showAlert('Digite o nome do jogador');push(ref(db,'criacaoJogadores'),{nome,peso,criado:Date.now()});document.getElementById('criacaoNome').value='';}
+function parseNomes(t){if(!t)return [];return t.split(/[\n,;]+/).map(s=>s.trim()).filter(s=>s.length>0).map(s=>s.replace(/\s+/g,' ').trim()).filter(v=>v.length>=2);}
+window.criacaoAddLote=function(){let g=parseNomes(document.getElementById('loteGoleiros').value);let m=parseNomes(document.getElementById('loteLinha').value);let b=parseNomes(document.getElementById('loteBons').value);if(g.length===0&&m.length===0&&b.length===0)return showAlert('Cole pelo menos um nome');let ex=new Set(criacaoJogadores.map(j=>j.nome.trim().toLowerCase()));let aG=0,aL=0,aB=0,dup=0;g.forEach(n=>{if(ex.has(n.toLowerCase())){dup++;return;}push(ref(db,'criacaoJogadores'),{nome:n,peso:1,criado:Date.now()+Math.random()});ex.add(n.toLowerCase());aG++;});m.forEach(n=>{if(ex.has(n.toLowerCase())){dup++;return;}push(ref(db,'criacaoJogadores'),{nome:n,peso:2,criado:Date.now()+Math.random()});ex.add(n.toLowerCase());aL++;});b.forEach(n=>{if(ex.has(n.toLowerCase())){dup++;return;}push(ref(db,'criacaoJogadores'),{nome:n,peso:3,criado:Date.now()+Math.random()});ex.add(n.toLowerCase());aB++;});document.getElementById('loteInfo').innerText=`✅ Adicionados: ${aG} goleiros + ${aL} medianos + ${aB} bons = ${aG+aL+aB} total. ${dup?`(${dup} duplicados ignorados)`:''}`;if(aG+aL+aB>0){document.getElementById('loteGoleiros').value='';document.getElementById('loteLinha').value='';document.getElementById('loteBons').value='';showAlert(`Lista adicionada! ${aG} goleiros + ${aL} medianos + ${aB} bons = ${aG+aL+aB} jogadores. Agora clica em SORTEAR!`,'Lote ✅');}}
+window.limparLote=function(){document.getElementById('loteGoleiros').value='';document.getElementById('loteLinha').value='';document.getElementById('loteBons').value='';document.getElementById('loteInfo').innerText='';}
 window.criacaoRemover=function(key){remove(ref(db,'criacaoJogadores/'+key));}
 window.criacaoLimpar=function(){showConfirm('Limpar todos os nomes?',function(){remove(ref(db,'criacaoJogadores'));document.getElementById('criacaoResultado').innerHTML='';document.getElementById('cardCriacaoSalvar').style.display='none';});}
 window.criacaoSortear=function(){
-if(criacaoJogadores.length<2) return showAlert('Adicione pelo menos 2 jogadores');
-let numJog=parseInt(document.getElementById('criacaoNumJogadores').value);
-let numRes=parseInt(document.getElementById('criacaoNumReservas').value);
-let porTime=numJog+numRes;
-let jogadores=[...criacaoJogadores];
-let goleiros=jogadores.filter(j=>j.peso===1);
-let bons=jogadores.filter(j=>j.peso===3);
-let medios=jogadores.filter(j=>j.peso===2);
-let numTimes=Math.ceil(jogadores.length/porTime);
-if(numTimes<1) numTimes=1;
-if(goleiros.length>numTimes) numTimes=goleiros.length;
-let corSel=document.getElementById('criacaoCor').value;
-function embaralhar(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} return arr;}
-embaralhar(bons); embaralhar(medios); embaralhar(goleiros);
-let teams=[];
-for(let i=0;i<numTimes;i++){teams.push({id:i,nome:'TIME '+(i+1),jogadores:[],pesoTotal:0,cor:corSel,temGoleiro:false,contBons:0});}
-goleiros.forEach((g, idx)=>{
-let t=teams[idx % teams.length];
-if(!t.temGoleiro && t.jogadores.length<porTime){
-t.jogadores.push(g); t.pesoTotal+=g.peso*2; t.temGoleiro=true;
-} else {
-let outro=teams.find(tt=>!tt.temGoleiro && tt.jogadores.length<porTime);
-if(outro){outro.jogadores.push(g); outro.pesoTotal+=g.peso*2; outro.temGoleiro=true;}
-else{
-let extra={id:teams.length,nome:'TIME '+(teams.length+1),jogadores:[g],pesoTotal:g.peso*2,cor:corSel,temGoleiro:true,contBons:0};
-teams.push(extra);
-}
-}
-});
-let maxBonsPorTime = Math.ceil(bons.length / teams.length);
-let rodada=0;
-while(bons.length>0){
-  let candidatos = teams.filter(t=>t.jogadores.length<porTime && t.contBons < maxBonsPorTime)
-                        .sort((a,b)=>a.contBons - b.contBons || a.pesoTotal - b.pesoTotal);
-  if(candidatos.length===0){
-    maxBonsPorTime++;
-    continue;
-  }
-  let t=candidatos[0];
-  let b=bons.shift();
-  t.jogadores.push(b);
-  t.pesoTotal+=b.peso;
-  t.contBons++;
-  rodada++;
-  if(rodada>1000) break;
-}
-medios.forEach(m=>{
-let candidatos=teams.filter(t=>t.jogadores.length<porTime);
-if(candidatos.length===0) return;
-let t=candidatos.sort((a,b)=>a.pesoTotal-b.pesoTotal)[0];
-t.jogadores.push(m); t.pesoTotal+=m.peso;
-});
-let coresDisponiveis=['vermelho','azul','preto','amarelo','verde'];
-if(corSel==='aleatorio'){
-embaralhar(coresDisponiveis);
-teams.forEach((t,i)=>{
-let corNome=coresDisponiveis[i%coresDisponiveis.length];
-t.cor=corNome;
-t.hex=coresMap[corNome].hex;
-t.nome='TIME '+coresMap[corNome].nome;
-});
-}else{
-teams.forEach((t,i)=>{
-t.cor=corSel;
-t.hex=coresMap[corSel].hex;
-t.nome='TIME '+coresMap[corSel].nome+' '+(t.id+1);
-if(teams.length===1) t.nome='TIME '+coresMap[corSel].nome;
-});
-}
-criacaoTimesSorteados=teams;
-let htmlResultado=teams.map((t)=>{
-let titulares=t.jogadores.slice(0,numJog);
-let reservas=t.jogadores.slice(numJog);
-let pesoSum=t.jogadores.reduce((s,j)=>s+j.peso,0);
-let temGol=t.temGoleiro?'🧤 1 (Goleiro) ok':'⚠️ sem goleiro';
-return `<div class="card team-criado" style="border-left-color:${t.hex}"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome} - ${t.jogadores.length} jog. | Peso: ${pesoSum} | ${temGol} | Bons: ${t.contBons}</h2>
-<p style="font-size:12px;color:#666;margin-bottom:8px">Titulares (${titulares.length}):</p>
-${titulares.map(j=>{
-let txt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 Bom ⭐':'2 Médio';
-return `<div class="jogador-item"><span>${j.nome}</span><span class="peso-badge peso-${j.peso}">${txt}</span></div>`;
-}).join('')}
-${reservas.length?`<p style="font-size:12px;color:#666;margin:10px 0 5px">Reservas (${reservas.length}):</p>`+reservas.map(j=>{
-let txt=j.peso===1?'1 (Goleiro) 🧤':j.peso===3?'3 Bom ⭐':'2 Médio';
-return `<div class="jogador-item" style="background:#e8f5e9"><span>${j.nome}</span><span class="peso-badge peso-${j.peso}">${txt}</span></div>`;
-}).join(''):''}
-</div>`;
-}).join('');
-let resumo=`<div class="card" style="border:2px solid #6a1b9a"><h2>✅ Sorteio Realizado!</h2><p>${jogadores.length} jogadores divididos em ${teams.length} times de ${numJog} titulares + ${numRes} reservas (total ${porTime} por time) - até 10 titulares e até 7 reservas, igual profissional!</p><p style="font-size:12px;color:#666;margin-top:5px">Regras: Goleiros peso 1 nunca 2 no mesmo time | Bons peso 3 divisão igual: 4 bons/4 times=1 cada, 8 bons/4 times=2 cada | Medianos peso 2 divisão igual</p></div>`;
-document.getElementById('criacaoResultado').innerHTML=resumo+htmlResultado;
+if(criacaoJogadores.length<2)return showAlert('Adicione pelo menos 2 jogadores');
+let numJog=parseInt(document.getElementById('criacaoNumJogadores').value);let numRes=parseInt(document.getElementById('criacaoNumReservas').value);let porTime=numJog+numRes;let jogadores=[...criacaoJogadores];let goleiros=jogadores.filter(j=>j.peso===1);let bons=jogadores.filter(j=>j.peso===3);let medios=jogadores.filter(j=>j.peso===2);let numTimes=Math.ceil(jogadores.length/porTime);if(numTimes<1)numTimes=1;if(goleiros.length>numTimes)numTimes=goleiros.length;let corSel=document.getElementById('criacaoCor').value;function emb(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}emb(bons);emb(medios);emb(goleiros);
+let teams=[];for(let i=0;i<numTimes;i++){teams.push({id:i,nome:'TIME '+(i+1),jogadores:[],pesoTotal:0,cor:corSel,temGoleiro:false,contBons:0});}
+goleiros.forEach((g,idx)=>{let t=teams[idx%teams.length];if(!t.temGoleiro&&t.jogadores.length<porTime){t.jogadores.push(g);t.pesoTotal+=g.peso*2;t.temGoleiro=true;}else{let outro=teams.find(tt=>!tt.temGoleiro&&tt.jogadores.length<porTime);if(outro){outro.jogadores.push(g);outro.pesoTotal+=g.peso*2;outro.temGoleiro=true;}else{teams.push({id:teams.length,nome:'TIME '+(teams.length+1),jogadores:[g],pesoTotal:g.peso*2,cor:corSel,temGoleiro:true,contBons:0});}}});
+let maxBons=Math.ceil(bons.length/teams.length);
+while(bons.length>0){let cands=teams.filter(t=>t.jogadores.length<porTime&&t.contBons<maxBons).sort((a,b)=>a.contBons-b.contBons);if(cands.length===0)cands=teams.filter(t=>t.jogadores.length<porTime).sort((a,b)=>a.jogadores.length-b.jogadores.length);if(cands.length===0)break;let t=cands[0];let b=bons.shift();t.jogadores.push(b);t.contBons++;t.pesoTotal+=b.peso;}
+while(medios.length>0){let cands=teams.filter(t=>t.jogadores.length<porTime).sort((a,b)=>a.pesoTotal-b.pesoTotal);if(cands.length===0)break;let t=cands[0];let m=medios.shift();t.jogadores.push(m);t.pesoTotal+=m.peso;}
+let cores=['vermelho','azul','preto','amarelo','verde'];
+if(corSel!=='aleatorio'){cores=[corSel,...cores.filter(c=>c!==corSel)];}else{emb(cores);}
+teams.forEach((t,i)=>{let cor=cores[i%cores.length];let info=coresMap[cor];t.nome='TIME '+info.nome;t.cor=cor;t.hex=info.hex;});
+criacaoTimesSorteados=teams.map(t=>({nome:t.nome,cor:t.cor,hex:t.hex,jogadores:t.jogadores.slice(0,numJog).map(j=>({nome:j.nome,peso:j.peso})),reservas:t.jogadores.slice(numJog).map(j=>({nome:j.nome,peso:j.peso}))}));
+document.getElementById('criacaoResultado').innerHTML=criacaoTimesSorteados.map(t=>`<div class="card team-criado" style="border-left-color:${t.hex}"><h2><span class="bolinha" style="background:${t.hex}"></span> ${t.nome} - ${t.jogadores.length} titulares + ${t.reservas.length} reservas</h2><p style="font-weight:bold;color:#0a5c36">Titulares:</p>${t.jogadores.map(j=>`<div class="jogador-item"><span>${j.nome}</span><span class="peso-badge peso-${j.peso}">${j.peso===1?'🧤 1 Goleiro':j.peso===3?'⭐ 3':'2'}</span></div>`).join('')}${t.reservas.length?`<p style="font-weight:bold;color:#6a1b9a;margin-top:10px">Reservas:</p>${t.reservas.map(j=>`<div class="jogador-item" style="opacity:.85"><span>${j.nome}</span><span class="peso-badge peso-${j.peso}">${j.peso===1?'🧤 1 Goleiro':j.peso===3?'⭐ 3':'2'}</span></div>`).join('')}`:''}</div>`).join('');
 document.getElementById('cardCriacaoSalvar').style.display='block';
-window.scrollTo({top:document.getElementById('criacaoResultado').offsetTop-80,behavior:'smooth'});
 }
 window.criacaoEnviarParaTimes=function(){
-if(criacaoTimesSorteados.length===0) return showAlert('Sorteie os times primeiro');
-showConfirm('Enviar '+criacaoTimesSorteados.length+' times para a aba Times?',function(){
-times=[];
-criacaoTimesSorteados.forEach(t=>{
-let novoTime={id:Date.now()+Math.random(),nome:t.nome,cor:t.cor,hex:t.hex,jogadores:t.jogadores.map(j=>({nome:j.nome,gols:0,ast:0,id:Date.now()+Math.random()+j.nome}))};
-times.push(novoTime);
-});
-confrontos=[];
-renderTimes();atualizarSelects();
-showAlert('Times enviados para a aba Times!','Enviado ✅');
-mostrar('times',document.querySelectorAll('nav button')[1]);
-window.scrollTo({top:0,behavior:'smooth'});
-});
+if(!criacaoTimesSorteados||criacaoTimesSorteados.length===0)return showAlert('Sorteie os times primeiro');
+criacaoTimesSorteados.forEach(ts=>{if(times.find(t=>t.cor===ts.cor))return;let jogadores=[...ts.jogadores,...ts.reservas].map(j=>({nome:j.nome,gols:0,ast:0,id:Date.now()+Math.random()}));let novo={id:Date.now()+Math.random(),nome:ts.nome,cor:ts.cor,hex:ts.hex,jogadores:jogadores};times.push(novo);novo.jogadores.forEach(j=>setBase(novo.id,j.id,0,0));});
+renderTimes();atualizarSelects();showAlert('Times enviados para a aba Times!','Enviado ✅');mostrar('times',document.querySelectorAll('nav button')[1]);
 }
-onValue(ref(db,'historico'), snap=>{
- const val=snap.val()||{};
- historico=val;
- renderCalendario('times');
- renderHistoricoGeral();
- renderRankings();
- if(dataSelecionada) mostrarDetalheNaTimes(dataSelecionada);
+function renderRankings(){
+let keys=Object.keys(historico);let divAnual=document.getElementById('rankingAnual');let divSelecao=document.getElementById('selecaoAnual');
+if(keys.length===0){divAnual.innerHTML='<div class="card"><p>Nenhum dia salvo. Salve times e confrontos para ver o ranking.</p></div>';divSelecao.innerHTML='';return;}
+let porCorAnual={},jogadoresGols={},jogadoresAst={},playerWins={},playerGolsMap={},playerAstMap={},goleiroStats={},goleirosCadastrados={};
+criacaoJogadores.forEach(g=>{if(g.peso===1){goleirosCadastrados[g.nome.trim().toLowerCase()]=g.nome.trim();}});
+function getGoleiroDoTime(time){if(!time||!time.jogadores)return null;for(let j of time.jogadores){let k=j.nome.trim().toLowerCase();if(goleirosCadastrados[k])return {nome:goleirosCadastrados[k],key:k};}return null;}
+function addGoleiroJogo(gk,gn,gs,res){if(!goleiroStats[gk])goleiroStats[gk]={nome:gn,key:gk,jogos:0,vitorias:0,empates:0,derrotas:0,golsSofridos:0,cleanSheets:0,pontos:0};let s=goleiroStats[gk];s.jogos++;s.golsSofridos+=gs;if(res==='V')s.vitorias++;if(res==='E')s.empates++;if(res==='D')s.derrotas++;if(gs===0)s.cleanSheets++;s.pontos=(s.vitorias*10)+(s.empates*3)+(s.cleanSheets*5)-(s.golsSofridos*2);s.mediaSofrida=s.jogos?(s.golsSofridos/s.jogos).toFixed(2):'0.00';}
+function addJogadorRanking(nome,gols,ast,cor){let n=(nome||'').trim();if(!n)return;let k=n.toLowerCase();if(!jogadoresGols[k])jogadoresGols[k]={nome:n,gols:0,ast:0,vitorias:0,cor:cor||''};if(!jogadoresAst[k])jogadoresAst[k]={nome:n,gols:0,ast:0,vitorias:0,cor:cor||''};jogadoresGols[k].gols+=parseInt(gols||0);jogadoresGols[k].ast+=parseInt(ast||0);jogadoresAst[k].gols+=parseInt(gols||0);jogadoresAst[k].ast+=parseInt(ast||0);playerGolsMap[k]=(playerGolsMap[k]||0)+parseInt(gols||0);playerAstMap[k]=(playerAstMap[k]||0)+parseInt(ast||0);}
+keys.forEach(dataStr=>{
+let h=historico[dataStr];
+let temDetalhe=(h.confrontos||[]).some(c=>(c.detalhe1&&c.detalhe1.length)||(c.detalhe2&&c.detalhe2.length));
+(h.confrontos||[]).forEach(c=>{
+let t1=h.times.find(t=>t.id===c.t1);let t2=h.times.find(t=>t.id===c.t2);if(!t1||!t2)return;
+[t1,t2].forEach(t=>{if(!porCorAnual[t.cor])porCorAnual[t.cor]={nome:t.nome,cor:t.cor,hex:t.hex,P:0,J:0,V:0,E:0,D:0,GM:0,GS:0,SG:0};});
+let s1=porCorAnual[t1.cor];let s2=porCorAnual[t2.cor];s1.J++;s2.J++;s1.GM+=c.g1;s1.GS+=c.g2;s2.GM+=c.g2;s2.GS+=c.g1;s1.SG=s1.GM-s1.GS;s2.SG=s2.GM-s2.GS;
+if(c.g1>c.g2){s1.V++;s1.P+=3;s2.D++;}else if(c.g1<c.g2){s2.V++;s2.P+=3;s1.D++;}else{s1.E++;s2.E++;s1.P+=1;s2.P+=1;}
+if(c.g1>c.g2){t1.jogadores.forEach(j=>{let k=j.nome.trim().toLowerCase();if(!playerWins[k])playerWins[k]=0;playerWins[k]++;});}else if(c.g2>c.g1){t2.jogadores.forEach(j=>{let k=j.nome.trim().toLowerCase();if(!playerWins[k])playerWins[k]=0;playerWins[k]++;});}
+let gol1=getGoleiroDoTime(t1);let gol2=getGoleiroDoTime(t2);if(gol1)addGoleiroJogo(gol1.key,gol1.nome,c.g2,c.g1>c.g2?'V':c.g1===c.g2?'E':'D');if(gol2)addGoleiroJogo(gol2.key,gol2.nome,c.g1,c.g2>c.g1?'V':c.g2===c.g1?'E':'D');
 });
-onValue(ref(db,'proximos'), snap=>{
- const val=snap.val();
- if(!val){proximosJogos=[];} else {
- proximosJogos=Object.entries(val).map(([k,v])=>({...v,_key:k})).sort((a,b)=> (b.criado||0)-(a.criado||0));
- proximosJogos.sort((a,b)=> new Date(a.data+'T'+(a.horaInicio||'00:00')) - new Date(b.data+'T'+(b.horaInicio||'00:00')));
- }
- renderProximos();renderInicio();
+if(temDetalhe){
+  (h.confrontos||[]).forEach(c=>{
+    let t1=h.times.find(t=>t.id===c.t1);let t2=h.times.find(t=>t.id===c.t2);
+    if(c.detalhe1)c.detalhe1.forEach(d=>addJogadorRanking(d.nome,d.gols,d.ast,t1?t1.cor:''));
+    if(c.detalhe2)c.detalhe2.forEach(d=>addJogadorRanking(d.nome,d.gols,d.ast,t2?t2.cor:''));
+  });
+  let somaDetalhe={};
+  (h.confrontos||[]).forEach(c=>{[...(c.detalhe1||[]),...(c.detalhe2||[])].forEach(d=>{let k=d.nome.trim().toLowerCase();if(!somaDetalhe[k])somaDetalhe[k]={gols:0,ast:0};somaDetalhe[k].gols+=parseInt(d.gols||0);somaDetalhe[k].ast+=parseInt(d.ast||0);});});
+  h.times.forEach(t=>{t.jogadores.forEach(j=>{let k=j.nome.trim().toLowerCase();let sd=somaDetalhe[k]||{gols:0,ast:0};let faltaG=(parseInt(j.gols)||0)-sd.gols;let faltaA=(parseInt(j.ast)||0)-sd.ast;if(faltaG>0||faltaA>0)addJogadorRanking(j.nome,Math.max(0,faltaG),Math.max(0,faltaA),t.cor);});});
+} else {
+  h.times.forEach(t=>{t.jogadores.forEach(j=>{addJogadorRanking(j.nome,j.gols,j.ast,t.cor);});});
+}
 });
-onValue(ref(db,'fotos'), snap=>{
- const val=snap.val()||{};
- let novo={};
- Object.entries(val).forEach(([dataStr, objFotos])=>{
-   novo[dataStr]=Object.entries(objFotos).map(([k,v])=>({...v,_key:k}));
- });
- fotosData=novo;
- renderCalendario('fotos');
- renderGaleriaFotos();
-});
-onValue(ref(db,'capaBaba'), snap=>{
- capaBaba=snap.val()||null;
- renderCapa();
-});
-onValue(ref(db,'criacaoJogadores'), snap=>{
- const val=snap.val();
- if(!val) criacaoJogadores=[];
- else criacaoJogadores=Object.entries(val).map(([k,v])=>({...v,_key:k}));
- renderCriacaoLista();
- renderRankings();
-});
-renderCalendario('times');renderTimes();renderProximos();renderInicio();renderCalendario('fotos');renderCriacaoLista();renderCapa();
+Object.keys(playerWins).forEach(k=>{if(jogadoresGols[k])jogadoresGols[k].vitorias=playerWins[k];if(jogadoresAst[k])jogadoresAst[k].vitorias=playerWins[k];});
+let anualOrd=Object.values(porCorAnual).sort((a,b)=>b.P-a.P||b.V-a.V||b.SG-a.SG);
+let artilheiros=Object.values(jogadoresGols).sort((a,b)=>b.gols-a.gols||b.ast-a.ast);
+let assistencias=Object.values(jogadoresAst).sort((a,b)=>b.ast-a.ast||b.gols-a.gols);
+let goleirosOrd=Object.values(goleiroStats).sort((a,b)=>b.pontos-a.pontos||b.vitorias-a.vitorias||a.golsSofridos-b.golsSofridos);
+divAnual.innerHTML=`<div class="card"><h2>🏆 Tabela Geral Anual</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM</th><th>GS</th><th>SG</th></tr></thead><tbody>${anualOrd.map((s,i)=>`<tr><td>${i+1}º</td><td><span class="bolinha" style="background:${s.hex}"></span>${s.nome}</td><td><strong>${s.P}</strong></td><td>${s.J}</td><td>${s.V}</td><td>${s.E}</td><td>${s.D}</td><td>${s.GM}</td><td>${s.GS}</td><td>${s.SG}</td></tr>`).join('')}</tbody></table></div></div><div class="card" style="border:2px solid #c62828"><h2 style="color:#c62828">⚽ Artilheiros Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Gols</th><th>Assist</th></tr></thead><tbody>${artilheiros.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.gols}</strong></td><td>${j.ast}</td></tr>`).join('')||'<tr><td colspan="4">Nenhum gol registrado</td></tr>'}</tbody></table></div></div><div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🎯 Assistências Anuais</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Jogador</th><th>Assist</th><th>Gols</th></tr></thead><tbody>${assistencias.slice(0,20).map((j,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${j.nome}</td><td><strong>${j.ast}</strong></td><td>${j.gols}</td></tr>`).join('')||'<tr><td colspan="4">Nenhuma assistência registrada</td></tr>'}</tbody></table></div></div><div class="card" style="border:2px solid #1e88e5"><h2 style="color:#1e88e5">🧤 Ranking Goleiro do Ano</h2><p style="font-size:12px;color:#666">Fórmula: Vitória x 10 + Empate x 3 + Sem tomar gol x 5 - Gols sofridos x 2</p><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Goleiro</th><th>Pts</th><th>J</th><th>V</th><th>E</th><th>GS</th><th>Sem Gol</th><th>Média GS</th></tr></thead><tbody>${goleirosOrd.map((g,i)=>`<tr><td>${i+1}º</td><td style="text-align:left">${g.nome}</td><td><strong>${g.pontos}</strong></td><td>${g.jogos}</td><td>${g.vitorias}</td><td>${g.empates}</td><td>${g.golsSofridos}</td><td>${g.cleanSheets}</td><td>${g.mediaSofrida}</td></tr>`).join('')||'<tr><td colspan="9">Nenhum goleiro cadastrado como peso 1. Cadastre os goleiros na Criação de Times com peso 1.</td></tr>'}</tbody></table></div></div>`;
+let melhorTime=anualOrd[0];let melhorGoleiro=null;
+if(goleirosOrd.length>0){melhorGoleiro=goleirosOrd[0];}else{let gs=criacaoJogadores.filter(j=>j.peso===1);if(gs.length>0){melhorGoleiro={nome:gs[0].nome,key:gs[0].nome.trim().toLowerCase(),vitorias:0,empates:0,golsSofridos:0,cleanSheets:0,pontos:0,jogos:0,mediaSofrida:'0.00'};}else{let mv=Object.entries(playerWins).sort((a,b)=>b[1]-a[1])[0];if(mv){let nr=artilheiros.find(a=>a.nome.toLowerCase()===mv[0])?.nome||mv[0];melhorGoleiro={nome:nr,key:mv[0],vitorias:mv[1],empates:0,golsSofridos:0,cleanSheets:0,pontos:mv[1]*10,jogos:0,mediaSofrida:'0.00'};}}}
+let artilheiro=artilheiros[0]||null;let vice=artilheiros[1]||null;let lider=assistencias[0]||null;let selKeys=new Set();if(melhorGoleiro)selKeys.add(melhorGoleiro.key);if(artilheiro)selKeys.add(artilheiro.nome.trim().toLowerCase());if(vice)selKeys.add(vice.nome.trim().toLowerCase());if(lider)selKeys.add(lider.nome.trim().toLowerCase());
+let rankV=Object.entries(playerWins).map(([k,w])=>{let nr=artilheiros.find(a=>a.nome.toLowerCase()===k)?.nome||assistencias.find(a=>a.nome.toLowerCase()===k)?.nome||criacaoJogadores.find(c=>c.nome.trim().toLowerCase()===k)?.nome||k;return {key:k,nome:nr,vitorias:w,gols:playerGolsMap[k]||0,ast:playerAstMap[k]||0};}).sort((a,b)=>b.vitorias-a.vitorias||b.gols-a.gols);
+let dois=[];for(let p of rankV){if(!selKeys.has(p.key)){dois.push(p);selKeys.add(p.key);if(dois.length===2)break;}}
+if(melhorTime){divSelecao.innerHTML=`<div class="card selecao-card"><h2 style="color:#b77900">⭐ Seleção do Ano - ${new Date().getFullYear()}</h2><p style="font-size:12px;color:#666;margin-bottom:10px">6 jogadores - sem repetir</p><div class="selecao-item" style="background:#fff8e1;border-left-color:${melhorTime.hex}"><span class="selecao-pos">🏆 Melhor Time</span><span><span class="bolinha" style="background:${melhorTime.hex}"></span><strong>${melhorTime.nome}</strong> - ${melhorTime.V} vitórias, ${melhorTime.P} pontos</span></div>${melhorGoleiro?`<div class="selecao-item" style="border-left-color:#1e88e5"><span class="selecao-pos">🧤 Goleiro do Ano</span><span><strong>${melhorGoleiro.nome}</strong> - ${melhorGoleiro.pontos} pts | ${melhorGoleiro.vitorias}V ${melhorGoleiro.empates||0}E | Sofreu ${melhorGoleiro.golsSofridos} gols em ${melhorGoleiro.jogos} jogos | ${melhorGoleiro.cleanSheets} sem tomar gol</span></div>`:''}${artilheiro?`<div class="selecao-item" style="border-left-color:#c62828"><span class="selecao-pos">⚽ Artilheiro</span><span><strong>${artilheiro.nome}</strong> - ${artilheiro.gols} gols, ${artilheiro.ast} assist</span></div>`:''}${vice?`<div class="selecao-item" style="border-left-color:#ff9800"><span class="selecao-pos">🥈 Vice-Artilheiro</span><span><strong>${vice.nome}</strong> - ${vice.gols} gols, ${vice.ast} assist</span></div>`:''}${lider?`<div class="selecao-item" style="border-left-color:#1e88e5"><span class="selecao-pos">🎯 Líder Assistência</span><span><strong>${lider.nome}</strong> - ${lider.ast} assist, ${lider.gols} gols</span></div>`:''}${dois[0]?`<div class="selecao-item" style="border-left-color:#2e7d32"><span class="selecao-pos">🏅 Mais venceu (1º)</span><span><strong>${dois[0].nome}</strong> - ${dois[0].vitorias} vitórias, ${dois[0].gols} gols</span></div>`:''}${dois[1]?`<div class="selecao-item" style="border-left-color:#2e7d32"><span class="selecao-pos">🏅 Mais venceu (2º)</span><span><strong>${dois[1].nome}</strong> - ${dois[1].vitorias} vitórias, ${dois[1].gols} gols</span></div>`:''}</div>`;}
+}
+function renderHistoricoGeral(){let div=document.getElementById('historicoDetalhe');let keys=Object.keys(historico).sort().reverse();if(keys.length===0){div.innerHTML='<div class="card"><p>Nenhum dia salvo.</p></div>';return;}div.innerHTML=keys.map(k=>{let h=historico[k];return `<div class="card" style="cursor:pointer" onclick="selecionarData('${k}','times');mostrar('times',document.querySelectorAll('nav button')[1])"><strong>${k.split('-').reverse().join('/')}</strong><br><small>${h.times.length} times, ${h.confrontos?.length||0} jogos</small></div>`}).join('');}
+onValue(ref(db,'historico'),snap=>{historico=snap.val()||{};renderCalendario('times');renderRankings();renderHistoricoGeral();if(dataSelecionada)mostrarDetalheNaTimes(dataSelecionada);});
+onValue(ref(db,'proximos'),snap=>{let v=snap.val()||{};proximosJogos=Object.keys(v).map(k=>({...v[k],_key:k}));renderProximos();renderInicio();});
+onValue(ref(db,'fotos'),snap=>{let v=snap.val()||{};fotosData={};Object.keys(v).forEach(dia=>{fotosData[dia]=Object.keys(v[dia]).map(k=>({...v[dia][k],_key:k}));});renderCalendario('fotos');renderGaleriaFotos();});
+onValue(ref(db,'capaBaba'),snap=>{capaBaba=snap.val();renderCapa();renderInicio();});
+onValue(ref(db,'criacaoJogadores'),snap=>{let v=snap.val();if(Array.isArray(v))criacaoJogadores=v;else if(v)criacaoJogadores=Object.keys(v).map(k=>({...v[k],_key:k}));else criacaoJogadores=[];renderCriacaoLista();});
+renderCalendario('times');renderCalendario('fotos');renderInicio();renderProximos();
 </script>
 </body>
 </html>
