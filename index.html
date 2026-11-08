@@ -59,6 +59,7 @@ td:first-child{text-align:left;font-weight:bold}
 .conf-item{background:#f9f9f9;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
 .foto-item{border-radius:12px;overflow:hidden;background:#f5f5f5;position:relative;cursor:pointer}
 .foto-item img{width:100%;height:220px;object-fit:cover;display:block}
+.foto-item video{width:100%;height:220px;object-fit:cover;display:block;background:#000}
 #customModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:10000;align-items:center;justify-content:center;padding:20px}
 #customModal.ativo{display:flex}
 .customModalBox{background:white;border-radius:20px;padding:0;max-width:400px;width:100%;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.5);border:3px solid #0a5c36;animation:pop .25s ease}
@@ -92,6 +93,8 @@ td:first-child{text-align:left;font-weight:bold}
 .btn-mini-menos{background:#e0e0e0;color:#333}
 .conf-box{background:#f1f8e9;border:2px solid #0a5c36;border-radius:12px;padding:12px;margin-top:12px}
 .conf-box h4{color:#0a5c36;font-size:14px;margin-bottom:6px}
+.capa-img{width:100%;max-height:320px;object-fit:cover;border-radius:12px;display:block}
+.capa-inicio{position:sticky;top:60px;z-index:5}
 </style>
 </head>
 <body>
@@ -108,6 +111,7 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="inicio" class="secao ativa">
 <div class="card"><h2>🎉 Bem-vindo ao Baba do Candeias!</h2><p>Bem-vindo ao Baba! Aqui você organiza os times, vê quem fez gol e salva todo dia.</p></div>
 <div class="card" style="border:2px solid #0a5c36"><h2>⭐ Destaque</h2><h3 id="destaqueTitulo" style="color:#0a5c36">⏰ Próximo Baba - Domingo às 8 da manhã</h3><div id="inicioInfo" style="margin-top:12px;line-height:1.8;font-size:15px"></div></div>
+<div id="capaInicio"></div>
 </div>
 <div id="times" class="secao">
 <div class="card">
@@ -269,8 +273,19 @@ Wallace
 <div id="selecaoAnual"></div>
 </div>
 <div id="fotos" class="secao">
-<div class="card"><h2>📸 Fotos do Baba</h2><div class="cal-header" style="margin-top:15px"><button class="btn btn-cinza" onclick="mudarMes(-1,'fotos')">◀</button><h2 id="mesAnoTxtFotos" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'fotos')">▶</button></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'fotos')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'fotos')">2027</button></div><div class="cal-grid" id="calDiasSemanaFotos"></div><div class="cal-grid" id="calGridFotos"></div></div>
-<div class="card" id="cardAddFoto" style="display:none"><h2>➕ Adicionar Foto no dia <span id="dataFotoTxt"></span></h2><input type="file" id="inputFoto" accept="image/*"><button class="btn btn-verde" onclick="adicionarFoto()">Adicionar Foto</button></div>
+<div class="card" style="border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)">
+<h2 style="color:#b77900">🏆 Capa do Baba - Time que foi melhor</h2>
+<p style="font-size:12px;color:#666">Essa foto fica aparecendo no Início, rolando até o final. Quando trocar, a antiga sai e entra a nova.</p>
+<div id="capaAtual"></div>
+<span class="label-peq">Nome do time da capa (ex: TIME VERMELHO - Campeão do Ba-Vi)</span>
+<input id="capaTitulo" placeholder="Ex: TIME VERMELHO - Campeão do Ba-Vi">
+<span class="label-peq">Escolher foto da capa</span>
+<input type="file" id="inputCapa" accept="image/*">
+<button class="btn btn-amarelo" onclick="salvarCapa()">💾 SALVAR CAPA DO BABA</button>
+<button class="btn btn-cinza" style="width:100%;margin-top:8px" onclick="removerCapa()">🗑️ Remover Capa</button>
+</div>
+<div class="card"><h2>📸 Fotos e 🎥 Vídeos do Baba</h2><div class="cal-header" style="margin-top:15px"><button class="btn btn-cinza" onclick="mudarMes(-1,'fotos')">◀</button><h2 id="mesAnoTxtFotos" style="color:#0a5c36;margin:0"></h2><button class="btn btn-cinza" onclick="mudarMes(1,'fotos')">▶</button></div><div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-cinza" style="flex:1" onclick="irAno(2026,'fotos')">2026</button><button class="btn btn-cinza" style="flex:1" onclick="irAno(2027,'fotos')">2027</button></div><div class="cal-grid" id="calDiasSemanaFotos"></div><div class="cal-grid" id="calGridFotos"></div></div>
+<div class="card" id="cardAddFoto" style="display:none"><h2>➕ Adicionar Foto ou Vídeo no dia <span id="dataFotoTxt"></span></h2><input type="file" id="inputFoto" accept="image/*,video/*"><p style="font-size:12px;color:#666">Pode ser foto ou vídeo. Vídeo curto fica melhor, até 30 segundos.</p><button class="btn btn-verde" onclick="adicionarFoto()">Adicionar Foto / Vídeo</button></div>
 <div id="galeriaFotos"></div>
 </div>
 <div id="historico" class="secao"><div class="card"><h2>🕓 Histórico Geral</h2></div><div id="historicoDetalhe"></div></div>
@@ -298,6 +313,7 @@ let times=[], confrontos=[], corTemp='', corHex='', jogadoresTemp=[], dataSeleci
 let historico={};
 let proximosJogos=[];
 let fotosData={};
+let capaBaba=null;
 let editandoData=null;
 let criacaoJogadores=[];
 let criacaoTimesSorteados=[];
@@ -309,7 +325,7 @@ function showAlert(msg,title='Baba do Candeias'){document.getElementById('custom
 function showConfirm(msg,onConfirm,title='Confirmação'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalCancel" onclick="closeModal()">Cancelar</button><button class="btnModalConfirm" id="btnConfirmOk">Confirmar</button>';document.getElementById('customModal').classList.add('ativo');document.getElementById('btnConfirmOk').onclick=function(){closeModal();onConfirm();};}
 window.closeModal=function(){document.getElementById('customModal').classList.remove('ativo');}
 document.getElementById('customModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-window.mostrar=function(id,btn){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');if(id==='times')renderCalendario('times');if(id==='criacao')renderCriacaoLista();if(id==='fotos'){renderCalendario('fotos');renderGaleriaFotos();}if(id==='proximos')renderProximos();if(id==='ranking')renderRankings();if(id==='historico')renderHistoricoGeral();if(id==='inicio')renderInicio();}
+window.mostrar=function(id,btn){document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('ativo'));btn.classList.add('ativo');if(id==='times')renderCalendario('times');if(id==='criacao')renderCriacaoLista();if(id==='fotos'){renderCalendario('fotos');renderGaleriaFotos();renderCapa();}if(id==='proximos')renderProximos();if(id==='ranking')renderRankings();if(id==='historico')renderHistoricoGeral();if(id==='inicio')renderInicio();}
 window.selCor=function(nome,hex,el){corTemp=nome;corHex=hex;document.querySelectorAll('.cor-opcao').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');document.getElementById('corTxt').innerText='TIME '+nome.toUpperCase();document.getElementById('areaJogador').style.display='block';document.getElementById('timeAtualNome').innerText='TIME '+nome.toUpperCase();jogadoresTemp=[];renderTemp();}
 window.addJogador=function(){let n=document.getElementById('jogNome').value.trim();let g=parseInt(document.getElementById('jogGols').value)||0;let a=parseInt(document.getElementById('jogAst').value)||0;if(!n)return showAlert('Digite o nome do jogador');jogadoresTemp.push({nome:n,gols:g,ast:a,id:Date.now()+Math.random()});document.getElementById('jogNome').value='';document.getElementById('jogGols').value='';document.getElementById('jogAst').value='';renderTemp();}
 function renderTemp(){document.getElementById('listaTemp').innerHTML=jogadoresTemp.map(j=>`<span style="background:#0a5c36;color:white;padding:3px 8px;border-radius:12px;margin:2px;display:inline-block;font-size:12px">${j.nome} ${j.gols}G/${j.ast}A</span>`).join('');}
@@ -499,7 +515,41 @@ window.cancelarEdicaoProximo=function(){
  document.getElementById('editProxTxt').style.display='none';
 }
 window.removerProximo=function(key){showConfirm('Apagar próximo jogo?',function(){remove(ref(db,'proximos/'+key)); if(editandoProxKey===key) cancelarEdicaoProximo();});}
+function renderCapa(){
+  let divInicio=document.getElementById('capaInicio');
+  let divAtual=document.getElementById('capaAtual');
+  if(!capaBaba || !capaBaba.img){
+    if(divInicio) divInicio.innerHTML='';
+    if(divAtual) divAtual.innerHTML='<p style="font-size:13px;color:#888">Nenhuma capa ainda. Escolha a foto do time que foi melhor e salve.</p>';
+    return;
+  }
+  let titulo=capaBaba.titulo||'🏆 Capa do Baba';
+  if(divAtual) divAtual.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p></div>`;
+  if(divInicio) divInicio.innerHTML=`<div class="card capa-inicio" style="border:3px solid #ffcc00;padding:12px"><h2 style="color:#b77900;text-align:center">🏆 Capa do Baba</h2><img src="${capaBaba.img}" class="capa-img" onclick="abrirModal('${capaBaba.img}','Capa do Baba')"><p style="font-weight:900;text-align:center;margin-top:10px;font-size:16px">${titulo}</p><p style="text-align:center;font-size:12px;color:#666">Time que foi melhor - fica aqui no Início até trocar</p></div>`;
+  let inp=document.getElementById('capaTitulo'); if(inp && !inp.value) inp.value=capaBaba.titulo||'';
+}
+window.salvarCapa=function(){
+  let titulo=document.getElementById('capaTitulo').value.trim()||'🏆 Capa do Baba';
+  let input=document.getElementById('inputCapa');
+  if(!input.files[0] && !capaBaba) return showAlert('Escolha a foto da capa');
+  if(!input.files[0] && capaBaba){
+    set(ref(db,'capaBaba'),{img:capaBaba.img,titulo,criado:Date.now()});
+    document.getElementById('capaTitulo').value='';
+    showAlert('Título da capa atualizado!','Capa ✅');
+    return;
+  }
+  let reader=new FileReader();
+  reader.onload=function(e){
+    set(ref(db,'capaBaba'),{img:e.target.result,titulo,criado:Date.now()});
+    document.getElementById('inputCapa').value='';
+    document.getElementById('capaTitulo').value='';
+    showAlert('Capa do Baba salva! Já aparece no Início.','Capa ✅');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+window.removerCapa=function(){showConfirm('Remover a capa do Baba?',function(){remove(ref(db,'capaBaba')); showAlert('Capa removida!');});}
 function renderInicio(){
+  renderCapa();
   let info=document.getElementById('inicioInfo');
   let titulo=document.getElementById('destaqueTitulo');
   if(proximosJogos.length===0){
@@ -527,9 +577,9 @@ function renderInicio(){
   }
   info.innerHTML=html;
 }
-window.adicionarFoto=function(){if(!dataSelecionadaFotos) return showAlert('Selecione um dia no calendário de fotos');let input=document.getElementById('inputFoto');if(!input.files[0]) return showAlert('Escolha uma foto');let reader=new FileReader();reader.onload=function(e){let imgData=e.target.result;push(ref(db,'fotos/'+dataSelecionadaFotos),{img:imgData,criado:Date.now()});input.value='';};reader.readAsDataURL(input.files[0]);}
-function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ainda.</p></div>`;return;}div.innerHTML=`<div class="card"><h2>📸 Fotos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${fotos.length} fotos</h2></div>`+fotos.map(f=>`<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Foto</button></div>`).join('');}
-window.apagarFoto=function(dataStr,key){showConfirm('Apagar essa foto?',function(){remove(ref(db,'fotos/'+dataStr+'/'+key));});}
+window.adicionarFoto=function(){if(!dataSelecionadaFotos) return showAlert('Selecione um dia no calendário de fotos');let input=document.getElementById('inputFoto');if(!input.files[0]) return showAlert('Escolha uma foto ou vídeo');let file=input.files[0];let tipo=file.type.startsWith('video')?'video':'foto';let reader=new FileReader();reader.onload=function(e){let imgData=e.target.result;push(ref(db,'fotos/'+dataSelecionadaFotos),{img:imgData,tipo:tipo,criado:Date.now()});input.value='';showAlert(tipo==='video'?'Vídeo adicionado!':'Foto adicionada!','Salvo ✅');};reader.readAsDataURL(file);}
+function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos e vídeos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ou vídeo ainda.</p></div>`;return;}let qtdFoto=fotos.filter(f=>(f.tipo||'foto')==='foto').length;let qtdVideo=fotos.filter(f=>f.tipo==='video').length;div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${qtdFoto} fotos, ${qtdVideo} vídeos</h2></div>`+fotos.map(f=>{if(f.tipo==='video'){return `<div class="card"><div class="foto-item"><video src="${f.img}" controls playsinline preload="metadata"></video></div><p style="font-size:12px;color:#666;margin-top:6px">🎥 Vídeo</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Vídeo</button></div>`}else{return `<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Foto</button></div>`}}).join('');}
+window.apagarFoto=function(dataStr,key){showConfirm('Apagar essa foto / vídeo?',function(){remove(ref(db,'fotos/'+dataStr+'/'+key));});}
 window.abrirModal=function(imgSrc, dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
 window.fecharModal=function(){document.getElementById('modalFoto').style.display='none';document.body.style.overflow='auto';}
 function renderRankings(){
@@ -930,6 +980,10 @@ onValue(ref(db,'fotos'), snap=>{
  renderCalendario('fotos');
  renderGaleriaFotos();
 });
+onValue(ref(db,'capaBaba'), snap=>{
+ capaBaba=snap.val()||null;
+ renderCapa();
+});
 onValue(ref(db,'criacaoJogadores'), snap=>{
  const val=snap.val();
  if(!val) criacaoJogadores=[];
@@ -937,7 +991,7 @@ onValue(ref(db,'criacaoJogadores'), snap=>{
  renderCriacaoLista();
  renderRankings();
 });
-renderCalendario('times');renderTimes();renderProximos();renderInicio();renderCalendario('fotos');renderCriacaoLista();
+renderCalendario('times');renderTimes();renderProximos();renderInicio();renderCalendario('fotos');renderCriacaoLista();renderCapa();
 </script>
 </body>
 </html>
