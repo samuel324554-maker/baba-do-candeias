@@ -266,6 +266,7 @@ Wallace
 <p id="editProxTxt" style="display:none;color:#c62828;font-weight:bold;margin-top:8px;text-align:center"></p>
 </div>
 <div id="listaProximos"></div>
+<div id="listaProximosHistorico"></div>
 </div>
 <div id="ranking" class="secao">
 <div class="card" style="background:white;border:2px solid #0a5c36"><h2 style="color:#0a5c36">🏆 Ranking Geral Anual</h2><p style="font-size:12px;color:#666">Goleiro do Ano = Vitória x 10 + Empate x 3 + Jogo sem tomar gol x 5 - Gols sofridos x 2</p></div>
@@ -275,7 +276,7 @@ Wallace
 <div id="fotos" class="secao">
 <div class="card" style="border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)">
 <h2 style="color:#b77900">🏆 Capa do Baba - Time que foi melhor</h2>
-<p style="font-size:12px;color:#666">Essa foto fica aparecendo no Início, rolando até o final. Quando trocar, a antiga sai e entra a nova.</p>
+<p style="font-size:12px;color:#666">Dura 7 dias certinho. Salvou na terça, sai na terça que vem. Salvou domingo, sai domingo que vem. Depois fica salva no dia que você salvou, na aba Fotos.</p>
 <div id="capaAtual"></div>
 <span class="label-peq">Nome do time da capa (ex: TIME VERMELHO - Campeão do Ba-Vi)</span>
 <input id="capaTitulo" placeholder="Ex: TIME VERMELHO - Campeão do Ba-Vi">
@@ -321,6 +322,14 @@ let editandoProxKey=null;
 let golsSemAutor={1:0,2:0};
 let ultimoPlacarCalculado={1:0,2:0};
 const coresMap={vermelho:{nome:'VERMELHO',hex:'red'},azul:{nome:'AZUL',hex:'#1e88e5'},preto:{nome:'PRETO',hex:'#111'},amarelo:{nome:'AMARELO',hex:'#ffcc00'},verde:{nome:'VERDE',hex:'#2e7d32'}};
+// NOVO - Regras de validade
+const CAPA_DURACAO_MS = 7*24*60*60*1000; // 7 dias exatos
+function dataHojeStr(){ let n=new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
+function capaExpirada(capa){ if(!capa||!capa.criado) return false; return (Date.now()-capa.criado) > CAPA_DURACAO_MS; }
+function capaDiasRestantes(capa){ if(!capa||!capa.criado) return 7; let rest=Math.ceil((CAPA_DURACAO_MS-(Date.now()-capa.criado))/(24*60*60*1000)); return Math.max(0,rest); }
+function capaDataFimStr(capa){ if(!capa||!capa.criado) return ''; let d=new Date(capa.criado+CAPA_DURACAO_MS); return d.toLocaleDateString('pt-BR'); }
+function jogoJaTerminou(j){ if(!j||!j.data) return false; let fimStr=j.data+'T'+(j.horaFim||j.hora||'23:59'); let fim=new Date(fimStr); return Date.now() > fim.getTime(); }
+function getProximoJogoFuturo(){ let futuros=proximosJogos.filter(j=>!jogoJaTerminou(j)); futuros.sort((a,b)=> new Date(a.data+'T'+(a.horaInicio||'00:00')) - new Date(b.data+'T'+(b.horaInicio||'00:00'))); return futuros[0]||null; }
 function showAlert(msg,title='Baba do Candeias'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalOk" onclick="closeModal()">OK</button>';document.getElementById('customModal').classList.add('ativo');}
 function showConfirm(msg,onConfirm,title='Confirmação'){document.getElementById('customModalTitle').innerText=title;document.getElementById('customModalBody').innerText=msg;document.getElementById('customModalFooter').innerHTML='<button class="btnModalCancel" onclick="closeModal()">Cancelar</button><button class="btnModalConfirm" id="btnConfirmOk">Confirmar</button>';document.getElementById('customModal').classList.add('ativo');document.getElementById('btnConfirmOk').onclick=function(){closeModal();onConfirm();};}
 window.closeModal=function(){document.getElementById('customModal').classList.remove('ativo');}
@@ -476,8 +485,13 @@ if(editandoProxKey){
 }
 function renderProximos(){
 let div=document.getElementById('listaProximos');
-if(proximosJogos.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo.</p></div>';return;}
-div.innerHTML=proximosJogos.map(j=>`
+let divHist=document.getElementById('listaProximosHistorico');
+let futuros=proximosJogos.filter(j=>!jogoJaTerminou(j));
+let passados=proximosJogos.filter(j=>jogoJaTerminou(j));
+passados.sort((a,b)=> new Date(b.data)-new Date(a.data));
+if(futuros.length===0){div.innerHTML='<div class="card"><p>Nenhum próximo jogo. Quando acabar, ele vai para o histórico abaixo.</p></div>';}
+else{
+div.innerHTML='<div class="card"><h2>📅 Próximos Jogos</h2></div>'+futuros.map(j=>`
 <div class="card" style="border-left:6px solid #0a5c36">
 <h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)}</h2>
 <p>📍 ${j.local}</p>
@@ -487,6 +501,20 @@ div.innerHTML=proximosJogos.map(j=>`
 <button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button>
 </div>
 </div>`).join('');
+}
+if(passados.length===0){divHist.innerHTML='';}
+else{
+divHist.innerHTML='<div class="card" style="border:2px solid #888;background:#f5f5f5"><h2 style="color:#555">🕓 Histórico - Jogos que já terminaram</h2><p style="font-size:12px;color:#666">Quando o jogo acaba, ele sai do Destaque e fica aqui salvo.</p></div>'+passados.map(j=>`
+<div class="card" style="border-left:6px solid #888;opacity:.9">
+<h2>📅 ${j.data.split('-').reverse().join('/')} - ${getHoraStr(j)} <span style="font-size:12px;background:#eee;padding:3px 8px;border-radius:10px">JÁ ACONTECEU</span></h2>
+<p>📍 ${j.local}</p>
+<p>${j.obs?`📝 ${j.obs}`:''}</p>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn-edit" onclick="editarProximo('${j._key}')">✏️ Editar</button>
+<button class="btn-del" onclick="removerProximo('${j._key}')">🗑️ Apagar</button>
+</div>
+</div>`).join('');
+}
 }
 window.editarProximo=function(key){
  let j=proximosJogos.find(x=>x._key===key);
@@ -524,8 +552,17 @@ function renderCapa(){
     return;
   }
   let titulo=capaBaba.titulo||'🏆 Capa do Baba';
-  if(divAtual) divAtual.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p></div>`;
-  if(divInicio) divInicio.innerHTML=`<div class="card capa-inicio" style="border:3px solid #ffcc00;padding:12px"><h2 style="color:#b77900;text-align:center">🏆 Capa do Baba</h2><img src="${capaBaba.img}" class="capa-img" onclick="abrirModal('${capaBaba.img}','Capa do Baba')"><p style="font-weight:900;text-align:center;margin-top:10px;font-size:16px">${titulo}</p><p style="text-align:center;font-size:12px;color:#666">Time que foi melhor - fica aqui no Início até trocar</p></div>`;
+  let expirada=capaExpirada(capaBaba);
+  let dataSalva=capaBaba.dataSalva||'';
+  let dataSalvaBr=dataSalva?dataSalva.split('-').reverse().join('/'):'';
+  if(expirada){
+    if(divInicio) divInicio.innerHTML='';
+    if(divAtual) divAtual.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img" style="opacity:.6"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p><p style="text-align:center;font-size:12px;color:#c62828;font-weight:bold">⏰ Capa expirou - durou 7 dias, até ${capaDataFimStr(capaBaba)}. Saiu do Início, mas ficou salva no dia ${dataSalvaBr} na aba Fotos.</p></div>`;
+    return;
+  }
+  let diasRest=capaDiasRestantes(capaBaba);
+  if(divAtual) divAtual.innerHTML=`<div style="margin:10px 0"><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;margin-top:8px;text-align:center">${titulo}</p><p style="text-align:center;font-size:12px;color:#0a5c36">✅ Ativa - faltam ${diasRest} dia(s), sai em ${capaDataFimStr(capaBaba)}. Salva no dia ${dataSalvaBr}.</p></div>`;
+  if(divInicio) divInicio.innerHTML=`<div class="card capa-inicio" style="border:3px solid #ffcc00;padding:12px"><h2 style="color:#b77900;text-align:center">🏆 Capa do Baba</h2><img src="${capaBaba.img}" class="capa-img"><p style="font-weight:900;text-align:center;margin-top:10px;font-size:16px">${titulo}</p><p style="text-align:center;font-size:12px;color:#666">Time que foi melhor - fica aqui por 7 dias, até ${capaDataFimStr(capaBaba)} (faltam ${diasRest} dia(s))</p></div>`;
   let inp=document.getElementById('capaTitulo'); if(inp && !inp.value) inp.value=capaBaba.titulo||'';
 }
 window.salvarCapa=function(){
@@ -533,31 +570,36 @@ window.salvarCapa=function(){
   let input=document.getElementById('inputCapa');
   if(!input.files[0] && !capaBaba) return showAlert('Escolha a foto da capa');
   if(!input.files[0] && capaBaba){
-    set(ref(db,'capaBaba'),{img:capaBaba.img,titulo,criado:Date.now()});
+    let nova={img:capaBaba.img,titulo,criado:capaBaba.criado||Date.now(),dataSalva:capaBaba.dataSalva||dataHojeStr()};
+    set(ref(db,'capaBaba'),nova);
     document.getElementById('capaTitulo').value='';
     showAlert('Título da capa atualizado!','Capa ✅');
     return;
   }
   let reader=new FileReader();
   reader.onload=function(e){
-    set(ref(db,'capaBaba'),{img:e.target.result,titulo,criado:Date.now()});
+    let agora=Date.now();
+    let hoje=dataHojeStr();
+    let dados={img:e.target.result,titulo,criado:agora,dataSalva:hoje};
+    set(ref(db,'capaBaba'),dados);
+    push(ref(db,'fotos/'+hoje),{img:e.target.result,tipo:'capa',titulo:titulo,criado:agora});
     document.getElementById('inputCapa').value='';
     document.getElementById('capaTitulo').value='';
-    showAlert('Capa do Baba salva! Já aparece no Início.','Capa ✅');
+    showAlert('Capa salva! Vai ficar 7 dias no Início, até '+capaDataFimStr(dados)+'. E já ficou salva no dia '+hoje.split('-').reverse().join('/')+' na aba Fotos.','Capa ✅');
   };
   reader.readAsDataURL(input.files[0]);
 }
-window.removerCapa=function(){showConfirm('Remover a capa do Baba?',function(){remove(ref(db,'capaBaba')); showAlert('Capa removida!');});}
+window.removerCapa=function(){showConfirm('Remover a capa do Baba? Ela continua salva no dia que você salvou, na aba Fotos.',function(){remove(ref(db,'capaBaba')); showAlert('Capa removida do Início! Continua salva no dia, na aba Fotos.');});}
 function renderInicio(){
   renderCapa();
   let info=document.getElementById('inicioInfo');
   let titulo=document.getElementById('destaqueTitulo');
-  if(proximosJogos.length===0){
+  let prox=getProximoJogoFuturo();
+  if(!prox){
     titulo.innerText='⏰ Nenhum baba agendado';
-    info.innerHTML='<p style="color:#666">Salve um próximo jogo na aba Próximos Jogos<br>📍 Campo do Candeias - Vitória da Conquista</p>';
+    info.innerHTML='<p style="color:#666">Salve um próximo jogo na aba Próximos Jogos<br>📍 Campo do Candeias - Vitória da Conquista</p><p style="font-size:12px;color:#999;margin-top:8px">Os jogos que já terminaram ficam no histórico, na aba Próximos Jogos.</p>';
     return;
   }
-  let prox=proximosJogos[0];
   let dataBr=prox.data.split('-').reverse().join('/');
   let diaSemana=new Date(prox.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long'});
   titulo.innerText=`⏰ Próximo Baba - ${dataBr}`;
@@ -578,7 +620,7 @@ function renderInicio(){
   info.innerHTML=html;
 }
 window.adicionarFoto=function(){if(!dataSelecionadaFotos) return showAlert('Selecione um dia no calendário de fotos');let input=document.getElementById('inputFoto');if(!input.files[0]) return showAlert('Escolha uma foto ou vídeo');let file=input.files[0];let tipo=file.type.startsWith('video')?'video':'foto';let reader=new FileReader();reader.onload=function(e){let imgData=e.target.result;push(ref(db,'fotos/'+dataSelecionadaFotos),{img:imgData,tipo:tipo,criado:Date.now()});input.value='';showAlert(tipo==='video'?'Vídeo adicionado!':'Foto adicionada!','Salvo ✅');};reader.readAsDataURL(file);}
-function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos e vídeos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ou vídeo ainda.</p></div>`;return;}let qtdFoto=fotos.filter(f=>(f.tipo||'foto')==='foto').length;let qtdVideo=fotos.filter(f=>f.tipo==='video').length;div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${qtdFoto} fotos, ${qtdVideo} vídeos</h2></div>`+fotos.map(f=>{if(f.tipo==='video'){return `<div class="card"><div class="foto-item"><video src="${f.img}" controls playsinline preload="metadata"></video></div><p style="font-size:12px;color:#666;margin-top:6px">🎥 Vídeo</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Vídeo</button></div>`}else{return `<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Foto</button></div>`}}).join('');}
+function renderGaleriaFotos(){let div=document.getElementById('galeriaFotos');if(!dataSelecionadaFotos){div.innerHTML='<div class="card"><p>Selecione um dia no calendário acima pra ver as fotos e vídeos.</p></div>';return;}let fotos=fotosData[dataSelecionadaFotos]||[];if(fotos.length===0){div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')}</h2><p>Nenhuma foto ou vídeo ainda.</p></div>`;return;}let qtdFoto=fotos.filter(f=>(f.tipo||'foto')==='foto').length;let qtdVideo=fotos.filter(f=>f.tipo==='video').length;let qtdCapa=fotos.filter(f=>f.tipo==='capa').length;div.innerHTML=`<div class="card"><h2>📸 Fotos e 🎥 Vídeos do dia ${dataSelecionadaFotos.split('-').reverse().join('/')} - ${qtdFoto} fotos, ${qtdVideo} vídeos, ${qtdCapa} capa</h2></div>`+fotos.map(f=>{if(f.tipo==='video'){return `<div class="card"><div class="foto-item"><video src="${f.img}" controls playsinline preload="metadata"></video></div><p style="font-size:12px;color:#666;margin-top:6px">🎥 Vídeo</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Vídeo</button></div>`}else if(f.tipo==='capa'){return `<div class="card" style="border:3px solid #ffcc00"><div class="foto-item" onclick="abrirModal('${f.img}', 'Capa')"><img src="${f.img}"></div><p style="font-size:13px;font-weight:bold;text-align:center;margin-top:8px">🏆 ${f.titulo||'Capa do Baba'} - ficou salva nesse dia</p><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Capa salva</button></div>`}else{return `<div class="card"><div class="foto-item" onclick="abrirModal('${f.img}', 'Foto')"><img src="${f.img}"></div><button class="btn btn-cinza" style="margin-top:8px" onclick="apagarFoto('${dataSelecionadaFotos}','${f._key}')">Apagar Foto</button></div>`}}).join('');}
 window.apagarFoto=function(dataStr,key){showConfirm('Apagar essa foto / vídeo?',function(){remove(ref(db,'fotos/'+dataStr+'/'+key));});}
 window.abrirModal=function(imgSrc, dataTexto){document.getElementById('imgModal').src=imgSrc;document.getElementById('dataModal').innerText=dataTexto||'';document.getElementById('modalFoto').style.display='flex';document.body.style.overflow='hidden';}
 window.fecharModal=function(){document.getElementById('modalFoto').style.display='none';document.body.style.overflow='auto';}
@@ -966,7 +1008,7 @@ onValue(ref(db,'proximos'), snap=>{
  const val=snap.val();
  if(!val){proximosJogos=[];} else {
  proximosJogos=Object.entries(val).map(([k,v])=>({...v,_key:k})).sort((a,b)=> (b.criado||0)-(a.criado||0));
- proximosJogos.sort((a,b)=> new Date(a.data+'T'+a.horaInicio) - new Date(b.data+'T'+b.horaInicio));
+ proximosJogos.sort((a,b)=> new Date(a.data+'T'+(a.horaInicio||'00:00')) - new Date(b.data+'T'+(b.horaInicio||'00:00')));
  }
  renderProximos();renderInicio();
 });
