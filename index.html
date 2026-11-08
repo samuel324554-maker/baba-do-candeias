@@ -72,9 +72,7 @@ td:first-child{text-align:left;font-weight:bold}
 .btnModalCancel{background:#eee;color:#333}
 .btnModalConfirm{background:#ffcc00;color:#222;font-weight:900}
 .peso-badge{padding:2px 7px;border-radius:10px;font-size:11px;font-weight:bold;color:white;margin-left:5px}
-.peso-1{background:#1e88e5}
-.peso-2{background:#ff9800}
-.peso-3{background:#c62828}
+.peso-1{background:#1e88e5}.peso-2{background:#ff9800}.peso-3{background:#c62828}
 .team-criado{border-left:6px solid #0a5c36}
 .label-peq{font-size:12px;font-weight:bold;color:#0a5c36;margin-top:6px;display:block}
 .selecao-card{border:3px solid #ffcc00;background:linear-gradient(135deg,#fffde7,#fff9c4)}
@@ -89,9 +87,7 @@ td:first-child{text-align:left;font-weight:bold}
 .conf-linha-info{font-size:16px;font-weight:bold;display:flex;align-items:center;gap:6px}
 .conf-btns{display:flex;gap:6px;align-items:center}
 .btn-mini{border:0;border-radius:10px;padding:10px 14px;font-weight:900;cursor:pointer;font-size:18px;line-height:1;min-width:44px;text-align:center}
-.btn-mini-gol{background:#0a5c36;color:white}
-.btn-mini-ast{background:#1e88e5;color:white}
-.btn-mini-menos{background:#e0e0e0;color:#333}
+.btn-mini-gol{background:#0a5c36;color:white}.btn-mini-ast{background:#1e88e5;color:white}.btn-mini-menos{background:#e0e0e0;color:#333}
 .conf-box{background:#f1f8e9;border:2px solid #0a5c36;border-radius:12px;padding:12px;margin-top:12px}
 .conf-box h4{color:#0a5c36;font-size:14px;margin-bottom:6px}
 .capa-img{width:100%;max-height:320px;object-fit:cover;border-radius:12px;display:block}
@@ -119,8 +115,7 @@ td:first-child{text-align:left;font-weight:bold}
 <div id="capaInicio"></div>
 </div>
 <div id="times" class="secao">
-<div class="card">
-<h2>Adicionar Times - Nome = Cor</h2>
+<div class="card"><h2>Adicionar Times - Nome = Cor</h2>
 <div class="cores">
 <div class="cor-opcao" style="background:red" onclick="selCor('vermelho','red',this)"></div>
 <div class="cor-opcao" style="background:#1e88e5" onclick="selCor('azul','#1e88e5',this)"></div>
@@ -135,8 +130,7 @@ td:first-child{text-align:left;font-weight:bold}
 <button class="btn btn-verde" onclick="addJogador()">+ Adicionar Jogador</button>
 <div id="listaTemp" style="margin-top:8px"></div>
 <button class="btn" style="background:#222;color:white;width:100%;margin-top:10px" onclick="finalizarTime()">Finalizar Este Time</button>
-</div>
-</div>
+</div></div>
 <div id="listaTimes"></div>
 <div class="card" id="cardConfrontos" style="display:none">
 <h2>⚔️ Confrontos do Dia - Ao Vivo</h2>
@@ -210,8 +204,7 @@ td:first-child{text-align:left;font-weight:bold}
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {getDatabase,ref,push,onValue,remove,set,update} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyBOAcvw9TvgKhNzi_qmsioXcLheC4Erww",authDomain:"baba-do-candeias.firebaseapp.com",databaseURL:"https://baba-do-candeias-default-rtdb.firebaseio.com",projectId:"baba-do-candeias",storageBucket:"baba-do-candeias.appspot.com",messagingSenderId:"227896511604",appId:"1:227896511604:web:5cd1213b30f64b19d89521"};
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
+const app=initializeApp(firebaseConfig);const db=getDatabase(app);
 document.addEventListener('contextmenu',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return true;e.preventDefault();return false;});
 document.addEventListener('selectstart',e=>{let t=e.target;if(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)return true;e.preventDefault();return false;});
 document.addEventListener('dragstart',e=>{e.preventDefault();return false;});
@@ -243,13 +236,17 @@ window.finalizarTime=function(){if(jogadoresTemp.length===0)return showAlert('Ad
 window.toggleDetalhe=function(id){let el=document.getElementById(id);if(!el)return;el.classList.toggle('aberto')}
 window.toggleEditarTime=function(timeId){editandoTimeId=(String(editandoTimeId)===String(timeId)?null:timeId);renderTimes();atualizarSelects();}
 window.concluirEdicaoTime=function(){editandoTimeId=null;renderTimes();atualizarSelects();renderConfrontoAoVivo();showAlert('Time atualizado! Já pode usar no confronto.','Time atualizado ✅')}
-window.addJogadorNoTimeEdit=function(timeId){let ne=document.getElementById('editNome_'+timeId);let ge=document.getElementById('editGols_'+timeId);let ae=document.getElementById('editAst_'+timeId);let nome=ne?ne.value.trim():'';if(!nome)return showAlert('Digite o nome do jogador que chegou');let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let novo={nome:nome,gols:parseInt(ge.value)||0,ast:parseInt(ae.value)||0,id:Date.now()+Math.random()};time.jogadores.push(novo);setBase(time.id,novo.id,novo.gols,novo.ast);if(ne)ne.value='';renderTimes();atualizarSelects();renderConfrontoAoVivo();}
-window.removerJogadorDoTime=function(timeId,jogId){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let j=time.jogadores.find(x=>String(x.id)===String(jogId));showConfirm('Remover '+(j?j.nome:'esse jogador')+' do '+time.nome+'?',function(){time.jogadores=time.jogadores.filter(x=>String(x.id)!==String(jogId));delete baseGols[getBaseKey(timeId,jogId)];renderTimes();atualizarSelects();renderConfrontoAoVivo();});}
+window.addJogadorNoTimeEdit=function(timeId){let s1=document.getElementById('selTime1')?.value;let s2=document.getElementById('selTime2')?.value;let ne=document.getElementById('editNome_'+timeId);let ge=document.getElementById('editGols_'+timeId);let ae=document.getElementById('editAst_'+timeId);let nome=ne?ne.value.trim():'';if(!nome)return showAlert('Digite o nome do jogador que chegou');let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let novo={nome:nome,gols:parseInt(ge.value)||0,ast:parseInt(ae.value)||0,id:Date.now()+Math.random()};time.jogadores.push(novo);setBase(time.id,novo.id,novo.gols,novo.ast);if(ne)ne.value='';renderTimes();atualizarSelects(s1,s2);renderConfrontoAoVivo();}
+window.removerJogadorDoTime=function(timeId,jogId){let s1=document.getElementById('selTime1')?.value;let s2=document.getElementById('selTime2')?.value;let time=times.find(t=>String(t.id)===String(timeId));if(!time)return;let j=time.jogadores.find(x=>String(x.id)===String(jogId));showConfirm('Remover '+(j?j.nome:'esse jogador')+' do '+time.nome+'?',function(){time.jogadores=time.jogadores.filter(x=>String(x.id)!==String(jogId));delete baseGols[getBaseKey(timeId,jogId)];renderTimes();atualizarSelects(s1,s2);renderConfrontoAoVivo();});}
 function getTemp(timeId){if(!tempJogadores[String(timeId)])tempJogadores[String(timeId)]=[];return tempJogadores[String(timeId)]}
 function somaGolsTemp(timeId){return getTemp(timeId).reduce((s,j)=>s+(parseInt(j.gols)||0),0)}
-window.addJogadorTemporario=function(timeId,origem){let inputId=origem==='conf'?'tempConfNome_'+timeId:'tempNome_'+timeId;let el=document.getElementById(inputId);let nome=el?el.value.trim():'';if(!nome)return showAlert('Digite o nome do jogador temporário');let novo={nome:nome,gols:0,ast:0,id:Date.now()+Math.random()};getTemp(timeId).push(novo);setBase(timeId,novo.id,0,0);if(el)el.value='';renderTimes();atualizarSelects();renderConfrontoAoVivo();showAlert(nome+' adicionado como TEMPORÁRIO - só dessa partida. Não fica salvo no time.','Temporário ✅');}
-window.removerJogadorTemporario=function(timeId,jogId){let arr=getTemp(timeId);let j=arr.find(x=>String(x.id)===String(jogId));showConfirm('Remover temporário '+(j?j.nome:'')+'? Os gols dele já ficam salvos na partida que você adicionar. Ele só sai do time.',function(){tempJogadores[String(timeId)]=arr.filter(x=>String(x.id)!==String(jogId));delete baseGols[getBaseKey(timeId,jogId)];renderTimes();atualizarSelects();renderConfrontoAoVivo();});}
-window.limparTemporariosTime=function(timeId){showConfirm('Limpar todos os temporários desse time? Os gols já salvos na partida continuam salvos.',function(){tempJogadores[String(timeId)]=[];renderTimes();atualizarSelects();renderConfrontoAoVivo();});}
+window.addJogadorTemporario=function(timeId,origem){
+let s1=document.getElementById('selTime1')?.value;let s2=document.getElementById('selTime2')?.value;
+let inputId=origem==='conf'?'tempConfNome_'+timeId:'tempNome_'+timeId;let el=document.getElementById(inputId);let nome=el?el.value.trim():'';if(!nome)return showAlert('Digite o nome do jogador temporário');let novo={nome:nome,gols:0,ast:0,id:Date.now()+Math.random()};getTemp(timeId).push(novo);setBase(timeId,novo.id,0,0);if(el)el.value='';
+renderTimes();atualizarSelects(s1,s2);renderConfrontoAoVivo(false);
+showAlert(nome+' adicionado como TEMPORÁRIO - só dessa partida. Não fica salvo no time.','Temporário ✅');}
+window.removerJogadorTemporario=function(timeId,jogId){let s1=document.getElementById('selTime1')?.value;let s2=document.getElementById('selTime2')?.value;let arr=getTemp(timeId);let j=arr.find(x=>String(x.id)===String(jogId));showConfirm('Remover temporário '+(j?j.nome:'')+'? Os gols dele já ficam salvos na partida que você adicionar. Ele só sai do time.',function(){tempJogadores[String(timeId)]=arr.filter(x=>String(x.id)!==String(jogId));delete baseGols[getBaseKey(timeId,jogId)];renderTimes();atualizarSelects(s1,s2);renderConfrontoAoVivo(false);});}
+window.limparTemporariosTime=function(timeId){let s1=document.getElementById('selTime1')?.value;let s2=document.getElementById('selTime2')?.value;showConfirm('Limpar todos os temporários desse time? Os gols já salvos na partida continuam salvos.',function(){tempJogadores[String(timeId)]=[];renderTimes();atualizarSelects(s1,s2);renderConfrontoAoVivo(false);});}
 window.altGolTemp=function(timeId,jogId,delta){let j=getTemp(timeId).find(x=>String(x.id)===String(jogId));if(!j)return;j.gols=Math.max(0,(parseInt(j.gols)||0)+delta);syncPlacar();renderTimes();renderConfrontoAoVivo(false);}
 window.altAstTemp=function(timeId,jogId,delta){let j=getTemp(timeId).find(x=>String(x.id)===String(jogId));if(!j)return;j.ast=Math.max(0,(parseInt(j.ast)||0)+delta);renderTimes();renderConfrontoAoVivo(false);}
 function renderTimes(){
@@ -263,10 +260,10 @@ return `<div class="card"><div style="display:flex;justify-content:space-between
 }).join('');
 document.getElementById('cardConfrontos').style.display=times.length>=2?'block':'none';
 document.getElementById('cardTabela').style.display=confrontos.length>0?'block':'none';
-if(times.length>=2) renderConfrontoAoVivo();
+if(times.length>=2) renderConfrontoAoVivo(false);
 }
 window.removerTime=function(id){showConfirm('Apagar esse time?',function(){times=times.filter(t=>t.id!==id);confrontos=confrontos.filter(c=>c.t1!==id&&c.t2!==id);delete tempJogadores[String(id)];if(String(editandoTimeId)===String(id))editandoTimeId=null;renderTimes();renderConfrontos();renderTabela();});}
-function atualizarSelects(){let opts=times.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');document.getElementById('selTime1').innerHTML=opts;document.getElementById('selTime2').innerHTML=opts;if(times.length>=2){document.getElementById('selTime2').selectedIndex=1;}renderConfrontoAoVivo();}
+function atualizarSelects(keep1,keep2){let opts=times.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');let s1=document.getElementById('selTime1');let s2=document.getElementById('selTime2');s1.innerHTML=opts;s2.innerHTML=opts;if(keep1 && times.find(t=>String(t.id)===String(keep1))){s1.value=keep1;}if(keep2 && times.find(t=>String(t.id)===String(keep2))){s2.value=keep2;}else if(times.length>=2 && !keep2){s2.selectedIndex=1;}if(times.length>=2)renderConfrontoAoVivo(false);}
 function getTimeSelecionado(lado){let sel=document.getElementById(lado===1?'selTime1':'selTime2');if(!sel||!sel.value)return null;return times.find(t=>String(t.id)===String(sel.value));}
 function somaGolsTime(time){if(!time)return 0;return time.jogadores.reduce((s,j)=>s+(parseInt(j.gols)||0),0);}
 function syncPlacar(){let t1=getTimeSelecionado(1);let t2=getTimeSelecionado(2);let p1=somaGolsTime(t1)+(t1?somaGolsTemp(t1.id):0)+golsSemAutor[1];let p2=somaGolsTime(t2)+(t2?somaGolsTemp(t2.id):0)+golsSemAutor[2];document.getElementById('placar1').value=p1;document.getElementById('placar2').value=p2;}
@@ -285,13 +282,16 @@ div.innerHTML=bloco(t1,1)+bloco(t2,2);
 }
 window.addConfronto=function(){
 let t1=parseInt(document.getElementById('selTime1').value);let t2=parseInt(document.getElementById('selTime2').value);let g1=parseInt(document.getElementById('placar1').value);let g2=parseInt(document.getElementById('placar2').value);if(!t1||!t2)return showAlert('Escolha os 2 times');if(t1===t2)return showAlert('Não pode confronto do mesmo time');if(isNaN(g1)||isNaN(g2))return showAlert('Digite o placar');
-function deltaTime(timeId){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return [];let lista=[];time.jogadores.forEach(j=>{let b=getBase(timeId,j.id);let dg=(parseInt(j.gols)||0)-b.gols;let da=(parseInt(j.ast)||0)-b.ast;if(dg>0||da>0)lista.push({nome:j.nome,gols:dg,ast:da,temporario:false});setBase(timeId,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0);});getTemp(timeId).forEach(j=>{let b=getBase(timeId,j.id);let dg=(parseInt(j.gols)||0)-b.gols;let da=(parseInt(j.ast)||0)-b.ast;if(dg>0||da>0)lista.push({nome:j.nome,gols:dg,ast:da,temporario:true});setBase(timeId,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0);});return lista;}
+function deltaTime(timeId){let time=times.find(t=>String(t.id)===String(timeId));if(!time)return [];let lista=[];time.jogadores.forEach(j=>{let b=getBase(timeId,j.id);let dg=(parseInt(j.gols)||0)-b.gols;let da=(parseInt(j.ast)||0)-b.ast;if(dg>0||da>0)lista.push({nome:j.nome,gols:dg,ast:da,temporario:false});});getTemp(timeId).forEach(j=>{let b=getBase(timeId,j.id);let dg=(parseInt(j.gols)||0)-b.gols;let da=(parseInt(j.ast)||0)-b.ast;if(dg>0||da>0)lista.push({nome:j.nome,gols:dg,ast:da,temporario:true});});return lista;}
 let detalhe1=deltaTime(t1);let detalhe2=deltaTime(t2);
 let tempSnap1=JSON.parse(JSON.stringify(getTemp(t1)));let tempSnap2=JSON.parse(JSON.stringify(getTemp(t2)));
 confrontos.push({id:Date.now(),t1,t2,g1,g2,temp1:tempSnap1,temp2:tempSnap2,detalhe1:detalhe1,detalhe2:detalhe2});
-golsSemAutor={1:0,2:0};document.getElementById('placar1').value='';document.getElementById('placar2').value='';renderConfrontos();renderTabela();renderConfrontoAoVivo();
 let resumo=[...detalhe1,...detalhe2].map(d=>d.nome+' '+d.gols+'G/'+d.ast+'A').join(', ');
-showAlert(resumo?('Confronto salvo! Gols desse jogo: '+resumo):'Confronto salvo!','Confronto ✅');
+// NOVO: zera fixos, mantém temporário
+[t1,t2].forEach(tid=>{let tm=times.find(t=>String(t.id)===String(tid));if(!tm)return;tm.jogadores.forEach(j=>{j.gols=0;j.ast=0;setBase(tid,j.id,0,0);});getTemp(tid).forEach(j=>{setBase(tid,j.id,parseInt(j.gols)||0,parseInt(j.ast)||0);});});
+golsSemAutor={1:0,2:0};document.getElementById('placar1').value='';document.getElementById('placar2').value='';
+renderConfrontos();renderTabela();renderTimes();atualizarSelects(String(t1),String(t2));renderConfrontoAoVivo(false);syncPlacar();
+showAlert((resumo?('Confronto salvo! Gols desse jogo: '+resumo+'\n\nGols e assistências dos FIXOS foram zerados para o próximo confronto. Temporário ficou.'):'Confronto salvo! Gols dos fixos zerados. Temporário ficou.'),'Confronto ✅');
 }
 function renderConfrontos(){document.getElementById('listaConfrontos').innerHTML=confrontos.map(c=>{let t1=times.find(t=>t.id===c.t1);let t2=times.find(t=>t.id===c.t2);let txt='';let det=[...(c.detalhe1||[]),...(c.detalhe2||[])];if(det.length){txt='<br><small style="color:#0a5c36;font-weight:bold">⚽ '+det.map(d=>d.nome+' '+d.gols+'G/'+d.ast+'A'+(d.temporario?' (temp)':'')).join(', ')+'</small>';}else if((c.temp1&&c.temp1.length)||(c.temp2&&c.temp2.length)){txt='<br><small style="color:#e65100">'+[...(c.temp1||[]).map(j=>j.nome+' (temp '+j.gols+'G/'+j.ast+'A)'),...(c.temp2||[]).map(j=>j.nome+' (temp '+j.gols+'G/'+j.ast+'A)')].join(', ')+'</small>';}return `<div class="conf-item"><span>${t1?.nome} ${c.g1} x ${c.g2} ${t2?.nome}${txt}</span><button class="btn btn-cinza" style="padding:4px 8px" onclick="removerConfronto(${c.id})">X</button></div>`}).join('');}
 window.removerConfronto=function(id){confrontos=confrontos.filter(c=>c.id!==id);renderConfrontos();renderTabela();}
@@ -306,7 +306,7 @@ if(!dataSelecionada)return showAlert('Selecione um dia no calendário');
 if(times.length===0&&!editandoData){showConfirm('Apagar o dia '+dataSelecionada.split('-').reverse().join('/')+'?',function(){remove(ref(db,'historico/'+dataSelecionada));showAlert('Dia apagado!');editandoData=null;dataSelecionada=null;times=[];confrontos=[];baseGols={};document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';});return;}
 let timesParaSalvar=JSON.parse(JSON.stringify(times));
 timesParaSalvar.forEach(t=>{let temps=getTemp(t.id);temps.forEach(j=>{t.jogadores.push({nome:j.nome,gols:j.gols,ast:j.ast,id:'temp_'+j.id,temporario:true});});});
-set(ref(db,'historico/'+dataSelecionada),{data:dataSelecionada,times:JSON.parse(JSON.stringify(timesParaSalvar)),confrontos:JSON.parse(JSON.stringify(confrontos)),criado:Date.now()});
+set(ref(db,'historico/'+dataSelecionada),{data:dataSelecionada,times:timesParaSalvar,confrontos:JSON.parse(JSON.stringify(confrontos)),criado:Date.now()});
 showAlert((editandoData?'ATUALIZADO':'Salvo')+' em '+dataSelecionada.split('-').reverse().join('/')+'! Gols e assistências somados no Ranking.','Salvo ✅');
 editandoData=null;document.getElementById('editandoTxt').style.display='none';document.getElementById('btnCancelarEdicao').style.display='none';document.getElementById('cardSalvar').style.display='none';dataSelecionada=null;times=[];confrontos=[];editandoTimeId=null;tempJogadores={};baseGols={};renderTimes();renderConfrontos();renderTabela();renderCalendario('times');document.getElementById('detalheDia').innerHTML='';
 }
